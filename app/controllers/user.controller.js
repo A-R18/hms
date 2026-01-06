@@ -1,19 +1,98 @@
-const { saveUser } = require("../models/user.model.js");
-const registerUser = async (res, req) => {
-    const incomingData = req.body;
-    console.log(req.body);
-    const dataMatch = {
-        user_name: incomingData.name,
-        user_email: incomingData.email,
-        user_email: incomingData.password
-    }
+const { saveUser,
+    fetchAllusers,
+    fetchExistingUser,
+    updateOldUser,
+    deleteCurrentUser,
+    showCurrentUser } = require("../models/user.model.js");
+const bcrypt = require("bcrypt");
 
-    const userSubmitted = await saveUser(dataMatch);
-    if (userSubmitted) {
-        return res.status(200).json({ message: "User registered", user_Data: userSubmitted });
+const registerUser = async (req, res) => {
+    try {
+        const incomingData = req.body;
+        const hashedPass = await bcrypt.hash(incomingData.password, 10);
+        const dataMatch = {
+            user_name: incomingData.name,
+            user_email: incomingData.email.trim(),
+            user_password: hashedPass
+        }
+
+        const userSubmitted = await saveUser(dataMatch);
+        if (userSubmitted) {
+            return res.status(200).json({ message: "User registered successfully!" });
+        }
+    } catch (error) {
+        return res.status(400).json({ message: "Didn't register", error: error });
     }
-    return res.status(400).json({ error: "Unsuccessfull attempt"});
+    return res.status(400).json({ error: "Unsuccessfull attempt" });
+}
+
+const updateUser = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const oldUserData = await fetchExistingUser(id);
+        const incomingData = req.body;
+
+        const hashedPass = await bcrypt.hash(incomingData.password, 10);
+        
+        const dataMatch = {
+            user_name: req?.body?.name ? incomingData.name : oldUserData.user_name,
+            user_email: req?.body?.email ? incomingData.email : oldUserData.user_email,
+            user_password: req?.body?.password ? hashedPass : oldUserData.password
+        };
+        console.log(dataMatch);
+
+        const updatedUser = await updateOldUser(id, dataMatch);
+
+        console.log(updateUser);
+        if (updatedUser) {
+            return res.status(200).json({ message: "Updated successfully!", data: dataMatch });
+        }
+    } catch (error) {
+
+        return res.status(400).json({ error: "Didn't update!", error: error });
+    }
+}
+
+const showUsers = async (req, res) => {
+    try {
+        const allUsers = await fetchAllusers();
+
+        if (allUsers) {
+            res.status(200).json(allUsers);
+        }
+    } catch (error) {
+        res.status(400).json({ error });
+    }
 }
 
 
-module.exports = { registerUser };
+const deleteUser = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const deleted = await deleteCurrentUser(id);
+        if (deleted) {
+            return res.status(200).json({ alert: "Deleted successfully!" });
+        }
+    } catch (error) {
+
+        return res.status(400).json({ message: "Deletion unsuccessfull!" });
+    }
+}
+
+
+const showSpecificUser = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const userFetched = await showCurrentUser(id);
+        // console.log(userFetched);
+        if (userFetched) {
+            return res.status(200).json(userFetched);
+        }
+    } catch (error) {
+
+        return res.status(400).json({ error: "Didn't fetch!" }, error);
+    }
+}
+
+
+module.exports = { registerUser, showUsers, updateUser, deleteUser, showSpecificUser };

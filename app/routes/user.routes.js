@@ -1,5 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const { registerUser } = require("../controllers/user.controller.js");
+const { registerUser, showUsers, updateUser, deleteUser, showSpecificUser } = require("../controllers/user.controller.js");
+const { authenticateUser } = require("../models/login.model.js");
 router.post("/register", registerUser);
-module.exports = router;
+router.get("/show-all", showUsers);
+router.post("/update-user/:id", updateUser);
+router.post("/delete-user/:id", deleteUser);
+router.get("/show-currentUser/:id", showSpecificUser);
+router.post("/login-user", authenticateUser);
+module.exports = router; 
