@@ -11,7 +11,9 @@ const logUserIn = async (req, res) => {
         if (!matchedPassword) {
             return res.status(401).json({ message: "Invalid credentials" });
         } else {
+            
             return res.status(202).json({ message: "Logged in successfully!" });
+
         }
     }
 }
