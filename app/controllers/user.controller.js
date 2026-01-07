@@ -49,7 +49,7 @@ const updateUser = async (req, res) => {
         }
     } catch (error) {
 
-        return res.status(400).json({ error: "Didn't update!", error: error });
+        return res.status(400).json({ alert: "Didn't update!", error: error });
     }
 }
 
