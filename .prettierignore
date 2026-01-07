@@ -1,0 +1,5 @@
+.env
+package.json
+.prettierrc
+.prettierignore
+.gitignore

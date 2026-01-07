@@ -1,6 +1,5 @@
 # Backend for HMS so far:
 
-
 ## Impmentations
 
 - Made insert user (POST)
@@ -10,8 +9,8 @@
 - Made show all users (GET)
 - Made login user (POST)
 
-
 # Tech used in backend:
+
 - Node.js
 - Table plus (for DB mainly & data viewing)
 - Xampp for SQL server
