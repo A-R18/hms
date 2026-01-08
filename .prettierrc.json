@@ -4,7 +4,8 @@
   "useTabs": false,
 
   "semi": true,
-  "singleQuote": true,
+  "singleQuote": false,
+  "doubleQuote": true,
   "jsxSingleQuote": false,
   "quoteProps": "as-needed",
 

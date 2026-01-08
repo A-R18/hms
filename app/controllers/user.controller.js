@@ -5,11 +5,17 @@ const {
   updateOldUser,
   deleteCurrentUser,
   showCurrentUser,
-} = require('../models/user.model.js');
-const bcrypt = require('bcrypt');
+} = require("../models/user.model.js");
+const { validationResult } = require("express-validator");
+
+const bcrypt = require("bcrypt");
 
 const registerUser = async (req, res) => {
   try {
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+      return res.status(422).json({ errors: result.array() });
+    }
     const incomingData = req.body;
     const hashedPass = await bcrypt.hash(incomingData.password, 10);
     const dataMatch = {
@@ -20,18 +26,22 @@ const registerUser = async (req, res) => {
 
     const userSubmitted = await saveUser(dataMatch);
     if (userSubmitted) {
-      return res.status(200).json({ message: 'User registered successfully!' });
+      return res.status(200).json({ message: "User registered successfully!" });
     }
   } catch (error) {
     return res.status(400).json({ message: "Didn't register", error: error });
   }
-  return res.status(400).json({ error: 'Unsuccessfull attempt' });
+  return res.status(400).json({ error: "Unsuccessfull attempt" });
 };
 
 const updateUser = async (req, res) => {
   try {
     const id = req.params.id;
     const oldUserData = await fetchExistingUser(id);
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+      return res.status(422).json({ errors: result.array() });
+    }
     const incomingData = req.body;
 
     const hashedPass = await bcrypt.hash(incomingData.password, 10);
@@ -47,7 +57,7 @@ const updateUser = async (req, res) => {
 
     console.log(updateUser);
     if (updatedUser) {
-      return res.status(200).json({ message: 'Updated successfully!', data: dataMatch });
+      return res.status(200).json({ message: "Updated successfully!", data: dataMatch });
     }
   } catch (error) {
     return res.status(400).json({ alert: "Didn't update!", error: error });
@@ -71,10 +81,10 @@ const deleteUser = async (req, res) => {
     const id = req.params.id;
     const deleted = await deleteCurrentUser(id);
     if (deleted) {
-      return res.status(200).json({ alert: 'Deleted successfully!' });
+      return res.status(200).json({ alert: "Deleted successfully!" });
     }
   } catch (error) {
-    return res.status(400).json({ message: 'Deletion unsuccessfull!' });
+    return res.status(400).json({ message: "Deletion unsuccessfull!" });
   }
 };
 
