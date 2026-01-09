@@ -5,7 +5,7 @@ const saveUser = (userData) => {
 };
 
 const fetchAllusers = () => {
-  return knex("users").select("id as user_Id", "user_name", "user_email", "user_password");
+  return knex("users").join("roles", "users.role_ID", "roles.id").select("users.id as user_Id", "roles.role", "users.user_name", "users.user_email", "users.user_password",);
 };
 
 const fetchExistingUser = (userID) => {
@@ -24,6 +24,22 @@ const showCurrentUser = (userID) => {
   return knex("users").select("*").where({ id: userID }).first();
 };
 
+const checkAccess = async (privilege, allowedModule, userRoleID) => {
+  console.log(privilege, allowedModule, userRoleID);
+  const permissionMatch = await knex("permissions")
+    .where({ role_ID: userRoleID })
+    .join("privileges", "permissions.privilege_ID", "privileges.id")
+    .join("modules", "permissions.module_ID", "modules.id")
+    .where("privileges.privilege", privilege)
+    .where("modules.module", allowedModule)
+    .select("privileges.privilege", "modules.module")
+    .first();
+  if (!!permissionMatch) {
+    return true;
+  }
+  return false;
+};
+
 module.exports = {
   saveUser,
   fetchAllusers,
@@ -31,4 +47,5 @@ module.exports = {
   updateOldUser,
   deleteCurrentUser,
   showCurrentUser,
+  checkAccess
 };

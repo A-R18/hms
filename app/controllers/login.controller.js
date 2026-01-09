@@ -6,8 +6,6 @@ const logUserIn = async (req, res) => {
   const pass = req.body.password;
   const authResponse = await authenticateUser(mail);
 
-
-
   // console.log("authenticated data is: ",authData);
   if (!authResponse) {
     return res.status(404).json({ message: "User doesn't exist!" });
@@ -16,8 +14,8 @@ const logUserIn = async (req, res) => {
       id: authResponse.id,
       role_id: authResponse.role_ID,
       email: authResponse.user_email,
-      password: authResponse.user_password
-    }
+      password: authResponse.user_password,
+    };
     const matchedPassword = await bcrypt.compare(pass, authResponse.user_password);
     if (!matchedPassword) {
       return res.status(401).json({ message: "Invalid credentials" });

@@ -22,6 +22,7 @@ const registerUser = async (req, res) => {
       user_name: incomingData.name,
       user_email: incomingData.email.trim(),
       user_password: hashedPass,
+      role_ID: incomingData.rid
     };
 
     const userSubmitted = await saveUser(dataMatch);
@@ -51,11 +52,11 @@ const updateUser = async (req, res) => {
       user_email: req?.body?.email ? incomingData.email : oldUserData.user_email,
       user_password: req?.body?.password ? hashedPass : oldUserData.password,
     };
-    console.log(dataMatch);
+    // console.log(dataMatch);
 
     const updatedUser = await updateOldUser(id, dataMatch);
 
-    console.log(updateUser);
+    // console.log(updateUser);
     if (updatedUser) {
       return res.status(200).json({ message: "Updated successfully!", data: dataMatch });
     }
