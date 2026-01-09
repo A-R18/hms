@@ -9,7 +9,7 @@
 - Made show all users (GET)
 - Made login user (POST)
 - Made Authorization with JWT token
-- Current user access feature can be added
+- Current user access feature has be added
 - Added role based access control (RBAC)
 
 # Tech used in backend:
