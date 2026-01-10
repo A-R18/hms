@@ -8,4 +8,8 @@ const authenticateUser = async (userEmail) => {
 
   return result;
 };
-module.exports = { authenticateUser };
+
+const fetchUserRole = (userRoleID)=>{
+return knex("roles").select("roles.role").where({id:userRoleID}).first();
+}
+module.exports = { authenticateUser, fetchUserRole };
