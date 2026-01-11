@@ -12,4 +12,12 @@ const authenticateUser = async (userEmail) => {
 const fetchUserRole = (userRoleID)=>{
 return knex("roles").select("roles.role").where({id:userRoleID}).first();
 }
-module.exports = { authenticateUser, fetchUserRole };
+
+const fetchUserPermissions = (userRoleID) => {
+    return knex("permissions").where({ role_ID: userRoleID })
+    .join("modules", "permissions.module_id", "modules.id")
+    .join("privileges", "permissions.privilege_id", "privileges.id")
+    .select("modules.module", "privileges.privilege");
+}
+
+module.exports = { authenticateUser, fetchUserRole, fetchUserPermissions };

@@ -44,8 +44,13 @@ const updateUser = async (req, res) => {
       return res.status(422).json({ errors: result.array() });
     }
     const incomingData = req.body;
+    console.log(incomingData);
+    console.log(oldUserData);
+    let hashedPass;
+    if(req?.body?.password){
 
-    const hashedPass = await bcrypt.hash(incomingData.password, 10);
+       hashedPass = await bcrypt.hash(incomingData.password, 10);
+    }
 
     const dataMatch = {
       user_name: req?.body?.name ? incomingData.name : oldUserData.user_name,

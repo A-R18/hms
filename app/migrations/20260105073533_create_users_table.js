@@ -9,7 +9,7 @@ exports.up = function (knex) {
     table.string("user_name").notNullable();
     table.string("user_email").unique().notNullable();
     table.string("user_password").notNullable();
-    table.timestamps("true");
+    table.timestamps(true, true);
     table.foreign("role_ID").references("id").inTable("roles");
   });
 };
