@@ -4,6 +4,13 @@ const saveUser = (userData) => {
   return knex("users").insert(userData);
 };
 
+const fetchUserRole = (userRoleID) => {
+  return knex("roles")
+    .where({ id: userRoleID })
+    .select("roles.role")
+    .first();
+}
+
 const fetchAllusers = () => {
   return knex("users").join("roles", "users.role_ID", "roles.id").select("users.id as user_Id", "roles.role", "users.user_name", "users.user_email", "users.user_password",);
 };
@@ -47,5 +54,6 @@ module.exports = {
   updateOldUser,
   deleteCurrentUser,
   showCurrentUser,
-  checkAccess
+  checkAccess,
+  fetchUserRole
 };

@@ -1,3 +1,4 @@
+const knex = require("knex")(require("../config/dbMod.js"));
 const {
   saveUser,
   fetchAllusers,
@@ -5,9 +6,9 @@ const {
   updateOldUser,
   deleteCurrentUser,
   showCurrentUser,
+  fetchUserRole
 } = require("../models/user.model.js");
 const { validationResult } = require("express-validator");
-
 const bcrypt = require("bcrypt");
 
 const registerUser = async (req, res) => {
@@ -37,19 +38,24 @@ const registerUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
   try {
+    const tranx = knex.transaction();
     const id = req.params.id;
     const oldUserData = await fetchExistingUser(id);
+    const { role } = await fetchUserRole(oldUserData.role_ID);
+    console.log(role);
     const result = validationResult(req);
     if (!result.isEmpty()) {
       return res.status(422).json({ errors: result.array() });
     }
+    console.log("old user is :", oldUserData);
     const incomingData = req.body;
     console.log(incomingData);
-    console.log(oldUserData);
+    // console.log(incomingData);
+    // console.log(oldUserData);
     let hashedPass;
-    if(req?.body?.password){
+    if (req?.body?.password) {
 
-       hashedPass = await bcrypt.hash(incomingData.password, 10);
+      hashedPass = await bcrypt.hash(incomingData.password, 10);
     }
 
     const dataMatch = {
@@ -57,13 +63,25 @@ const updateUser = async (req, res) => {
       user_email: req?.body?.email ? incomingData.email : oldUserData.user_email,
       user_password: req?.body?.password ? hashedPass : oldUserData.password,
     };
-    // console.log(dataMatch);
+    
+    if (role !== "doctor") {
+      const updatedUser = await updateOldUser(id, dataMatch);
+      if (updatedUser) {
+        return res.status(200).json({ message: "Updated successfully!", data: dataMatch });
+      }
+    }else{
+      console.log("Enters the case");
+      console.log(incomingData);
+     const doctorDataMatch = {
+      user_name: req?.body?.name ? incomingData.name : oldUserData.user_name,
+      user_email: req?.body?.email ? incomingData.email : oldUserData.user_email,
+      user_password: req?.body?.password ? hashedPass : oldUserData.password,
+      specialization: req?.body?.specialization ? incomingData.specialization  : null,
+      contact: req?.body?.contact ? incomingData.contact  : null,
+     }
+    // return  res.status(200).json(doctorDataMatch);
 
-    const updatedUser = await updateOldUser(id, dataMatch);
-
-    // console.log(updateUser);
-    if (updatedUser) {
-      return res.status(200).json({ message: "Updated successfully!", data: dataMatch });
+    
     }
   } catch (error) {
     return res.status(400).json({ alert: "Didn't update!", error: error });

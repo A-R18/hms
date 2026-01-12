@@ -3,3 +3,4 @@ package.json
 .prettierrc
 .prettierignore
 .gitignore
+desc.md

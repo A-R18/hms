@@ -12,6 +12,8 @@ const authorize = require("../middleware/authorizeUser.mid.js");
 const { validateUserData,
   validateUpdatedUser } = require("../validations/users.validations.js");
 const { routeAction } = require("../middleware/accessChecker.js");
+
+
 //Route written for registering a user:
 router.post("/register", authorize, routeAction("CREATE", "users"), validateUserData, registerUser);
 
