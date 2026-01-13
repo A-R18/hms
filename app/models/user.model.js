@@ -12,8 +12,14 @@ const fetchUserRole = (userRoleID) => {
 }
 
 const fetchAllusers = () => {
-  return knex("users").join("roles", "users.role_ID", "roles.id").select("users.id as user_Id", "roles.role", "users.user_name", "users.user_email", "users.user_password",);
+  return knex("users").join("roles", "users.role_ID", "roles.id").select("users.id as user_Id", "roles.role", "users.user_name", "users.user_email", "users.user_password");
 };
+
+const fetchDoctors = () => {
+  return knex("doctors")
+    .join("users", "doctors.user_ID", "users.id")
+    .select("users.user_name", "users.user_email", "users.user_password", "doctors.contact", "doctors.specialization");
+}
 
 const fetchExistingUser = (userID) => {
   return knex("users").select("*").where({ id: userID }).first();
@@ -66,5 +72,6 @@ module.exports = {
   checkAccess,
   fetchUserRole,
   updateOldDoc,
-  updateSpecDoc
+  updateSpecDoc,
+  fetchDoctors
 };

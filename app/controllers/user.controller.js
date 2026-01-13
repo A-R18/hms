@@ -8,7 +8,8 @@ const {
   showCurrentUser,
   fetchUserRole,
   updateOldDoc,
-  updateSpecDoc
+  updateSpecDoc,
+  fetchDoctors
 } = require("../models/user.model.js");
 const { validationResult } = require("express-validator");
 const bcrypt = require("bcrypt");
@@ -106,6 +107,7 @@ const showUsers = async (req, res) => {
   try {
     const allUsers = await fetchAllusers();
 
+
     if (allUsers) {
       res.status(200).json(allUsers);
     }
@@ -113,6 +115,20 @@ const showUsers = async (req, res) => {
     res.status(400).json({ error });
   }
 };
+
+
+const showDoctors = async (req, res)=>{
+   try {
+    const allDoctors = await fetchDoctors();
+
+
+    if (allDoctors) {
+      res.status(200).json(allDoctors);
+    }
+  } catch (error) {
+    res.status(400).json({ error });
+  }
+}
 
 const deleteUser = async (req, res) => {
   try {
@@ -139,4 +155,4 @@ const showSpecificUser = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, showUsers, updateUser, deleteUser, showSpecificUser };
+module.exports = { registerUser, showUsers, updateUser, deleteUser, showSpecificUser, showDoctors };

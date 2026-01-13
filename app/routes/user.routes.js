@@ -5,7 +5,8 @@ const {
   showUsers,
   updateUser,
   deleteUser,
-  showSpecificUser
+  showSpecificUser,
+  showDoctors
 } = require("../controllers/user.controller.js");
 const { logUserIn } = require("../controllers/login.controller.js");
 const authorize = require("../middleware/authorizeUser.mid.js");
@@ -19,6 +20,9 @@ router.post("/register", authorize, routeAction("CREATE", "users"), validateUser
 
 //Route written for showing user:
 router.get("/show-all", authorize, routeAction("READ", "users"), showUsers);
+
+//Route written for showing doctor:
+router.get("/show-all-doctors", authorize, routeAction("READ", "doctors"), showDoctors);
 
 //Route written for updating a user:
 router.post("/update-user/:id", authorize, routeAction("UPDATE", "users"), validateUpdatedUser, updateUser);
