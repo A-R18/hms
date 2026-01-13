@@ -47,6 +47,15 @@ const checkAccess = async (privilege, allowedModule, userRoleID) => {
   return false;
 };
 
+
+const updateOldDoc = (db, userID, existingData) => {
+  return db("users").where({ id: userID }).update(existingData);
+
+}
+const updateSpecDoc = (db, specData) => {
+  return db("doctors").insert(specData);
+}
+
 module.exports = {
   saveUser,
   fetchAllusers,
@@ -55,5 +64,7 @@ module.exports = {
   deleteCurrentUser,
   showCurrentUser,
   checkAccess,
-  fetchUserRole
+  fetchUserRole,
+  updateOldDoc,
+  updateSpecDoc
 };

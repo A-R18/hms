@@ -6,7 +6,9 @@ const {
   updateOldUser,
   deleteCurrentUser,
   showCurrentUser,
-  fetchUserRole
+  fetchUserRole,
+  updateOldDoc,
+  updateSpecDoc
 } = require("../models/user.model.js");
 const { validationResult } = require("express-validator");
 const bcrypt = require("bcrypt");
@@ -38,7 +40,7 @@ const registerUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
   try {
-    const tranx = knex.transaction();
+    const tranx = await knex.transaction();
     const id = req.params.id;
     const oldUserData = await fetchExistingUser(id);
     const { role } = await fetchUserRole(oldUserData.role_ID);
@@ -54,7 +56,6 @@ const updateUser = async (req, res) => {
     // console.log(oldUserData);
     let hashedPass;
     if (req?.body?.password) {
-
       hashedPass = await bcrypt.hash(incomingData.password, 10);
     }
 
@@ -63,25 +64,38 @@ const updateUser = async (req, res) => {
       user_email: req?.body?.email ? incomingData.email : oldUserData.user_email,
       user_password: req?.body?.password ? hashedPass : oldUserData.password,
     };
-    
+
     if (role !== "doctor") {
-      const updatedUser = await updateOldUser(id, dataMatch);
+      const updatedUser = await updateOldUser(knex, id, dataMatch);
       if (updatedUser) {
         return res.status(200).json({ message: "Updated successfully!", data: dataMatch });
       }
-    }else{
+    } else {
       console.log("Enters the case");
       console.log(incomingData);
-     const doctorDataMatch = {
-      user_name: req?.body?.name ? incomingData.name : oldUserData.user_name,
-      user_email: req?.body?.email ? incomingData.email : oldUserData.user_email,
-      user_password: req?.body?.password ? hashedPass : oldUserData.password,
-      specialization: req?.body?.specialization ? incomingData.specialization  : null,
-      contact: req?.body?.contact ? incomingData.contact  : null,
-     }
-    // return  res.status(200).json(doctorDataMatch);
+      try {
+        const docGenData = {
+          user_name: req?.body?.name ? incomingData.name : oldUserData.user_name,
+          user_email: req?.body?.email ? incomingData.email : oldUserData.user_email,
+          user_password: req?.body?.password ? hashedPass : oldUserData.password,
+        }
+        const docSpecData = {
+          user_ID: oldUserData.id,
+          specialization: req?.body?.specialization ? incomingData.specialization : null,
+          contact: req?.body?.contact ? incomingData.contact : null,
+        }
 
-    
+        await updateOldDoc(tranx, id, docGenData);
+        await updateSpecDoc(tranx, docSpecData);
+        tranx.commit();
+        return res.status(200).json({ ...docGenData, ...docSpecData });
+      } catch (error) {
+        tranx.rollback();
+        return res.status(400).json(error);
+      }
+
+
+
     }
   } catch (error) {
     return res.status(400).json({ alert: "Didn't update!", error: error });
