@@ -9,6 +9,7 @@ const {
   fetchUserRole,
   updateOldDoc,
   updateSpecDoc,
+  fetchExistingDoctor,
   fetchDoctors
 } = require("../models/user.model.js");
 const { validationResult } = require("express-validator");
@@ -72,9 +73,10 @@ const updateUser = async (req, res) => {
         return res.status(200).json({ message: "Updated successfully!", data: dataMatch });
       }
     } else {
-      console.log("Enters the case");
-      console.log(incomingData);
+     
       try {
+      const existingDoctor =   await fetchExistingDoctor(tranx, id);
+      console.log("existing doctor is: ",existingDoctor, "req.body is", req.body);
         const docGenData = {
           user_name: req?.body?.name ? incomingData.name : oldUserData.user_name,
           user_email: req?.body?.email ? incomingData.email : oldUserData.user_email,
@@ -82,8 +84,8 @@ const updateUser = async (req, res) => {
         }
         const docSpecData = {
           user_ID: oldUserData.id,
-          specialization: req?.body?.specialization ? incomingData.specialization : null,
-          contact: req?.body?.contact ? incomingData.contact : null,
+          specialization: req?.body?.specialization ? incomingData.specialization : "not specified",
+          contact: req?.body?.contact ? incomingData.contact : "not specified",
         }
 
         await updateOldDoc(tranx, id, docGenData);
@@ -94,8 +96,6 @@ const updateUser = async (req, res) => {
         tranx.rollback();
         return res.status(400).json(error);
       }
-
-
 
     }
   } catch (error) {

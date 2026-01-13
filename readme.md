@@ -4,9 +4,11 @@
 
 - Made insert user (POST)
 - Made update user (POST)
+- Made update doctor (POST)
 - Made show specific user (GET)
 - Made delete user (POST)
 - Made show all users (GET)
+- Made show all doctors (GET)
 - Made login user (POST)
 - Made Authorization with JWT token
 - Current user access feature has be added

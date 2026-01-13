@@ -62,6 +62,10 @@ const updateSpecDoc = (db, specData) => {
   return db("doctors").insert(specData);
 }
 
+const fetchExistingDoctor = (db, userID) => {
+  return db("doctors").where({ user_ID: userID }).first();
+}
+
 module.exports = {
   saveUser,
   fetchAllusers,
@@ -73,5 +77,6 @@ module.exports = {
   fetchUserRole,
   updateOldDoc,
   updateSpecDoc,
+  fetchExistingDoctor,
   fetchDoctors
 };

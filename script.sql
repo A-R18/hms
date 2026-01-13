@@ -48,13 +48,13 @@ INSERT INTO
     user_password
   )
 values
-  ("Dr Kamal", 1, "doc@doc.com", "Pakistan123"),
+  ("Dr Kamal", 1, "doc@doc.com", "$2a$10$Tcc3/dED25I7aMlU8Z0nlOA4YbJH6l/fKYkkgE5mcViY8L4DZDerK"),
 
-  ("Raheem", 2, "raheem@user.com", "Pakistan123"),
+  ("Raheem", 2, "raheem@user.com", "$2a$10$Tcc3/dED25I7aMlU8Z0nlOA4YbJH6l/fKYkkgE5mcViY8L4DZDerK"),
 
-  ("Saleem", 2, "saleem@user.com", "Pakistan123"),
+  ("Saleem", 2, "saleem@user.com", "$2a$10$Tcc3/dED25I7aMlU8Z0nlOA4YbJH6l/fKYkkgE5mcViY8L4DZDerK"),
 
-  ("Dr. Azeem", 1, "azeem@doc.com", "Pakistan123");
+  ("Dr. Azeem", 1, "azeem@doc.com", "$2a$10$Tcc3/dED25I7aMlU8Z0nlOA4YbJH6l/fKYkkgE5mcViY8L4DZDerK");
 
 
 
