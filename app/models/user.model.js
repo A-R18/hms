@@ -19,7 +19,7 @@ const fetchDoctors = () => {
   return knex("doctors")
     .join("users", "doctors.user_ID", "users.id")
     .select("users.user_name", "users.user_email", "users.user_password", "doctors.contact", "doctors.specialization");
-}
+};
 
 const fetchExistingUser = (userID) => {
   return knex("users").select("*").where({ id: userID }).first();
@@ -57,20 +57,20 @@ const checkAccess = async (privilege, allowedModule, userRoleID) => {
 const updateOldDoc = (db, userID, existingData) => {
   return db("users").where({ id: userID }).update(existingData);
 
-}
+};
 
 const regSpecDoc = (db, specData) => {
   return db("doctors").insert(specData);
-}
+};
 
 
 const updateSpecDoc = (db, userID, specData) => {
   return db("doctors").where({ user_ID: userID }).update(specData);
-}
+};
 
 const fetchExistingDoctor = (db, userID) => {
   return db("doctors").where({ user_ID: userID }).first();
-}
+};
 
 module.exports = {
   saveUser,
