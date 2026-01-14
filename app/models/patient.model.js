@@ -16,7 +16,7 @@ const fetchExistingPatient = (patientID) => {
 }
 
 const showPatients = () => {
-    return knex("patients").select("patients.patient_name", "patients.condition", "patients.contact");
+    return knex("patients").select("patients.id","patients.patient_name", "patients.condition", "patients.contact");
 }
 
 const updatePt = (patientID, updatedPatient) => {

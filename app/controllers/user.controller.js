@@ -115,10 +115,10 @@ const showUsers = async (req, res) => {
 
 
     if (allUsers) {
-      res.status(200).json(allUsers);
+      return res.status(200).json(allUsers);
     }
   } catch (error) {
-    res.status(400).json({ error });
+    return res.status(400).json({ error });
   }
 };
 
@@ -126,13 +126,14 @@ const showUsers = async (req, res) => {
 const showDoctors = async (req, res) => {
   try {
     const allDoctors = await fetchDoctors();
-
-
-    if (allDoctors) {
-      res.status(200).json(allDoctors);
+    if (allDoctors.length !== 0) {
+      return res.status(200).json(allDoctors);
+    } else {
+      const allUsers = await fetchAllusers();
+      return res.status(200).json(allUsers);
     }
   } catch (error) {
-    res.status(400).json({ error });
+    return res.status(400).json({ error });
   }
 }
 

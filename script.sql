@@ -1,3 +1,7 @@
+DROP DATABASE IF EXISTS hmsdb;
+CREATE DATABASE hmsdb;
+USE hmsdb;
+
 INSERT INTO
   roles (role)
 values

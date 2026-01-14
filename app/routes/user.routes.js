@@ -21,7 +21,7 @@ router.post("/register", authorize, routeAction("CREATE", "users"), validateUser
 //Route written for showing user:
 router.get("/show-all", authorize, routeAction("READ", "users"), showUsers);
 
-//Route written for showing doctor:
+//Route written for showing doctors:
 router.get("/show-all-doctors", authorize, routeAction("READ", "doctors"), showDoctors);
 
 //Route written for updating a user:

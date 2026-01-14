@@ -16,9 +16,10 @@ const fetchAllusers = () => {
 };
 
 const fetchDoctors = () => {
-  return knex("doctors")
-    .join("users", "doctors.user_ID", "users.id")
-    .select("users.user_name", "users.user_email", "users.user_password", "doctors.contact", "doctors.specialization");
+  return knex("users")
+    .join("roles", "users.role_ID", "roles.id")
+    .join("doctors", "users.id", "doctors.user_ID")
+    .select("users.user_name", "users.user_email", "users.user_password","roles.role", "doctors.contact", "doctors.specialization");
 };
 
 const fetchExistingUser = (userID) => {
