@@ -3,7 +3,7 @@ const validateUserData = [
   body("name")
     .notEmpty()
     .withMessage("Required, named can't be empty")
-    .isAlpha()
+     .isAlpha("en-US", { ignore: " " })
     .withMessage("Invalid name entered"),
 
   body("email")
@@ -28,7 +28,7 @@ const validateUpdatedUser = [
     .optional()
     .notEmpty()
     .withMessage("Required, named can't be empty")
-    .isAlpha()
+     .isAlpha("en-US", { ignore: " " })
     .withMessage("Invalid name entered"),
 
   body("email")

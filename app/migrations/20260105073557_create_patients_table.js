@@ -5,7 +5,7 @@
 exports.up = function (knex) {
     return knex.schema.createTable("patients", function(table){
         table.increments("id");
-        table.string("name", 80).notNullable();
+        table.string("patient_name", 80).notNullable();
         table.string("condition", 150).notNullable();
         table.integer("contact").notNullable();
         table.timestamp("created_at").notNullable();

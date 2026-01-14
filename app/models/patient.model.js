@@ -5,21 +5,27 @@ const addPatient = (patientData) => {
 
 }
 
-const showSinglePatient = () => {
-  
+const showSinglePatient = (patientID) => {
+    return knex("patients").where({ id: patientID }).select("patients.patient_name", "patients.condition", "patients.contact").first();
+
+}
+
+const fetchExistingPatient = (patientID) => {
+    return knex("patients").where({ id: patientID }).select("patients.patient_name", "patients.condition", "patients.contact").first();
+
 }
 
 const showPatients = () => {
-return knex("patients").select("patients.name","patients.condition",  "patients.contact");
+    return knex("patients").select("patients.patient_name", "patients.condition", "patients.contact");
 }
 
-const updatePt = () => {
-
+const updatePt = (patientID, updatedPatient) => {
+    return knex("patients").where({ id: patientID }).update(updatedPatient);
 }
 
 const deletePt = (patientID) => {
-return knex("patients").where({id: patientID}).delete();
+    return knex("patients").where({ id: patientID }).delete();
 }
 
-module.exports = { addPatient, showSinglePatient, showPatients, updatePt, deletePt };
+module.exports = { addPatient, showSinglePatient, showPatients, fetchExistingPatient, updatePt, deletePt };
 
