@@ -8,9 +8,10 @@ const {
   showCurrentUser,
   fetchUserRole,
   updateOldDoc,
+  regSpecDoc,
   updateSpecDoc,
   fetchExistingDoctor,
-  fetchDoctors
+  fetchDoctors,
 } = require("../models/user.model.js");
 const { validationResult } = require("express-validator");
 const bcrypt = require("bcrypt");
@@ -73,10 +74,11 @@ const updateUser = async (req, res) => {
         return res.status(200).json({ message: "Updated successfully!", data: dataMatch });
       }
     } else {
-     
+
       try {
-      const existingDoctor =   await fetchExistingDoctor(tranx, id);
-      console.log("existing doctor is: ",existingDoctor, "req.body is", req.body);
+        const existingDoctor = await fetchExistingDoctor(tranx, id);
+        console.log("existing doctor is :", existingDoctor);
+        console.log("existing doctor is: ", existingDoctor, "req.body is", req.body);
         const docGenData = {
           user_name: req?.body?.name ? incomingData.name : oldUserData.user_name,
           user_email: req?.body?.email ? incomingData.email : oldUserData.user_email,
@@ -89,9 +91,13 @@ const updateUser = async (req, res) => {
         }
 
         await updateOldDoc(tranx, id, docGenData);
-        await updateSpecDoc(tranx, docSpecData);
+        if (existingDoctor) {
+          await updateSpecDoc(tranx, id, docSpecData);
+        } else {
+          await regSpecDoc(tranx, docSpecData);
+        }
         tranx.commit();
-        return res.status(200).json({ ...docGenData, ...docSpecData });
+        return res.status(200).json({ message: "updated doctor data is :", ...docGenData, ...docSpecData });
       } catch (error) {
         tranx.rollback();
         return res.status(400).json(error);
@@ -117,8 +123,8 @@ const showUsers = async (req, res) => {
 };
 
 
-const showDoctors = async (req, res)=>{
-   try {
+const showDoctors = async (req, res) => {
+  try {
     const allDoctors = await fetchDoctors();
 
 

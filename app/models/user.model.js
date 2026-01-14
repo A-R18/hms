@@ -58,8 +58,14 @@ const updateOldDoc = (db, userID, existingData) => {
   return db("users").where({ id: userID }).update(existingData);
 
 }
-const updateSpecDoc = (db, specData) => {
+
+const regSpecDoc = (db, specData) => {
   return db("doctors").insert(specData);
+}
+
+
+const updateSpecDoc = (db, userID, specData) => {
+  return db("doctors").where({ user_ID: userID }).update(specData);
 }
 
 const fetchExistingDoctor = (db, userID) => {
@@ -78,5 +84,6 @@ module.exports = {
   updateOldDoc,
   updateSpecDoc,
   fetchExistingDoctor,
-  fetchDoctors
+  fetchDoctors,
+  regSpecDoc
 };

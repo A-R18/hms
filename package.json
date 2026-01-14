@@ -21,6 +21,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
     "dev": "nodemon server.js",
+    "migrate": "npx knex migrate:latest --knexfile=./app/config/dbMod.js",
     "format": "prettier --write ."
   },
   "dependencies": {
