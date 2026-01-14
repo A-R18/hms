@@ -6,22 +6,22 @@ const validatePatientData = [
         .withMessage("Patient name must contain only letters"),
 
     body("p_condition")
-        .notEmpty().withMessage("Condition is required")
+        .notEmpty().withMessage("Patient condition is required")
         .isString()
-        .withMessage("Condition must be a string"),
+        .withMessage("Invalid entry, condition must be a string"),
 
     body("p_contact")
         .notEmpty().withMessage("Contact is required")
         .isNumeric()
-        .withMessage("Contact must be a number")
+        .withMessage("Invalid ph no! Contact must be a number")
         .isLength({ min: 10, max: 10 })
-        .withMessage("Contact must be 10 digits"),
+        .withMessage("Contact must contain 10 digits"),
 
 ];
 const validatePatientUpdateData = [
         param("id")
         .notEmpty()
-        .withMessage("Required, param can't be empty")
+        .withMessage("Required, id param can't be empty")
         .isInt()
         .withMessage("Invalid param type!"),
 
