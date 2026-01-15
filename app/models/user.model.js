@@ -73,6 +73,10 @@ const fetchExistingDoctor = (db, userID) => {
   return db("doctors").where({ user_ID: userID }).first();
 };
 
+const fetchDcotorSpecialities = () =>{
+  return knex("doctor_specialities").select("*");
+}
+
 module.exports = {
   saveUser,
   fetchAllusers,
@@ -86,5 +90,6 @@ module.exports = {
   updateSpecDoc,
   fetchExistingDoctor,
   fetchDoctors,
+  fetchDcotorSpecialities,
   regSpecDoc
 };

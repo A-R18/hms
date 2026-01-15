@@ -43,6 +43,59 @@ VALUES
   (1, 2, 4),
   (1, 3, 4),
   (1, 4, 4);
+  
+  INSERT INTO doctor_specialities (speciality) VALUES
+('Cardiology'),
+('Dermatology'),
+('Pediatrics'),
+('Orthopedic Surgery'),
+('Neurology'),
+('Psychiatry'),
+('Radiology'),
+('Anesthesiology'),
+('Emergency Medicine'),
+('Internal Medicine'),
+('Family Medicine'),
+('General Surgery'),
+('Oncology'),
+('Gastroenterology'),
+('Urology'),
+('Ophthalmology'),
+('Obstetrics and Gynecology'),
+('Endocrinology'),
+('Pulmonology'),
+('Nephrology'),
+('Hematology'),
+('Infectious Disease'),
+('Rheumatology'),
+('Otolaryngology (ENT)'),
+('Pathology'),
+('Neurosurgery'),
+('Plastic Surgery'),
+('Vascular Surgery'),
+('Thoracic Surgery'),
+('Critical Care Medicine'),
+('Allergy and Immunology'),
+('Physical Medicine and Rehabilitation'),
+('Sports Medicine'),
+('Geriatrics'),
+('Preventive Medicine'),
+('Nuclear Medicine'),
+('Radiation Oncology'),
+('Pain Medicine'),
+('Sleep Medicine'),
+('Forensic Pathology'),
+('Cardiothoracic Surgery'),
+('Transplant Surgery'),
+('Pediatric Surgery'),
+('Trauma Surgery'),
+('Colorectal Surgery'),
+('Hepatology'),
+('Neonatology'),
+('Reproductive Endocrinology'),
+('Gynecologic Oncology'),
+('Interventional Radiology'),
+('Child and Adolescent Psychiatry');
 
 INSERT INTO
   users (
@@ -59,7 +112,3 @@ values
   ("Saleem", 2, "saleem@user.com", "$2a$10$Tcc3/dED25I7aMlU8Z0nlOA4YbJH6l/fKYkkgE5mcViY8L4DZDerK"),
 
   ("Dr. Azeem", 1, "azeem@doc.com", "$2a$10$Tcc3/dED25I7aMlU8Z0nlOA4YbJH6l/fKYkkgE5mcViY8L4DZDerK");
-
-
-
-        -- npx knex migrate:latest --knexfile="./app/config/dbMod.js"

@@ -6,9 +6,10 @@ exports.up = function (knex) {
     return knex.schema.createTable("doctors", function (table) {
         table.increments("id");
         table.integer("user_ID").unsigned().notNullable();
-        table.string("specialization", 50).notNullable();
+        table.integer("spec_ID").unsigned().notNullable();
         table.integer("contact").notNullable();
         table.foreign("user_ID").references("id").inTable("users").onDelete("CASCADE");
+        table.foreign("spec_ID").references("id").inTable("doctor_specialities");
     });
 };
 

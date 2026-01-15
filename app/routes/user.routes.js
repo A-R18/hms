@@ -6,7 +6,8 @@ const {
   updateUser,
   deleteUser,
   showSpecificUser,
-  showDoctors
+  showDoctors,
+  showDoctorSpecialities
 } = require("../controllers/user.controller.js");
 const { logUserIn } = require("../controllers/login.controller.js");
 const authorize = require("../middleware/authorizeUser.mid.js");
@@ -23,6 +24,9 @@ router.get("/show-all", authorize, routeAction("READ", "users"), showUsers);
 
 //Route written for showing doctors:
 router.get("/show-all-doctors", authorize, routeAction("READ", "doctors"), showDoctors);
+
+//Route written for showing doctors:
+router.get("/get-doctor-specialities", authorize, routeAction("READ", "doctors"), showDoctorSpecialities);
 
 //Route written for updating a user:
 router.post("/update-user/:id", authorize, routeAction("UPDATE", "users"), validateUpdatedUser, updateUser);

@@ -11,6 +11,7 @@ const {
   regSpecDoc,
   updateSpecDoc,
   fetchExistingDoctor,
+  fetchDcotorSpecialities,
   fetchDoctors,
 } = require("../models/user.model.js");
 const { validationResult } = require("express-validator");
@@ -137,6 +138,20 @@ const showDoctors = async (req, res) => {
   }
 }
 
+const showDoctorSpecialities = async (req, res) => {
+ try {
+   const specialitiesFetched = await fetchDcotorSpecialities();
+  if (specialitiesFetched) {
+    return res.status(200).json(specialitiesFetched);
+  }
+  else{
+     return res.status(400).json({ message: "unable to fetch specialities"});
+  }
+ } catch (error) {
+  return res.status(400).json({ error: error});
+ }
+}
+
 const deleteUser = async (req, res) => {
   try {
     const id = req.params.id;
@@ -162,4 +177,4 @@ const showSpecificUser = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, showUsers, updateUser, deleteUser, showSpecificUser, showDoctors };
+module.exports = { registerUser, showUsers, updateUser, deleteUser, showSpecificUser, showDoctors, showDoctorSpecialities };
