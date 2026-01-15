@@ -6,7 +6,7 @@ const addPatient = (patientData) => {
 }
 
 const showSinglePatient = (patientID) => {
-    return knex("patients").where({ id: patientID }).select("patients.patient_name", "patients.condition", "patients.contact").first();
+    return knex("patients").where({ id: patientID }).select("patients.id","patients.patient_name", "patients.condition", "patients.contact").first();
 
 }
 
@@ -28,4 +28,3 @@ const deletePt = (patientID) => {
 }
 
 module.exports = { addPatient, showSinglePatient, showPatients, fetchExistingPatient, updatePt, deletePt };
-
