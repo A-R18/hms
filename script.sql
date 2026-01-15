@@ -112,3 +112,10 @@ values
   ("Saleem", 2, "saleem@user.com", "$2a$10$Tcc3/dED25I7aMlU8Z0nlOA4YbJH6l/fKYkkgE5mcViY8L4DZDerK"),
 
   ("Dr. Azeem", 1, "azeem@doc.com", "$2a$10$Tcc3/dED25I7aMlU8Z0nlOA4YbJH6l/fKYkkgE5mcViY8L4DZDerK");
+
+INSERT INTO `doctors` (`user_ID`, `spec_ID`, `contact`) VALUES
+(1, 4, 1234567890);
+
+INSERT INTO `doctors` (`user_ID`, `spec_ID`, `contact`) VALUES
+(4, 22, 0987654321);
+  
