@@ -78,18 +78,20 @@ const updateUser = async (req, res) => {
 
       try {
         const existingDoctor = await fetchExistingDoctor(tranx, id);
-        console.log("existing doctor is :", existingDoctor);
-        console.log("existing doctor is: ", existingDoctor, "req.body is", req.body);
+        // console.log("existing doctor is :", existingDoctor);
+        // console.log("existing doctor is: ", existingDoctor, "req.body is", req.body);
         const docGenData = {
           user_name: req?.body?.name ? incomingData.name : oldUserData.user_name,
           user_email: req?.body?.email ? incomingData.email : oldUserData.user_email,
           user_password: req?.body?.password ? hashedPass : oldUserData.password,
         }
+
         const docSpecData = {
           user_ID: oldUserData.id,
-          specialization: req?.body?.specialization ? incomingData.specialization : "not specified",
+          spec_ID: req?.body?.spz_ID ? incomingData.spz_ID : null,
           contact: req?.body?.contact ? incomingData.contact : "not specified",
         }
+        console.log("doctor complete data is :",{...docGenData, ...docSpecData});
 
         await updateOldDoc(tranx, id, docGenData);
         if (existingDoctor) {
@@ -139,17 +141,17 @@ const showDoctors = async (req, res) => {
 }
 
 const showDoctorSpecialities = async (req, res) => {
- try {
-   const specialitiesFetched = await fetchDcotorSpecialities();
-  if (specialitiesFetched) {
-    return res.status(200).json(specialitiesFetched);
+  try {
+    const specialitiesFetched = await fetchDcotorSpecialities();
+    if (specialitiesFetched) {
+      return res.status(200).json(specialitiesFetched);
+    }
+    else {
+      return res.status(400).json({ message: "unable to fetch specialities" });
+    }
+  } catch (error) {
+    return res.status(400).json({ error: error });
   }
-  else{
-     return res.status(400).json({ message: "unable to fetch specialities"});
-  }
- } catch (error) {
-  return res.status(400).json({ error: error});
- }
 }
 
 const deleteUser = async (req, res) => {
