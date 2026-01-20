@@ -27,8 +27,8 @@ const fetchExistingUser = (userID) => {
   return knex("users").select("*").where({ id: userID }).first();
 };
 
-const updateOldUser = (userID, updatedData) => {
-  return knex("users").where({ id: userID }).update(updatedData);
+const updateOldUser = (db, userID, updatedData) => {
+  return db("users").where({ id: userID }).update(updatedData);
 };
 
 const deleteCurrentUser = (userID) => {
