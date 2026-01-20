@@ -17,9 +17,9 @@ const fetchAllusers = () => {
 
 const fetchDoctors = () => {
   return knex("users")
-    .join("roles", "users.role_ID", "roles.id")
-    .join("doctors", "users.id", "doctors.user_ID")
-    .join("doctor_specialities", "doctors.spec_ID", "doctor_specialities.id")
+    .leftJoin("roles", "users.role_ID", "roles.id")
+    .leftJoin("doctors", "users.id", "doctors.user_ID")
+    .leftJoin("doctor_specialities", "doctors.spec_ID", "doctor_specialities.id")
     .select("users.id as user_Id", "users.user_name", "users.user_email", "users.user_password", "roles.role", "doctors.contact", "doctors.spec_ID");
 };
 
@@ -76,7 +76,7 @@ const fetchExistingDoctor = (db, userID) => {
 
 const fetchDcotorSpecialities = () => {
   return knex("doctor_specialities").select("*");
-}
+};
 
 module.exports = {
   saveUser,

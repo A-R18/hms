@@ -91,7 +91,7 @@ const updateUser = async (req, res) => {
           spec_ID: req?.body?.spz_ID ? incomingData.spz_ID : null,
           contact: req?.body?.contact ? incomingData.contact : "not specified",
         }
-        console.log("doctor complete data is :",{...docGenData, ...docSpecData});
+        console.log("doctor complete data is :", { ...docGenData, ...docSpecData });
 
         await updateOldDoc(tranx, id, docGenData);
         if (existingDoctor) {
@@ -129,12 +129,12 @@ const showUsers = async (req, res) => {
 const showDoctors = async (req, res) => {
   try {
     const allDoctors = await fetchDoctors();
-    if (allDoctors.length !== 0) {
-      return res.status(200).json(allDoctors);
-    } else {
-      const allUsers = await fetchAllusers();
-      return res.status(200).json(allUsers);
+    if(allDoctors.length===0){
+    return res.status(400).json({alert: "No doctors registered yet!"});
+
     }
+    return res.status(200).json(allDoctors);
+
   } catch (error) {
     return res.status(400).json({ error });
   }
