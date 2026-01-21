@@ -21,7 +21,7 @@ const fetchUserPermissions = (userRoleID) => {
 }
 
 const FetchDocEssentials = (docUID) => {
-  return knex("doctors").join("doctor_specialities", "doctors.spec_ID", "doctor_specialities.id").select("doctor_specialities.speciality").first();
+  return knex("doctors").join("doctor_specialities", "doctors.spec_ID", "doctor_specialities.id").where({ "doctors.id": docUID }).select("doctor_specialities.speciality").first();
 }
 
 

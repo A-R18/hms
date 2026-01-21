@@ -13,7 +13,7 @@ const logUserIn = async (req, res) => {
     const userRole = await fetchUserRole(authResponse.role_ID);
     if (userRole.role === "doctor") {
        doctorParticulars = await FetchDocEssentials(authResponse.id);
-      //  console.log(doctorParticulars);
+       console.log("particulars fetched are: ",doctorParticulars);
     }
     const permissions = await fetchUserPermissions(authResponse.role_ID);
     const formattedPermz = [];
