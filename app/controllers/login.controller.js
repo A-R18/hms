@@ -1,17 +1,20 @@
-const { authenticateUser, fetchUserRole, fetchUserPermissions } = require("../models/login.model.js");
+const { authenticateUser, fetchUserRole, fetchUserPermissions, FetchDocEssentials } = require("../models/login.model.js");
 const { generateToken } = require("../controllers/tokenGenerator.js");
 const bcrypt = require("bcrypt");
 const logUserIn = async (req, res) => {
   const mail = req.body.email;
   const pass = req.body.password;
   const authResponse = await authenticateUser(mail);
-
+  let doctorParticulars;
   // console.log("authenticated data is: ",authData);
   if (!authResponse) {
     return res.status(404).json({ message: "User doesn't exist!" });
   } else {
     const userRole = await fetchUserRole(authResponse.role_ID);
-    
+    if (userRole.role === "doctor") {
+       doctorParticulars = await FetchDocEssentials(authResponse.id);
+      //  console.log(doctorParticulars);
+    }
     const permissions = await fetchUserPermissions(authResponse.role_ID);
     const formattedPermz = [];
     permissions.map((p) => {
@@ -19,6 +22,7 @@ const logUserIn = async (req, res) => {
     });
     const authData = {
       id: authResponse.id,
+      name: authResponse.user_name,
       role_id: authResponse.role_ID,
       role: userRole.role,
       email: authResponse.user_email,
@@ -29,10 +33,17 @@ const logUserIn = async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     } else {
       const token = generateToken(authData);
-      return res.status(202).json({
-        message: "Logged in successfully!",
-        ...authData, token: token, permissions: formattedPermz
-      });
+      if (userRole.role === "doctor") {
+        return res.status(202).json({
+          message: "Logged in successfully!",
+          ...authData, ...doctorParticulars, token: token, permissions: formattedPermz
+        });
+      } else {
+        return res.status(202).json({
+          message: "Logged in successfully!",
+          ...authData, token: token, permissions: formattedPermz
+        });
+      }
     }
   }
 };
