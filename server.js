@@ -5,9 +5,8 @@ const patientRoutes = require("./app/routes/patient.routes.js");
 const scheduleDoctors = require("./app/routes/doctor.scheduling.routes.js");
 const cors = require("cors");
 require("dotenv").config();
-app.use(express.json());
 app.use(cors());
-
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/hospital/users", userRoutes);
 app.use("/hospital/patients", patientRoutes);

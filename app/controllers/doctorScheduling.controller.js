@@ -22,7 +22,7 @@ const showDays = async (req, res) => {
 
 const saveDoctorSchedule = async (req, res) => {
     try {
-        console.log("hit!");
+
         const shcheduleData = req.body;
         console.log(shcheduleData);
         const schDataMatch = {
@@ -34,31 +34,9 @@ const saveDoctorSchedule = async (req, res) => {
         };
         const scheduleSaved = await insertDoctorSchedule(schDataMatch);
         if (scheduleSaved) {
-            res.status(200).json({ message: "schedule saved successfully!", scheduleSaved });
+            return res.status(200).json({ message: "schedule saved successfully!" });
         } else {
-            res.status(400).json({ message: "DB error! didn't save" });
-        }
-    } catch (error) {
-        console.log(error.code);
-        if (error.code === "ER_DUP_ENTRY") {
-            return res.status(400).json({ error: "can't add a day schedule twice" });
-        } else
-            return res.status(400).json({ error: error });
-
-    }
-
-
-};
-
-const showDoctorSchedule = async (req, res) => {
-    try {
-        const doctorId = req.params.id;
-        console.log("doctorID is ", doctorId);
-        const docSchedule = await fetchDoctorSchedule(doctorId);
-        if (docSchedule) {
-            res.status(200).json(docSchedule);
-        } else {
-            res.status(400).json({ message: "DB error! nothing found" });
+            return res.status(400).json({ message: "DB error! didn't save" });
         }
     } catch (error) {
         // console.log(error.code);
@@ -66,6 +44,22 @@ const showDoctorSchedule = async (req, res) => {
             return res.status(400).json({ error: "can't add a day schedule twice" });
         } else
             return res.status(400).json({ error: error });
+
+    }
+};
+
+const showDoctorSchedule = async (req, res) => {
+    try {
+        const doctorId = req.params.id;
+        // console.log("doctorID is ", doctorId);
+        const docSchedule = await fetchDoctorSchedule(doctorId);
+        if (docSchedule) {
+            res.status(200).json(docSchedule);
+        } else {
+            res.status(400).json({ message: "DB error! nothing found" });
+        }
+    } catch (error) {
+        return res.status(400).json({ error: error });
     }
 
 };
