@@ -1,7 +1,9 @@
 # Backend for HMS so far:
 
 ## Impmentations:
-#### ROUTES 
+
+#### ROUTES
+
 - Made insert user (POST)
 - Made insert doctor (POST)
 - Made insert patient (POST)
@@ -15,8 +17,11 @@
 - Made show all doctors (GET)
 - Made show all patient (GET)
 - Made login user (POST)
+
 ##
-#### FUNCTIONALITIES 
+
+#### FUNCTIONALITIES
+
 - Made Authorization with JWT token
 - Current user access feature has be added
 - Added role based access control (RBAC)

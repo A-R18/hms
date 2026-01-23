@@ -1,4 +1,9 @@
-const { authenticateUser, fetchUserRole, fetchUserPermissions, FetchDocEssentials } = require("../models/login.model.js");
+const {
+  authenticateUser,
+  fetchUserRole,
+  fetchUserPermissions,
+  FetchDocEssentials,
+} = require("../models/login.model.js");
 const { generateToken } = require("../controllers/tokenGenerator.js");
 const bcrypt = require("bcrypt");
 const logUserIn = async (req, res) => {
@@ -12,8 +17,8 @@ const logUserIn = async (req, res) => {
   } else {
     const userRole = await fetchUserRole(authResponse.role_ID);
     if (userRole.role === "doctor") {
-       doctorParticulars = await FetchDocEssentials(authResponse.id);
-       console.log("particulars fetched are: ",doctorParticulars);
+      doctorParticulars = await FetchDocEssentials(authResponse.id);
+      console.log("particulars fetched are: ", doctorParticulars);
     }
     const permissions = await fetchUserPermissions(authResponse.role_ID);
     const formattedPermz = [];
@@ -36,12 +41,17 @@ const logUserIn = async (req, res) => {
       if (userRole.role === "doctor") {
         return res.status(202).json({
           message: "Logged in successfully!",
-          ...authData, ...doctorParticulars, token: token, permissions: formattedPermz
+          ...authData,
+          ...doctorParticulars,
+          token: token,
+          permissions: formattedPermz,
         });
       } else {
         return res.status(202).json({
           message: "Logged in successfully!",
-          ...authData, token: token, permissions: formattedPermz
+          ...authData,
+          token: token,
+          permissions: formattedPermz,
         });
       }
     }

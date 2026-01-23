@@ -7,14 +7,12 @@ const {
   deleteUser,
   showSpecificUser,
   showDoctors,
-  showDoctorSpecialities
+  showDoctorSpecialities,
 } = require("../controllers/user.controller.js");
 const { logUserIn } = require("../controllers/login.controller.js");
 const authorize = require("../middleware/authorizeUser.mid.js");
-const { validateUserData,
-  validateUpdatedUser } = require("../validations/users.validations.js");
+const { validateUserData, validateUpdatedUser } = require("../validations/users.validations.js");
 const { routeAction } = require("../middleware/accessChecker.js");
-
 
 //Route written for registering a user:
 router.post("/register", authorize, routeAction("CREATE", "users"), validateUserData, registerUser);
@@ -26,10 +24,21 @@ router.get("/show-all", authorize, routeAction("READ", "users"), showUsers);
 router.get("/show-all-doctors", authorize, routeAction("READ", "doctors"), showDoctors);
 
 //Route written for showing doctors:
-router.get("/get-doctor-specialities", authorize, routeAction("READ", "doctors"), showDoctorSpecialities);
+router.get(
+  "/get-doctor-specialities",
+  authorize,
+  routeAction("READ", "doctors"),
+  showDoctorSpecialities
+);
 
 //Route written for updating a user:
-router.post("/update-user/:id", authorize, routeAction("UPDATE", "users"), validateUpdatedUser, updateUser);
+router.post(
+  "/update-user/:id",
+  authorize,
+  routeAction("UPDATE", "users"),
+  validateUpdatedUser,
+  updateUser
+);
 
 //Route written for deleting a user:
 router.post("/delete-user/:id", authorize, routeAction("DELETE", "users"), deleteUser);

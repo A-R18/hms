@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const userRoutes = require("./app/routes/user.routes.js");
 const patientRoutes = require("./app/routes/patient.routes.js");
-const scheduleDoctors = require("./app/routes/doctor.scheduling.routes.js")
+const scheduleDoctors = require("./app/routes/doctor.scheduling.routes.js");
 const cors = require("cors");
 require("dotenv").config();
 app.use(express.json());

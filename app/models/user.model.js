@@ -5,14 +5,19 @@ const saveUser = (userData) => {
 };
 
 const fetchUserRole = (userRoleID) => {
-  return knex("roles")
-    .where({ id: userRoleID })
-    .select("roles.role")
-    .first();
-}
+  return knex("roles").where({ id: userRoleID }).select("roles.role").first();
+};
 
 const fetchAllusers = () => {
-  return knex("users").join("roles", "users.role_ID", "roles.id").select("users.id as user_Id", "roles.role", "users.user_name", "users.user_email", "users.user_password");
+  return knex("users")
+    .join("roles", "users.role_ID", "roles.id")
+    .select(
+      "users.id as user_Id",
+      "roles.role",
+      "users.user_name",
+      "users.user_email",
+      "users.user_password"
+    );
 };
 
 const fetchDoctors = () => {
@@ -20,7 +25,15 @@ const fetchDoctors = () => {
     .leftJoin("roles", "users.role_ID", "roles.id")
     .leftJoin("doctors", "users.id", "doctors.user_ID")
     .leftJoin("doctor_specialities", "doctors.spec_ID", "doctor_specialities.id")
-    .select("users.id as user_Id", "users.user_name", "users.user_email", "users.user_password", "roles.role", "doctors.contact", "doctors.spec_ID");
+    .select(
+      "users.id as user_Id",
+      "users.user_name",
+      "users.user_email",
+      "users.user_password",
+      "roles.role",
+      "doctors.contact",
+      "doctors.spec_ID"
+    );
 };
 
 const fetchExistingUser = (userID) => {
@@ -55,16 +68,13 @@ const checkAccess = async (privilege, allowedModule, userRoleID) => {
   return false;
 };
 
-
 const updateOldDoc = (db, userID, existingData) => {
   return db("users").where({ id: userID }).update(existingData);
-
 };
 
 const regSpecDoc = (db, specData) => {
   return db("doctors").insert(specData);
 };
-
 
 const updateSpecDoc = (db, userID, specData) => {
   return db("doctors").where({ user_ID: userID }).update(specData);
@@ -92,5 +102,5 @@ module.exports = {
   fetchExistingDoctor,
   fetchDoctors,
   fetchDcotorSpecialities,
-  regSpecDoc
+  regSpecDoc,
 };

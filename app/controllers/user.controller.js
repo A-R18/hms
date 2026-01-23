@@ -29,7 +29,7 @@ const registerUser = async (req, res) => {
       user_name: incomingData.name,
       user_email: incomingData.email.trim(),
       user_password: hashedPass,
-      role_ID: incomingData.rid
+      role_ID: incomingData.rid,
     };
 
     const userSubmitted = await saveUser(dataMatch);
@@ -75,7 +75,6 @@ const updateUser = async (req, res) => {
         return res.status(200).json({ message: "Updated successfully!", data: dataMatch });
       }
     } else {
-
       try {
         const existingDoctor = await fetchExistingDoctor(tranx, id);
         // console.log("existing doctor is :", existingDoctor);
@@ -84,13 +83,13 @@ const updateUser = async (req, res) => {
           user_name: req?.body?.name ? incomingData.name : oldUserData.user_name,
           user_email: req?.body?.email ? incomingData.email : oldUserData.user_email,
           user_password: req?.body?.password ? hashedPass : oldUserData.password,
-        }
+        };
 
         const docSpecData = {
           user_ID: oldUserData.id,
           spec_ID: req?.body?.spz_ID ? incomingData.spz_ID : null,
           contact: req?.body?.contact ? incomingData.contact : "not specified",
-        }
+        };
         console.log("doctor complete data is :", { ...docGenData, ...docSpecData });
 
         await updateOldDoc(tranx, id, docGenData);
@@ -100,12 +99,13 @@ const updateUser = async (req, res) => {
           await regSpecDoc(tranx, docSpecData);
         }
         tranx.commit();
-        return res.status(200).json({ message: "updated doctor data is :", ...docGenData, ...docSpecData });
+        return res
+          .status(200)
+          .json({ message: "updated doctor data is :", ...docGenData, ...docSpecData });
       } catch (error) {
         tranx.rollback();
         return res.status(400).json(error);
       }
-
     }
   } catch (error) {
     return res.status(400).json({ alert: "Didn't update!", error: error });
@@ -116,7 +116,6 @@ const showUsers = async (req, res) => {
   try {
     const allUsers = await fetchAllusers();
 
-
     if (allUsers) {
       return res.status(200).json(allUsers);
     }
@@ -125,34 +124,30 @@ const showUsers = async (req, res) => {
   }
 };
 
-
 const showDoctors = async (req, res) => {
   try {
     const allDoctors = await fetchDoctors();
-    if(allDoctors.length===0){
-    return res.status(400).json({alert: "No doctors registered yet!"});
-
+    if (allDoctors.length === 0) {
+      return res.status(400).json({ alert: "No doctors registered yet!" });
     }
     return res.status(200).json(allDoctors);
-
   } catch (error) {
     return res.status(400).json({ error });
   }
-}
+};
 
 const showDoctorSpecialities = async (req, res) => {
   try {
     const specialitiesFetched = await fetchDcotorSpecialities();
     if (specialitiesFetched) {
       return res.status(200).json(specialitiesFetched);
-    }
-    else {
+    } else {
       return res.status(400).json({ message: "unable to fetch specialities" });
     }
   } catch (error) {
     return res.status(400).json({ error: error });
   }
-}
+};
 
 const deleteUser = async (req, res) => {
   try {
@@ -179,4 +174,12 @@ const showSpecificUser = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, showUsers, updateUser, deleteUser, showSpecificUser, showDoctors, showDoctorSpecialities };
+module.exports = {
+  registerUser,
+  showUsers,
+  updateUser,
+  deleteUser,
+  showSpecificUser,
+  showDoctors,
+  showDoctorSpecialities,
+};

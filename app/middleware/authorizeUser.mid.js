@@ -6,7 +6,6 @@ const authorize = (req, res, next) => {
     return res.status(401).json({ message: "NTP, not authorized!" });
   } else {
     try {
-      
       const secret = process.env.SECRET_KEY_JWT;
       const decodedData = jwt.verify(token, secret);
       req.user = decodedData;
@@ -16,7 +15,6 @@ const authorize = (req, res, next) => {
         return res.status(401).json({ error: "Token expired, please login again!" });
       }
     }
-
   }
 };
 

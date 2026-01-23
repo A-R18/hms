@@ -9,7 +9,10 @@ exports.up = function (knex) {
     table.integer("doctor_ID").unsigned();
     table.date("appointment_date").notNullable();
     table.time("appointment_time").notNullable();
-    table.enum("appointment_status", ["pending", "confirmed", "attended"]).defaultTo("pending").notNullable();
+    table
+      .enum("appointment_status", ["pending", "confirmed", "attended"])
+      .defaultTo("pending")
+      .notNullable();
     table.timestamp("created_at").defaultTo(knex.fn.now());
   });
 };
@@ -18,6 +21,4 @@ exports.up = function (knex) {
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
-exports.down = function (knex) {
-
-};
+exports.down = function (knex) {};
