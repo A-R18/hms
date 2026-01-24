@@ -48,16 +48,11 @@ const updateUser = async (req, res) => {
     const id = req.params.id;
     const oldUserData = await fetchExistingUser(id);
     const { role } = await fetchUserRole(oldUserData.role_ID);
-    console.log(role);
     const result = validationResult(req);
     if (!result.isEmpty()) {
       return res.status(422).json({ errors: result.array() });
     }
-    console.log("old user is :", oldUserData);
     const incomingData = req.body;
-    console.log(incomingData);
-    // console.log(incomingData);
-    // console.log(oldUserData);
     let hashedPass;
     if (req?.body?.password) {
       hashedPass = await bcrypt.hash(incomingData.password, 10);
@@ -77,9 +72,7 @@ const updateUser = async (req, res) => {
     } else {
       try {
         const existingDoctor = await fetchExistingDoctor(tranx, id);
-        console.log("existing doctor is :", existingDoctor);
-        // return res.json(existingDoctor);
-        // console.log("existing doctor is: ", existingDoctor, "req.body is", req.body);
+        
         const docData = {
           user_name: req?.body?.name ? incomingData.name : oldUserData.user_name,
           user_email: req?.body?.email ? incomingData.email : oldUserData.user_email,
@@ -95,7 +88,7 @@ const updateUser = async (req, res) => {
         //transaction is saving users gen data first then doc data
 
         if (existingDoctor) {
-          console.log("already data case hit");
+          
           await updateOldDoc(tranx, id, docData);
           await updateSpecDoc(tranx, id, docSpecData);
           tranx.commit();
@@ -104,7 +97,7 @@ const updateUser = async (req, res) => {
             .json({ message: "updated doctor data is :" });
 
         } else {
-          console.log("new data case hit");
+         //if doctor particulars are entered for first time:
           await updateOldDoc(tranx, id, docData);
           await regSpecDoc(tranx, docSpecData);
           tranx.commit();

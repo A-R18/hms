@@ -4,38 +4,59 @@ const duration = require("../../node_modules/dayjs/plugin/duration.js");
 dayjs.extend(customParseFormat);
 dayjs.extend(duration);
 const { fetchDoctorSchedule } = require("../models/doc.scheduling.model");
-const { generateAppointments } = require("../services/appointment.services");
+const { generateFirstAppointment } = require("../services/appointment.services");
 
 
-const showAppointments = async (req, res) => {
+const createAppointment = async (req, res) => {
     try {
-        const docID = req.params.id;
+        const docID = req.params.doc_id;
         const appointmentDate = req.body.doc_apt_date;
-        const dayID = dayjs().day(appointmentDate).format("dddd");
+        const dayID = dayjs(appointmentDate).day();
         const docScheduleFetched = await fetchDoctorSchedule(docID, dayID);
 
-        // console.log(docScheduleFetched);
 
         if (docScheduleFetched) {
-            const slotsArray = []
-            const docFromTime = dayjs().format(schedule.doctor_from_time);
-            const docToTime = dayjs().format(schedule.doctor_to_time);
-            const docSlotDuration = dayjs().format(schedule.doc_slot_dur);
-            
+           
+            const startTime = dayjs(docScheduleFetched.doctor_from_time, "HH:mm");
+            const endTime = dayjs(docScheduleFetched.doctor_to_time, "HH:mm");
+            const docSlotDuration = dayjs.duration(docScheduleFetched.doc_slot_dur, "minutes");
+            let generatedSlots = []
+            let i = startTime;
+            while (i.isBefore(endTime)) {
+                generatedSlots.push(i.format("HH:mm"));
+                i = i.add(docSlotDuration);
+            }
+            return res.status(200).json(generatedSlots);
 
-            slotsArray.push(docFromTime + " " + docToTime);
-            // generateAppointments(docID, docFromTime, docToTime);
-
-            console.log(slotsArray);
 
         } else {
             return res.status(400).json({ alert: "DB error!, didn't fetch!" });
         }
     } catch (error) {
-        
+
         return res.status(200).json({ error: error });
 
     }
 
 }
-module.exports = { showAppointments }
+
+const deleteAppointment = () => {
+
+}
+
+
+
+const changeAppointment = () => {
+
+}
+
+
+
+const showAppointment = () => {
+
+}
+
+
+
+
+module.exports = { createAppointment, deleteAppointment, showAppointment, changeAppointment }
