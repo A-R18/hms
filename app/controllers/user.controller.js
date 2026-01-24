@@ -77,38 +77,49 @@ const updateUser = async (req, res) => {
     } else {
       try {
         const existingDoctor = await fetchExistingDoctor(tranx, id);
-        // console.log("existing doctor is :", existingDoctor);
+        console.log("existing doctor is :", existingDoctor);
+        // return res.json(existingDoctor);
         // console.log("existing doctor is: ", existingDoctor, "req.body is", req.body);
-        const docGenData = {
+        const docData = {
           user_name: req?.body?.name ? incomingData.name : oldUserData.user_name,
           user_email: req?.body?.email ? incomingData.email : oldUserData.user_email,
-          user_password: req?.body?.password ? hashedPass : oldUserData.password,
+          user_password: req?.body?.password ? hashedPass : oldUserData.password
         };
 
         const docSpecData = {
           user_ID: oldUserData.id,
           spec_ID: req?.body?.spz_ID ? incomingData.spz_ID : null,
-          contact: req?.body?.contact ? incomingData.contact : "not specified",
+          contact: req?.body?.contact ? incomingData.contact : "not specified"
         };
-        console.log("doctor complete data is :", { ...docGenData, ...docSpecData });
 
-        await updateOldDoc(tranx, id, docGenData);
+        //transaction is saving users gen data first then doc data
+
         if (existingDoctor) {
+          console.log("already data case hit");
+          await updateOldDoc(tranx, id, docData);
           await updateSpecDoc(tranx, id, docSpecData);
+          tranx.commit();
+          return res
+            .status(200)
+            .json({ message: "updated doctor data is :" });
+
         } else {
+          console.log("new data case hit");
+          await updateOldDoc(tranx, id, docData);
           await regSpecDoc(tranx, docSpecData);
+          tranx.commit();
+          return res
+            .status(200)
+            .json({ message: "updated doctor data is :"});
         }
-        tranx.commit();
-        return res
-          .status(200)
-          .json({ message: "updated doctor data is :", ...docGenData, ...docSpecData });
+
       } catch (error) {
         tranx.rollback();
         return res.status(400).json(error);
       }
     }
   } catch (error) {
-    return res.status(400).json({ alert: "Didn't update!", error: error });
+    return res.status(501).json({ alert: "Didn't update!", error: error });
   }
 };
 
@@ -126,13 +137,14 @@ const showUsers = async (req, res) => {
 
 const showDoctors = async (req, res) => {
   try {
-    const allDoctors = await fetchDoctors();
+    const allDoctors = await fetchDoctors("doctor");
+    console.log(allDoctors);
     if (allDoctors.length === 0) {
       return res.status(400).json({ alert: "No doctors particulars registered yet!" });
     }
     return res.status(200).json(allDoctors);
   } catch (error) {
-    return res.status(400).json({error:error});
+    return res.status(400).json({ error: error });
   }
 };
 

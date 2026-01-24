@@ -10,8 +10,8 @@ const insertDoctorSchedule = (scheduleRow) => {
 };
 
 
-const fetchDoctorSchedule = (doctorID) => {
-    return knex("doctors_scheduling").where({ doctor_ID: doctorID }).select("*");
+const fetchDoctorSchedule = (doctorID, dayID) => {
+    return knex("doctors_scheduling").where({ doctor_ID: doctorID }).andWhere({ doctor_day_ID: dayID }).first();
 };
 
 

@@ -9,6 +9,7 @@ const {
   changeDoctorSchedule,
 } = require("../controllers/doctorScheduling.controller.js");
 const { routeAction } = require("../middleware/accessChecker.js");
+const { showAppointments } = require("../controllers/appointment.controller.js");
 
 router.get("/show-days", authorize, routeAction("READ", "doctors"), showDays);
 router.post(
@@ -21,7 +22,7 @@ router.get(
   "/show-doctor-timetable/:id",
   authorize,
   routeAction("READ", "doctors"),
-  showDoctorSchedule
+  showAppointments
 );
 router.post(
   "/delete-doctor-timetable/:id",

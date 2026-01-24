@@ -20,11 +20,12 @@ const fetchAllusers = () => {
     );
 };
 
-const fetchDoctors = () => {
-  return knex("doctors")
-    .join("users", "doctors.user_ID", "users.id")
-    .join("roles", "users.role_ID", "roles.id")
-    .join("doctor_specialities", "doctors.spec_ID", "doctor_specialities.id")
+const fetchDoctors = (role) => {
+  return knex("users")
+    .leftJoin("doctors", "users.id", "doctors.user_ID")
+    .leftJoin("roles", "users.role_ID", "roles.id")
+    .leftJoin("doctor_specialities", "doctors.spec_ID", "doctor_specialities.id")
+    .where("roles.role", role)
     .select(
       "users.id as user_Id",
       "users.user_name",
@@ -83,7 +84,11 @@ const updateSpecDoc = (db, userID, specData) => {
 };
 
 const fetchExistingDoctor = (db, userID) => {
-  return db("doctors").where({ user_ID: userID }).first();
+  return db("doctors")
+    .join("users", "doctors.user_ID", "users.id")
+    .where("doctors.user_ID", userID)
+    .select("users.id", "users.user_name", "users.user_email", "doctors.*")
+    .first();
 };
 
 const fetchDcotorSpecialities = () => {
