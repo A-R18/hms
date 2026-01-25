@@ -14,6 +14,9 @@ exports.up = function (knex) {
       .defaultTo("pending")
       .notNullable();
     table.timestamp("created_at").defaultTo(knex.fn.now());
+
+    table.foreign("patient_ID").references("id").inTable("patients");
+    table.foreign("doctor_ID").references("id").inTable("doctors");
   });
 };
 

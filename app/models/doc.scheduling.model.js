@@ -11,8 +11,23 @@ const insertDoctorSchedule = (scheduleRow) => {
 
 
 const fetchDoctorSchedule = (doctorID, dayID) => {
-    return knex("doctors_scheduling").where({ doctor_ID: doctorID }).andWhere({ doctor_day_ID: dayID }).first();
+    return knex("doctors_scheduling")
+        .where({ doctor_ID: doctorID })
+        .andWhere({ doctor_day_ID: dayID }).first();
 };
+
+
+
+
+const fetchDoctorAllSchedules = (doctorID) => {
+    return knex("doctors_scheduling")
+        .where({ doctor_ID: doctorID });
+};
+
+
+
+
+
 
 
 const fetchExistingDocSchedule = (schID) => {
@@ -35,5 +50,6 @@ module.exports = {
     fetchDoctorSchedule,
     editDoctorSchedule,
     fetchExistingDocSchedule,
-    removeDoctorSchedule
+    removeDoctorSchedule,
+    fetchDoctorAllSchedules
 };

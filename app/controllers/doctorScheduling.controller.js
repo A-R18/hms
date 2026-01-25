@@ -5,7 +5,8 @@ const { fetchDays,
     fetchDoctorSchedule,
     editDoctorSchedule,
     removeDoctorSchedule,
-    fetchExistingDocSchedule } = require("../models/doc.scheduling.model.js");
+    fetchExistingDocSchedule, 
+    fetchDoctorAllSchedules} = require("../models/doc.scheduling.model.js");
 
 const showDays = async (req, res) => {
     try {
@@ -52,7 +53,9 @@ const showDoctorSchedule = async (req, res) => {
     try {
         const doctorId = req.params.id;
         // console.log("doctorID is ", doctorId);
-        const docSchedule = await fetchDoctorSchedule(doctorId);
+       
+        const docSchedule = await fetchDoctorAllSchedules(doctorId);
+        console.log(docSchedule);
         if (docSchedule) {
             res.status(200).json(docSchedule);
         } else {
