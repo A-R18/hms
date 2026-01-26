@@ -14,8 +14,9 @@ const createAppointment = async (req, res) => {
         const docID = req.params.doc_id;
         const appointmentDate = req.body.doc_apt_date;
         const currentDate = dayjs().startOf("day");
-        if (dayjs(appointmentDate).isBefore(currentDate)) {
-            return res.status(400).json({ alert: "you can't book for past date!" });
+
+        if (dayjs(appointmentDate).startOf("day").isBefore(currentDate)) {
+            return res.status(403).json({ alert: "you can't book for past date!" });
         }
         const dayID = dayjs(appointmentDate).day();
         if (dayID === 0) res.status(401).json({ constraint: "you can't set appointment for sunday!" });
@@ -37,7 +38,7 @@ const createAppointment = async (req, res) => {
 
 
         } else {
-            return res.status(400).json({ alert: "DB error!, didn't fetch!" });
+            return res.status(404).json({ alert: "Schedule not available!" });
         }
     } catch (error) {
 
@@ -81,6 +82,8 @@ const changeAppointment = () => {
         return res.status(400).json({ error: error });
     }
 }
+
+
 
 
 const showAppointment = async (req, res) => {
