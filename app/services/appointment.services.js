@@ -5,7 +5,6 @@ dayjs.extend(customParseFormat);
 dayjs.extend(duration);
 
 const generateAllSlots = (start, end, slot_dur) => {
-    console.log(start, end, slot_dur);
     const startTime = dayjs(start, "HH:mm");
     const endTime = dayjs(end, "HH:mm");
     const docSlotDuration = dayjs.duration(slot_dur, "minutes");
@@ -15,7 +14,6 @@ const generateAllSlots = (start, end, slot_dur) => {
         generatedSlots.push(i.format("HH:mm:ss"));
         i = i.add(docSlotDuration);
     }
-    // console.log(generatedSlots);
     return generatedSlots;
 }
 const generateFilteredSlots = (existingSlots, start_T, end_T, slotDur) => {

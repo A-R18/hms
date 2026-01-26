@@ -5,7 +5,7 @@ dayjs.extend(customParseFormat);
 dayjs.extend(duration);
 const { fetchDoctorSchedule } = require("../models/doc.scheduling.model");
 const { generateAllSlots, generateFilteredSlots } = require("../services/appointment.services");
-const { fetchTodaysAppointments, insertAppointment } = require("../models/appointment.model.js");
+const { fetchTodaysAppointments, insertAppointment, fetchAllAppointments } = require("../models/appointment.model.js");
 
 
 
@@ -13,18 +13,18 @@ const createAppointment = async (req, res) => {
     try {
         const docID = req.params.doc_id;
         const appointmentDate = req.body.doc_apt_date;
+        const currentDate = dayjs().startOf("day");
+        if (dayjs(appointmentDate).isBefore(currentDate)) {
+            return res.status(400).json({ alert: "you can't book for past date!" });
+        }
         const dayID = dayjs(appointmentDate).day();
-        console.log("day id is: ", dayID);
         if (dayID === 0) res.status(401).json({ constraint: "you can't set appointment for sunday!" });
         const docScheduleExists = await fetchDoctorSchedule(docID, dayID);
-        console.log(docScheduleExists);
 
         if (docScheduleExists) {
-            console.log("case hit");
             const alreadyBooked = await fetchTodaysAppointments(docID, appointmentDate);
             let alreadyBookedSlots = [];
             alreadyBooked.map((slot) => alreadyBookedSlots.push(slot.appointment_time));
-            console.log("slots become: ", alreadyBookedSlots);
             const start_T = docScheduleExists.doctor_from_time;
             const end_T = docScheduleExists.doctor_to_time;
             const slotDur = docScheduleExists.doc_slot_dur;
@@ -60,7 +60,7 @@ const saveAppointment = async (req, res) => {
 
         const appointmentSaved = await insertAppointment(dataMatch);
         if (appointmentSaved)
-        return res.status(200).json({ success: "slot reserved successfully" });
+            return res.status(200).json({ success: "slot reserved successfully" });
         return res.status(400).json({ alert: "DB error, didn't save appointment" });
     } catch (error) {
         return res.status(400).json({ error: error });
@@ -73,12 +73,27 @@ const deleteAppointment = () => {
 
 
 const changeAppointment = () => {
-
+    try {
+        const incomingAppointmentData = req.body;
+        const docID = req.params.doc_id;
+        const patientID = req.params.patient_id;
+    } catch (error) {
+        return res.status(400).json({ error: error });
+    }
 }
 
 
-const showAppointment = () => {
-
+const showAppointment = async (req, res) => {
+    try {
+        const AllAppointmentsfetched = await fetchAllAppointments();
+        if (AllAppointmentsfetched) {
+            return res.status(200).json(AllAppointmentsfetched);
+        } else {
+            return res.status(404).json({ alert: "DB error, couldn't fetch!" });
+        }
+    } catch (error) {
+        return res.status(401).json({ error: error });
+    }
 }
 
 module.exports = { createAppointment, deleteAppointment, showAppointment, changeAppointment, saveAppointment }

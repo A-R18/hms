@@ -35,7 +35,6 @@ const registerPatient = async (req, res) => {
 const displayPatients = async (req, res) => {
   try {
     const patientsShown = await showPatients();
-    console.log(patientsShown);
     if (patientsShown) {
       return res.status(200).json(patientsShown);
     } else return res.status(400).json("didn't fetch patients!");
@@ -66,9 +65,7 @@ const updatePatient = async (req, res) => {
     }
     const incomingData = req.body;
     const id = req.params.id;
-    console.log(id);
     const existingPatientData = await fetchExistingPatient(id);
-    console.log(existingPatientData);
     const updatedPtData = {
       patient_name: req?.body?.p_name ? incomingData.p_name : existingPatientData.patient_name,
 

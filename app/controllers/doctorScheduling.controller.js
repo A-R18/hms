@@ -25,7 +25,6 @@ const saveDoctorSchedule = async (req, res) => {
     try {
 
         const shcheduleData = req.body;
-        console.log(shcheduleData);
         const schDataMatch = {
             doctor_ID: shcheduleData.docID,
             doctor_day_ID: shcheduleData.dayID,
@@ -40,7 +39,6 @@ const saveDoctorSchedule = async (req, res) => {
             return res.status(400).json({ message: "DB error! didn't save" });
         }
     } catch (error) {
-        // console.log(error.code);
         if (error.code === "ER_DUP_ENTRY") {
             return res.status(400).json({ error: "can't add a day schedule twice" });
         } else
@@ -52,10 +50,7 @@ const saveDoctorSchedule = async (req, res) => {
 const showDoctorSchedule = async (req, res) => {
     try {
         const doctorId = req.params.id;
-        // console.log("doctorID is ", doctorId);
-       
         const docSchedule = await fetchDoctorAllSchedules(doctorId);
-        console.log(docSchedule);
         if (docSchedule) {
             res.status(200).json(docSchedule);
         } else {
@@ -102,7 +97,6 @@ const changeDoctorSchedule = async (req, res) => {
             res.status(400).json({ message: "DB error, didn't update" });
         }
     } catch (error) {
-        console.log(error.code);
         if (error.code === "ER_DUP_ENTRY") {
             return res.status(400).json({ error: "can't add a day schedule twice" });
         } else

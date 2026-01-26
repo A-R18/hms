@@ -11,14 +11,12 @@ const logUserIn = async (req, res) => {
   const pass = req.body.password;
   const authResponse = await authenticateUser(mail);
   let doctorParticulars;
-  // console.log("authenticated data is: ",authData);
   if (!authResponse) {
     return res.status(404).json({ message: "User doesn't exist!" });
   } else {
     const userRole = await fetchUserRole(authResponse.role_ID);
     if (userRole.role === "doctor") {
       doctorParticulars = await FetchDocEssentials(authResponse.id);
-      console.log("particulars fetched are: ", doctorParticulars);
     }
     const permissions = await fetchUserPermissions(authResponse.role_ID);
     const formattedPermz = [];

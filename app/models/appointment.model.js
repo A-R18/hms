@@ -7,9 +7,13 @@ const fetchTodaysAppointments = (doc_id, aptDate) => {
         .select("appointment_time");
 }
 
+const fetchAllAppointments = () => {
+    return knex("appointments").select("*");
+}
+
 
 const insertAppointment = (appointmentData) => {
     return knex("appointments").insert(appointmentData);
 }
 
-module.exports = { insertAppointment, fetchTodaysAppointments };
+module.exports = { insertAppointment, fetchTodaysAppointments, fetchAllAppointments };

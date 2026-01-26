@@ -131,7 +131,6 @@ const showUsers = async (req, res) => {
 const showDoctors = async (req, res) => {
   try {
     const allDoctors = await fetchDoctors("doctor");
-    console.log(allDoctors);
     if (allDoctors.length === 0) {
       return res.status(400).json({ alert: "No doctors particulars registered yet!" });
     }
@@ -170,7 +169,6 @@ const showSpecificUser = async (req, res) => {
   try {
     const id = req.params.id;
     const userFetched = await showCurrentUser(id);
-    // console.log(userFetched);
     if (userFetched) {
       return res.status(200).json(userFetched);
     }
