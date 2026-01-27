@@ -11,7 +11,10 @@ const {
 const { routeAction } = require("../middleware/accessChecker.js");
 
 
-router.get("/show-days", authorize, routeAction("READ", "doctors"), showDays);
+router.get("/show-days",
+  authorize,
+  routeAction("READ", "doctors"),
+  showDays);
 
 router.post(
   "/save-doctor-timetable",
@@ -32,7 +35,7 @@ router.post(
   deleteDoctorSchedule
 );
 router.post(
-  "/edit-doctor-timetable/:id",
+  "/edit-doctor-timetable",
   authorize,
   routeAction("UPDATE", "doctors"),
   changeDoctorSchedule

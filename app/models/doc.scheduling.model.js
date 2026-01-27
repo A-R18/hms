@@ -5,8 +5,12 @@ const fetchDays = () => {
 };
 
 
-const insertDoctorSchedule = (scheduleRow) => {
-    return knex("doctors_scheduling").insert(scheduleRow);
+const insertDoctorSchedule = (db, scheduleRow) => {
+    return db("doctors_scheduling").insert(scheduleRow);
+};
+
+const insertDocDays = (db, docDaySch) => {
+    return db("doctors_day_schedule").insert(docDaySch);
 };
 
 
@@ -21,17 +25,21 @@ const fetchDoctorSchedule = (doctorID, dayID) => {
 
 const fetchDoctorAllSchedules = (doctorID) => {
     return knex("doctors_scheduling")
-        .where({ doctor_ID: doctorID });
+        .join("doctors_day_schedule", "doctors_scheduling.id", "doctors_day_schedule.schedule_ID")
+        .join("days", "doctors_day_schedule.doc_sch_day_ID", "days.id")
+        .where("doctors_scheduling.doctor_ID", doctorID)
+        .groupBy("doctors_scheduling.id")
+        .select("doctors_scheduling.*", knex.raw("GROUP_CONCAT(days.day) as days"));
 };
 
 
 
-
-
-
-
 const fetchExistingDocSchedule = (schID) => {
-    return knex("doctors_scheduling").where({ id: schID }).first();
+    return knex("doctors_scheduling")
+    .join("doctors_day_schedule", "doctors_scheduling.id", "doctors_day_schedule.schedule_ID")
+    .where("doctors_scheduling.id", schID)
+    .select("doctors_scheduling.*" ).first()
+    .select("doctors_day_schedule.*");
 };
 
 
@@ -51,5 +59,6 @@ module.exports = {
     editDoctorSchedule,
     fetchExistingDocSchedule,
     removeDoctorSchedule,
-    fetchDoctorAllSchedules
+    fetchDoctorAllSchedules,
+    insertDocDays
 };

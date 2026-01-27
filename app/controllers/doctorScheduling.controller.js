@@ -5,8 +5,9 @@ const { fetchDays,
     fetchDoctorSchedule,
     editDoctorSchedule,
     removeDoctorSchedule,
-    fetchExistingDocSchedule, 
-    fetchDoctorAllSchedules} = require("../models/doc.scheduling.model.js");
+    fetchExistingDocSchedule,
+    fetchDoctorAllSchedules,
+    insertDocDays } = require("../models/doc.scheduling.model.js");
 
 const showDays = async (req, res) => {
     try {
@@ -22,27 +23,46 @@ const showDays = async (req, res) => {
 };
 
 const saveDoctorSchedule = async (req, res) => {
+    const tranx = await knex.transaction();
     try {
-
+        console.log("case hit!");
         const shcheduleData = req.body;
+        console.log(shcheduleData);
         const schDataMatch = {
             doctor_ID: shcheduleData.docID,
-            doctor_day_ID: shcheduleData.dayID,
             doctor_from_time: shcheduleData.from_time,
             doctor_to_time: shcheduleData.to_time,
             doc_slot_dur: shcheduleData.slot_duration,
+            doc_from_date: shcheduleData.from_date,
+            doc_to_date: shcheduleData.to_date
         };
-        const scheduleSaved = await insertDoctorSchedule(schDataMatch);
-        if (scheduleSaved) {
-            return res.status(200).json({ message: "schedule saved successfully!" });
-        } else {
-            return res.status(400).json({ message: "DB error! didn't save" });
+        const scheduleSaved = await insertDoctorSchedule(tranx, schDataMatch);
+        let daysSaved = [] //array declared to counter check the insertions
+      
+        for (const day of req.body.doc_days) {
+            const schDayDataMatch = {
+                schedule_ID: scheduleSaved[0], //to be figured how it comes
+                doc_sch_day_ID: day
+            }
+
+            const dayInserted = await insertDocDays(tranx, schDayDataMatch);
+            daysSaved.push(dayInserted);
+
         }
+        // console.log(dayInserted);
+        (await tranx).commit();
+
+        if (scheduleSaved && req.body.doc_days.length === daysSaved.length) {
+
+            return res.status(200).json("Schedule submitted successfully");
+        } else {
+
+            return res.status(400).json({ error: "DB error, didn't save" });
+        }
+
     } catch (error) {
-        if (error.code === "ER_DUP_ENTRY") {
-            return res.status(400).json({ error: "can't add a day schedule twice" });
-        } else
-            return res.status(400).json({ error: error });
+        (await tranx).rollback();
+        res.status(400).json({ error: error.message });
 
     }
 };
@@ -64,9 +84,9 @@ const showDoctorSchedule = async (req, res) => {
 
 const changeDoctorSchedule = async (req, res) => {
     try {
-        const scheduleID = req.params.id;
+        const scheduleID = req.body.sch_ID;
         const ExistingDocSchedule = await fetchExistingDocSchedule(scheduleID);
-        // return res.json(ExistingDocSchedule);
+        return res.json(ExistingDocSchedule);
         const editedDocSchedule = req.body;
         const updatedSchMatch = {
 
