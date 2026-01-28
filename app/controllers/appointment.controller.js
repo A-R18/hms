@@ -3,7 +3,7 @@ const customParseFormat = require("../../node_modules/dayjs/plugin/customParseFo
 const duration = require("../../node_modules/dayjs/plugin/duration.js");
 dayjs.extend(customParseFormat);
 dayjs.extend(duration);
-const { fetchDoctorSchedule } = require("../models/doc.scheduling.model");
+const { fetchDoctorSchedule, checkDayInScheduling } = require("../models/doc.scheduling.model");
 const { generateAllSlots, generateFilteredSlots } = require("../services/appointment.services");
 const { fetchTodaysAppointments, insertAppointment, fetchAllAppointments } = require("../models/appointment.model.js");
 
@@ -21,7 +21,7 @@ const createAppointment = async (req, res) => {
         const dayID = dayjs(appointmentDate).day();
         //here the query based comparison will be made so that day is specified correctly! (where appointmentDate <= doc_to_date)
         const dayExists = await checkDayInScheduling(docID, dayID, appointmentDate);
-        if (dayExists) res.status(401).json({ constraint: "you can't set appointment this day!" });
+        if (!dayExists) res.status(401).json({ constraint: "you can't set appointment this day!" });
         const docScheduleExists = await fetchDoctorSchedule(docID, appointmentDate);
         //a schedule will be selected which will be valid 
         // (where appointmentDate <= doc_to_date)
@@ -46,7 +46,7 @@ const createAppointment = async (req, res) => {
         }
     } catch (error) {
 
-        return res.status(200).json({ error: error.message });
+        return res.status(200).json({ error: error.message, stackTrace: error.stack });
 
     }
 

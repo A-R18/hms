@@ -6,7 +6,7 @@ const { createAppointment,
         showAppointment,
         saveAppointment } = require("../controllers/appointment.controller.js");
 
-router.post("/create-appointment/:doc_id", createAppointment);
+router.post("/create-appointment", createAppointment);
 router.post("/save-appointment", saveAppointment);
 router.post("/edit-appointment/:id", changeAppointment);
 router.post("/delete-appointment/:id", deleteAppointment);
