@@ -5,6 +5,7 @@ dayjs.extend(customParseFormat);
 dayjs.extend(duration);
 
 const generateAllSlots = (start, end, slot_dur) => {
+    
     const startTime = dayjs(start, "HH:mm");
     const endTime = dayjs(end, "HH:mm");
     const docSlotDuration = dayjs.duration(slot_dur, "minutes");

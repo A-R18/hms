@@ -17,7 +17,7 @@ const insertDocDays = (db, docDaySch) => {
 const fetchDoctorSchedule = (doctorID, aptDate) => {
     return knex("doctors_scheduling")
         .where({ doctor_ID: doctorID })
-        .andWhere("doctors_scheduling.doc_from_date", ">=", aptDate)
+        .andWhere("doctors_scheduling.doc_to_date", ">=", aptDate)
         .first();
 };
 

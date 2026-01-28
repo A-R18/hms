@@ -1,5 +1,5 @@
 const knex = require("knex")(require("../config/dbMod.js"));
-
+const dayjs = require("dayjs");
 const { fetchDays,
     insertDoctorSchedule,
     fetchDoctorSchedule,
@@ -9,8 +9,8 @@ const { fetchDays,
     fetchDoctorAllSchedules,
     insertDocDays,
     fetchExistingDocDays,
-    deleteSchDays, 
-    editDocSchDays} = require("../models/doc.scheduling.model.js");
+    deleteSchDays,
+    editDocSchDays } = require("../models/doc.scheduling.model.js");
 
 const showDays = async (req, res) => {
     try {
@@ -21,15 +21,28 @@ const showDays = async (req, res) => {
             res.status(400).json({ dbError: "not found!" });
         }
     } catch (error) {
-        res.status(400).json({ error: error });
+        res.status(400).json({ error: error.message });
     }
 };
 
 const saveDoctorSchedule = async (req, res) => {
     const tranx = await knex.transaction();
     try {
-        console.log("case hit!");
+
         const shcheduleData = req.body;
+        const today = dayjs().startOf("day");
+        const toDate = dayjs(shcheduleData.to_date);
+        const fromDate = dayjs(shcheduleData.from_date);
+        const toTime = dayjs(shcheduleData.to_time, "HH:mm");
+        const fromTime = dayjs(shcheduleData.from_time, "HH:mm");
+        if (toDate.isBefore(today) || fromDate.isBefore(today)) {
+            return res.status(401).json({ alert: "you can't enter past dates" });
+        }
+
+        if (!toTime.isAfter(fromTime)) {
+            return res.status(401).json({ alert: "end time can't be before start time" })
+        }
+
         console.log(shcheduleData);
         const schDataMatch = {
             doctor_ID: shcheduleData.docID,
@@ -39,6 +52,8 @@ const saveDoctorSchedule = async (req, res) => {
             doc_from_date: shcheduleData.from_date,
             doc_to_date: shcheduleData.to_date
         };
+
+
         const scheduleSaved = await insertDoctorSchedule(tranx, schDataMatch);
 
         let daysSaved = [] //array declared to counter check the insertions
