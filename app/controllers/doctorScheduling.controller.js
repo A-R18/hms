@@ -7,7 +7,8 @@ const { fetchDays,
     removeDoctorSchedule,
     fetchExistingDocSchedule,
     fetchDoctorAllSchedules,
-    insertDocDays } = require("../models/doc.scheduling.model.js");
+    insertDocDays, 
+    fetchExistingDocDays} = require("../models/doc.scheduling.model.js");
 
 const showDays = async (req, res) => {
     try {
@@ -77,17 +78,18 @@ const showDoctorSchedule = async (req, res) => {
             res.status(400).json({ message: "DB error! nothing found" });
         }
     } catch (error) {
-        return res.status(400).json({ error: error });
+        return res.status(400).json({ error: error.message });
     }
 
 };
 
 const changeDoctorSchedule = async (req, res) => {
     try {
-        const scheduleID = req.body.sch_ID;
-        const ExistingDocSchedule = await fetchExistingDocSchedule(scheduleID);
-        return res.json(ExistingDocSchedule);
         const editedDocSchedule = req.body;
+        const scheduleID = editedDocSchedule.sch_ID;
+        const ExistingDocSchedule = await fetchExistingDocSchedule(scheduleID);
+        const ExistingDocDays = await fetchExistingDocDays(ExistingDocSchedule.schedule_ID);
+        // return res.json(ExistingDocSchedule); 
         const updatedSchMatch = {
 
             doctor_day_ID:
@@ -110,6 +112,12 @@ const changeDoctorSchedule = async (req, res) => {
                     editedDocSchedule.doc_slot_dur :
                     ExistingDocSchedule.doc_slot_dur,
         };
+
+        const updatedSchDayMatch = {
+
+        }
+
+
         const scheduleUpdated = await editDoctorSchedule(scheduleID, updatedSchMatch);
         if (scheduleUpdated) {
             res.status(200).json({ message: "schedule updated successfully!" });
@@ -120,7 +128,7 @@ const changeDoctorSchedule = async (req, res) => {
         if (error.code === "ER_DUP_ENTRY") {
             return res.status(400).json({ error: "can't add a day schedule twice" });
         } else
-            return res.status(400).json({ error: error });
+            return res.status(400).json({ error: error.message });
     }
 };
 
@@ -134,7 +142,7 @@ const deleteDoctorSchedule = async (req, res) => {
             res.status(400).json({ message: "DB error, didn't delete" });
         }
     } catch (error) {
-        res.status(400).json({ error: error });
+        res.status(400).json({ error: error.message });
     }
 };
 

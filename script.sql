@@ -219,22 +219,22 @@ INSERT INTO
   doctors_scheduling (
     id,
     doctor_ID,
-    doctor_day_ID,
+    
     doctor_from_time,
     doctor_to_time,
     doc_slot_dur
   )
 VALUES
-  (1, 1, 5, "09:00:00", "17:00:00", 30), -- Monday, Doctor 1
-  (2, 1, 1, "09:00:00", "17:00:00", 30), -- Tuesday, Doctor 1
-  (3, 1, 2, "09:00:00", "17:00:00", 30), -- Wednesday, Doctor 1
-  (4, 1, 3, "09:00:00", "17:00:00", 30), -- Thursday, Doctor 1
-  (5, 1, 4, "09:00:00", "13:00:00", 30), -- Friday, Doctor 1
-  (6, 2, 6, "09:00:00", "17:00:00", 30), -- Monday, Doctor 2
-  (7, 2, 1, "09:00:00", "17:00:00", 30), -- Tuesday, Doctor 2
-  (8, 2, 2, "09:00:00", "17:00:00", 30), -- Wednesday, Doctor 2
-  (9, 2, 3, "09:00:00", "17:00:00", 30), -- Thursday, Doctor 2
-  (10, 2, 4, "09:00:00", "17:00:00", 30);
+  (1, 1,  "09:00:00", "17:00:00", 30), -- Monday, Doctor 1
+  (2, 1,  "09:00:00", "17:00:00", 30), -- Tuesday, Doctor 1
+  (3, 1,  "09:00:00", "17:00:00", 30), -- Wednesday, Doctor 1
+  (4, 1,  "09:00:00", "17:00:00", 30), -- Thursday, Doctor 1
+  (5, 1,  "09:00:00", "13:00:00", 30), -- Friday, Doctor 1
+  (6, 2,  "09:00:00", "17:00:00", 30), -- Monday, Doctor 2
+  (7, 2,  "09:00:00", "17:00:00", 30), -- Tuesday, Doctor 2
+  (8, 2,  "09:00:00", "17:00:00", 30), -- Wednesday, Doctor 2
+  (9, 2,  "09:00:00", "17:00:00", 30), -- Thursday, Doctor 2
+  (10, 2,  "09:00:00", "17:00:00", 30);
 
 -- Friday, Doctor 2
 INSERT INTO

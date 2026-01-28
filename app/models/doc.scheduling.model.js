@@ -42,6 +42,13 @@ const fetchExistingDocSchedule = (schID) => {
     .select("doctors_day_schedule.*");
 };
 
+const fetchExistingDocDays = (schID) => {
+    return knex("doctors_day_schedule")
+    .where({schedule_ID:schID})
+    .select("doctors_day_schedule.*");
+};
+
+
 
 const editDoctorSchedule = (schID, updatedRecord) => {
     return knex("doctors_scheduling").where({ id: schID }).update(updatedRecord);
@@ -60,5 +67,6 @@ module.exports = {
     fetchExistingDocSchedule,
     removeDoctorSchedule,
     fetchDoctorAllSchedules,
-    insertDocDays
+    insertDocDays,
+    fetchExistingDocDays
 };
