@@ -11,7 +11,7 @@ const { fetchTodaysAppointments, insertAppointment, fetchAllAppointments } = req
 
 const createAppointment = async (req, res) => {
     try {
-        const docID = req.params.doc_id;
+        const docID = req.body.doc_id;
         const appointmentDate = req.body.doc_apt_date;
         const currentDate = dayjs().startOf("day");
 
@@ -19,8 +19,12 @@ const createAppointment = async (req, res) => {
             return res.status(403).json({ alert: "you can't book for past date!" });
         }
         const dayID = dayjs(appointmentDate).day();
-        if (dayID === 0) res.status(401).json({ constraint: "you can't set appointment for sunday!" });
-        const docScheduleExists = await fetchDoctorSchedule(docID, dayID);
+        //here the query based comparison will be made so that day is specified correctly! (where appointmentDate <= doc_to_date)
+        const dayExists = await checkDayInScheduling(docID, dayID, appointmentDate);
+        if (dayExists) res.status(401).json({ constraint: "you can't set appointment this day!" });
+        const docScheduleExists = await fetchDoctorSchedule(docID, appointmentDate);
+        //a schedule will be selected which will be valid 
+        // (where appointmentDate <= doc_to_date)
 
         if (docScheduleExists) {
             const alreadyBooked = await fetchTodaysAppointments(docID, appointmentDate);
@@ -42,7 +46,7 @@ const createAppointment = async (req, res) => {
         }
     } catch (error) {
 
-        return res.status(200).json({ error: error });
+        return res.status(200).json({ error: error.message });
 
     }
 
@@ -64,7 +68,7 @@ const saveAppointment = async (req, res) => {
             return res.status(200).json({ success: "slot reserved successfully" });
         return res.status(400).json({ alert: "DB error, didn't save appointment" });
     } catch (error) {
-        return res.status(400).json({ error: error });
+        return res.status(400).json({ error: error.message });
     }
 }
 
@@ -79,7 +83,7 @@ const changeAppointment = () => {
         const docID = req.params.doc_id;
         const patientID = req.params.patient_id;
     } catch (error) {
-        return res.status(400).json({ error: error });
+        return res.status(400).json({ error: error.message });
     }
 }
 
@@ -95,7 +99,7 @@ const showAppointment = async (req, res) => {
             return res.status(404).json({ alert: "DB error, couldn't fetch!" });
         }
     } catch (error) {
-        return res.status(401).json({ error: error });
+        return res.status(401).json({ error: error.message });
     }
 }
 

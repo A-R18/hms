@@ -70,6 +70,12 @@ const deleteSchDays = (db, schID) => {
         .where({ schedule_ID: schID }).delete();
 }
 
+
+const checkDayInScheduling = (doc_ID, day_ID, aptDate) => {
+    knex("doctors_scheduling").where({ doctor_ID: doc_ID })
+    .join("doctors_day_schedule")
+}
+
 module.exports = {
     fetchDays,
     insertDoctorSchedule,
@@ -81,5 +87,6 @@ module.exports = {
     insertDocDays,
     fetchExistingDocDays,
     deleteSchDays,
-    editDocSchDays
+    editDocSchDays,
+    checkDayInScheduling
 };
