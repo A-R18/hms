@@ -7,8 +7,10 @@ const { fetchDays,
     removeDoctorSchedule,
     fetchExistingDocSchedule,
     fetchDoctorAllSchedules,
-    insertDocDays, 
-    fetchExistingDocDays} = require("../models/doc.scheduling.model.js");
+    insertDocDays,
+    fetchExistingDocDays,
+    deleteSchDays, 
+    editDocSchDays} = require("../models/doc.scheduling.model.js");
 
 const showDays = async (req, res) => {
     try {
@@ -38,8 +40,9 @@ const saveDoctorSchedule = async (req, res) => {
             doc_to_date: shcheduleData.to_date
         };
         const scheduleSaved = await insertDoctorSchedule(tranx, schDataMatch);
+
         let daysSaved = [] //array declared to counter check the insertions
-      
+
         for (const day of req.body.doc_days) {
             const schDayDataMatch = {
                 schedule_ID: scheduleSaved[0], //to be figured how it comes
@@ -84,51 +87,64 @@ const showDoctorSchedule = async (req, res) => {
 };
 
 const changeDoctorSchedule = async (req, res) => {
+    const tranx = await knex.transaction();
     try {
         const editedDocSchedule = req.body;
         const scheduleID = editedDocSchedule.sch_ID;
         const ExistingDocSchedule = await fetchExistingDocSchedule(scheduleID);
         const ExistingDocDays = await fetchExistingDocDays(ExistingDocSchedule.schedule_ID);
-        // return res.json(ExistingDocSchedule); 
+        // return res.json({ExistingDocSchedule, ExistingDocDays}); 
         const updatedSchMatch = {
 
-            doctor_day_ID:
-                req?.body?.docID ?
-                    editedDocSchedule.dayID :
-                    ExistingDocSchedule.doctor_day_ID,
-
             doctor_from_time:
-                req?.body?.docID ?
+                req?.body?.from_time ?
                     editedDocSchedule.from_time :
                     ExistingDocSchedule.doctor_from_time,
 
             doctor_to_time:
-                req?.body?.docID ?
+                req?.body?.to_time ?
                     editedDocSchedule.to_time :
                     ExistingDocSchedule.doctor_to_time,
 
+            doc_from_date:
+                req?.body?.from_date ?
+                    editedDocSchedule.from_date :
+                    ExistingDocSchedule.doc_from_date,
+
+            doc_to_date:
+                req?.body?.to_date ?
+                    editedDocSchedule.to_date :
+                    ExistingDocSchedule.doc_to_date,
+
             doc_slot_dur:
-                req?.body?.docID ?
-                    editedDocSchedule.doc_slot_dur :
+                req?.body?.slot_duration ?
+                    editedDocSchedule.slot_duration :
                     ExistingDocSchedule.doc_slot_dur,
         };
-
-        const updatedSchDayMatch = {
-
+        const deletedScheduleDays = await deleteSchDays(tranx, scheduleID);
+        const scheduleUpdated = await editDoctorSchedule(tranx, scheduleID, updatedSchMatch);
+        let updatedSchDayMatch = {};
+        let daysCheck = [];
+        for (const day of editedDocSchedule.doc_days) {
+            updatedSchDayMatch = {
+                schedule_ID: scheduleID, //to be decided
+                doc_sch_day_ID: day
+            }
+            daysCheck.push(day);
+            await editDocSchDays(tranx, updatedSchDayMatch);
         }
+        (await tranx).commit();
 
 
-        const scheduleUpdated = await editDoctorSchedule(scheduleID, updatedSchMatch);
-        if (scheduleUpdated) {
+
+        if (deletedScheduleDays && scheduleUpdated && editedDocSchedule.doc_days.length === daysCheck.length) {
             res.status(200).json({ message: "schedule updated successfully!" });
         } else {
             res.status(400).json({ message: "DB error, didn't update" });
         }
     } catch (error) {
-        if (error.code === "ER_DUP_ENTRY") {
-            return res.status(400).json({ error: "can't add a day schedule twice" });
-        } else
-            return res.status(400).json({ error: error.message });
+        (await tranx).rollback();
+        return res.status(400).json({ error: error.message, trace: error.stack });
     }
 };
 
