@@ -20,18 +20,23 @@ const createAppointment = async (req, res) => {
         }
         const dayID = dayjs(appointmentDate).day();
         //here the query based comparison will be made so that day is specified correctly! (where appointmentDate <= doc_to_date)
-        const dayExists = await checkDayInScheduling(docID, dayID, appointmentDate);
-        console.log("day we get ", dayExists);
-        if (!dayExists)
-            return res.status(401).json({ constraint: "you can't set appointment this day!" });
+        const docScheduleExists = await fetchDoctorSchedule(docID, appointmentDate, dayID);
+        const scheduleID = docScheduleExists.id;
+        const existingDocDays = await checkDayInScheduling(scheduleID);
+        // return res.json(existingDocDays);
+        console.log("schedule id is: ", scheduleID);
 
-        const docScheduleExists = await fetchDoctorSchedule(docID, appointmentDate);
+        console.log("days we get ", existingDocDays);
+        if (!existingDocDays.includes(dayID))
+            return res.status(401).json({ constraint: "day is not available in doctor's schedule!" });
+       
+
         //a schedule will be selected which will be valid 
         // (where appointmentDate <= doc_to_date)
-        console.log("doctor schedule fetched is :", docScheduleExists);
+
         if (docScheduleExists) {
             //fetches all slots from db 
-            const alreadyBooked = await fetchTodaysAppointments(docID, appointmentDate);
+            const alreadyBooked = await fetchTodaysAppointments(docID, appointmentDate);//for retreiving that day only
             console.log("already booked array is: ", alreadyBooked);
             let alreadyBookedSlots = [];
             alreadyBooked.map((slot) => alreadyBookedSlots.push(slot.appointment_time));
