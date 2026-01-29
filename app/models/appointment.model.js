@@ -22,7 +22,7 @@ const removeAppointment = (aptID) => {
 
 const fetchExistingAppointmentData = (aptID) => {
     return knex("appointments").where({ id: aptID })
-    .select("appointments.appointment_time as aptTime", "appointments.appointment_date as aptDate" ).first();
+    .select("appointments.appointment_time as aptTime", "appointments.appointment_date as aptDate", "appointments.appointment_status as aptStatus" ).first();
 }
 
 const rescheduleAppointment = (appointmntID, aptData) => {

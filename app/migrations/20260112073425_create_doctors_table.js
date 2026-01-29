@@ -7,7 +7,7 @@ exports.up = function (knex) {
     table.increments("id");
     table.integer("user_ID").unsigned().notNullable();
     table.integer("spec_ID").unsigned().nullable();
-    table.integer("contact").notNullable();
+    table.string("contact", 15).notNullable();
     table.foreign("user_ID").references("id").inTable("users").onDelete("CASCADE");
     table.foreign("spec_ID").references("id").inTable("doctor_specialities");
   });
@@ -17,4 +17,4 @@ exports.up = function (knex) {
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
-exports.down = function (knex) {};
+exports.down = function (knex) { };

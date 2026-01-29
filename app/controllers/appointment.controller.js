@@ -5,7 +5,7 @@ dayjs.extend(customParseFormat);
 dayjs.extend(duration);
 const { fetchDoctorSchedule, checkDayInScheduling } = require("../models/doc.scheduling.model");
 const { generateAllSlots, generateFilteredSlots } = require("../services/appointment.services");
-const { fetchTodaysAppointments, insertAppointment, fetchAllAppointments, removeAppointment, fetchExistingAppointmentData } = require("../models/appointment.model.js");
+const { fetchTodaysAppointments, insertAppointment, fetchAllAppointments, removeAppointment, fetchExistingAppointmentData, rescheduleAppointment } = require("../models/appointment.model.js");
 
 
 
@@ -107,8 +107,24 @@ const deleteAppointment = async (req, res) => {
 const changeAppointment = async (req, res) => {
     try {
         const appointment_ID = req.body.apt_Id;
-        const { aptDate, aptTime } = await fetchExistingAppointmentData(appointment_ID);
-        res.json({ aptDate, aptTime });
+        const editedAppointmentDate = req.body.ed_apt_Date;
+        const editedAppointmentTime = req.body.ed_apt_Time;
+        const { aptDate, aptTime, aptStatus } = await fetchExistingAppointmentData(appointment_ID);
+        if (aptStatus === "pending") {
+            const editedAptData = {
+                appointment_date: editedAppointmentDate,
+                appointment_time: editedAppointmentTime
+            }
+            const appointmentRescheduled = await rescheduleAppointment(appointment_ID, editedAptData);
+            if (appointmentRescheduled) {
+                return res.status(200).json({ success: "Appointment rescheduled successfully!" });
+            } else {
+                return res.status(400).json({ error: "DB error, didn't update" });
+            }
+
+        } else {
+            return res.status(401).json({ alert: "Only pending appointments can be rescheduled!" });
+        }
 
 
 
