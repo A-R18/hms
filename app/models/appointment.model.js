@@ -5,15 +5,36 @@ const fetchTodaysAppointments = (doc_id, aptDate) => {
         .where("doctor_ID", doc_id)
         .andWhere("appointment_date", aptDate)
         .select("appointment_time");
-}
+};
 
 const fetchAllAppointments = () => {
     return knex("appointments").select("*");
-}
+};
 
 
 const insertAppointment = (appointmentData) => {
     return knex("appointments").insert(appointmentData);
+};
+
+const removeAppointment = (aptID) => {
+    return knex("appointments").where({ id: aptID }).delete();
+};
+
+const fetchExistingAppointmentData = (aptID) => {
+    return knex("appointments").where({ id: aptID })
+    .select("appointments.appointment_time as aptTime", "appointments.appointment_date as aptDate" ).first();
 }
 
-module.exports = { insertAppointment, fetchTodaysAppointments, fetchAllAppointments };
+const rescheduleAppointment = (appointmntID, aptData) => {
+    return knex("appointments").where({ id: appointmntID })
+        .update(aptData);
+};
+
+module.exports = {
+    insertAppointment,
+    fetchTodaysAppointments,
+    fetchAllAppointments,
+    removeAppointment,
+    rescheduleAppointment,
+    fetchExistingAppointmentData
+};

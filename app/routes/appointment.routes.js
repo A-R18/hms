@@ -9,8 +9,10 @@ const { createAppointment,
 router.post("/create-appointment", createAppointment);
 router.post("/save-appointment", saveAppointment);
 router.post("/edit-appointment/:id", changeAppointment);
-router.post("/delete-appointment/:id", deleteAppointment);
+router.post("/delete-pending-appointment", deleteAppointment);
 router.get("/show-appointments", showAppointment);
+router.post("/reschedule-appointment", changeAppointment);
+
 // router.get("/show-appointment/:doc_id");
 
 module.exports = router;

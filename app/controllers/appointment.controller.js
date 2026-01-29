@@ -5,7 +5,7 @@ dayjs.extend(customParseFormat);
 dayjs.extend(duration);
 const { fetchDoctorSchedule, checkDayInScheduling } = require("../models/doc.scheduling.model");
 const { generateAllSlots, generateFilteredSlots } = require("../services/appointment.services");
-const { fetchTodaysAppointments, insertAppointment, fetchAllAppointments } = require("../models/appointment.model.js");
+const { fetchTodaysAppointments, insertAppointment, fetchAllAppointments, removeAppointment, fetchExistingAppointmentData } = require("../models/appointment.model.js");
 
 
 
@@ -29,7 +29,7 @@ const createAppointment = async (req, res) => {
         console.log("days we get ", existingDocDays);
         if (!existingDocDays.includes(dayID))
             return res.status(401).json({ constraint: "day is not available in doctor's schedule!" });
-       
+
 
         //a schedule will be selected which will be valid 
         // (where appointmentDate <= doc_to_date)
@@ -46,11 +46,15 @@ const createAppointment = async (req, res) => {
             const end_T = docScheduleExists.doctor_to_time;
             const slotDur = docScheduleExists.doc_slot_dur;
 
-            const generatedSlots = alreadyBookedSlots.length !== 0
+            const rawGeneratedSlots = alreadyBookedSlots.length !== 0
                 ? generateFilteredSlots(alreadyBookedSlots, start_T, end_T, slotDur)
                 : generateAllSlots(start_T, end_T, slotDur);
+            let formattedSlots = [];
 
-            return res.status(200).json(generatedSlots);
+            rawGeneratedSlots.forEach(slot => {
+                formattedSlots.push(dayjs(slot, "HH:mm:ss").format("hh:mm A"));
+            });
+            return res.status(200).json(formattedSlots);
 
 
         } else {
@@ -62,7 +66,7 @@ const createAppointment = async (req, res) => {
 
     }
 
-}
+};
 
 const saveAppointment = async (req, res) => {
     try {
@@ -82,31 +86,59 @@ const saveAppointment = async (req, res) => {
     } catch (error) {
         return res.status(400).json({ error: error.message });
     }
-}
+};
 
-const deleteAppointment = () => {
-
-}
-
-
-const changeAppointment = () => {
+const deleteAppointment = async (req, res) => {
     try {
-        const incomingAppointmentData = req.body;
-        const docID = req.params.doc_id;
-        const patientID = req.params.patient_id;
+        const appointmentID = req.body.apt_Id;
+        const appointmentDeleted = await removeAppointment(appointmentID);
+        if (appointmentDeleted) {
+            return res.status(200).json({ alert: "appointment deleted successfully!" });
+        } else {
+            return res.status(404).json({ error: "DB error, didn't delete" });
+        }
+    } catch (error) {
+        return res.json({ error: error.message });
+    }
+};
+
+
+
+const changeAppointment = async (req, res) => {
+    try {
+        const appointment_ID = req.body.apt_Id;
+        const { aptDate, aptTime } = await fetchExistingAppointmentData(appointment_ID);
+        res.json({ aptDate, aptTime });
+
+
+
     } catch (error) {
         return res.status(400).json({ error: error.message });
     }
-}
+};
 
 
 
 
 const showAppointment = async (req, res) => {
     try {
-        const AllAppointmentsfetched = await fetchAllAppointments();
-        if (AllAppointmentsfetched) {
-            return res.status(200).json(AllAppointmentsfetched);
+        const rawAppointmentsfetched = await fetchAllAppointments();
+        let formattedAppointments = [];
+        if (rawAppointmentsfetched) {
+            rawAppointmentsfetched.forEach(appointment => {
+                // console.log(appointment);
+                const dataMatch = {
+                    id: appointment.id,
+                    patient_ID: appointment.patient_ID,
+                    doctor_ID: appointment.doctor_ID,
+                    appointment_date: dayjs(appointment.appointment_date).format("ddd DD MMM YYYY"),
+                    appointment_time: dayjs(appointment.appointment_time, "HH:mm:ss").format("hh:mm:ss A"),
+                    appointment_status: appointment.appointment_status
+                }
+                formattedAppointments.push(dataMatch);
+
+            });
+            return res.status(200).json(formattedAppointments);
         } else {
             return res.status(404).json({ alert: "DB error, couldn't fetch!" });
         }
