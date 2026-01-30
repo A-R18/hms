@@ -27,7 +27,7 @@ const fetchDoctorSchedule = (doctorID, aptDate) => {
 
 const fetchDoctorAllSchedules = (doctorID) => {
     return knex("doctors_scheduling")
-    .join("days", "doctors_scheduling.doctor_day_ID", "days.id")
+        .join("days", "doctors_scheduling.doctor_day_ID", "days.id")
         .where("doctor_ID", doctorID)
         .select("doctors_scheduling.*", "days.day");
 };
@@ -36,10 +36,8 @@ const fetchDoctorAllSchedules = (doctorID) => {
 
 const fetchExistingDocSchedule = (schID) => {
     return knex("doctors_scheduling")
-        .join("doctors_day_schedule", "doctors_scheduling.id", "doctors_day_schedule.schedule_ID")
         .where("doctors_scheduling.id", schID)
-        .select("doctors_scheduling.*").first()
-        .select("doctors_day_schedule.*");
+        .select("doctors_scheduling.*").first();
 };
 
 
@@ -65,10 +63,6 @@ const removeDoctorSchedule = (schID) => {
     return knex("doctors_scheduling").where({ id: schID }).delete();
 };
 
-const deleteSchDays = (db, schID) => {
-    return db("doctors_day_schedule")
-        .where({ schedule_ID: schID }).delete();
-}
 
 
 const checkDayInScheduling = (schID) => {
@@ -88,7 +82,6 @@ module.exports = {
     fetchDoctorAllSchedules,
     insertDocDays,
     fetchExistingDocDays,
-    deleteSchDays,
     editDocSchDays,
     checkDayInScheduling
 };

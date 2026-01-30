@@ -2,15 +2,11 @@ const knex = require("knex")(require("../config/dbMod.js"));
 const dayjs = require("dayjs");
 const { fetchDays,
     insertDoctorSchedule,
-    fetchDoctorSchedule,
     editDoctorSchedule,
     removeDoctorSchedule,
     fetchExistingDocSchedule,
     fetchDoctorAllSchedules,
-    insertDocDays,
-    fetchExistingDocDays,
-    deleteSchDays,
-    editDocSchDays } = require("../models/doc.scheduling.model.js");
+   } = require("../models/doc.scheduling.model.js");
 
 const showDays = async (req, res) => {
     try {
@@ -88,7 +84,6 @@ const showDoctorSchedule = async (req, res) => {
     try {
         const doctorId = req.params.id;
         const docSchedule = await fetchDoctorAllSchedules(doctorId);
-        console.log(docSchedule);
         const formattedSchedule = [];
         docSchedule.forEach(schedule => {
             const scheduleformat = {
@@ -120,53 +115,36 @@ const changeDoctorSchedule = async (req, res) => {
     const tranx = await knex.transaction();
     try {
         const editedDocSchedule = req.body;
-        const scheduleID = editedDocSchedule.sch_ID;
-        const ExistingDocSchedule = await fetchExistingDocSchedule(scheduleID);
-        return res.json(ExistingDocSchedule);
-        const updatedSchMatch = {
+        let schCounter = [];
+        let scheduleUpdated;
+        for (const schedule of editedDocSchedule) {
+            const scheduleID = schedule.sch_ID;
+            const ExistingDocSchedule = await fetchExistingDocSchedule(scheduleID);
+             const updatedSchMatch = {
 
             doctor_from_time:
-                req?.body?.from_time ?
-                    editedDocSchedule.from_time :
+                schedule ?
+                    schedule.from_time :
                     ExistingDocSchedule.doctor_from_time,
 
             doctor_to_time:
-                req?.body?.to_time ?
-                    editedDocSchedule.to_time :
+                schedule ?
+                    schedule.to_time :
                     ExistingDocSchedule.doctor_to_time,
 
-            doc_from_date:
-                req?.body?.from_date ?
-                    editedDocSchedule.from_date :
-                    ExistingDocSchedule.doc_from_date,
-
-            doc_to_date:
-                req?.body?.to_date ?
-                    editedDocSchedule.to_date :
-                    ExistingDocSchedule.doc_to_date,
-
             doc_slot_dur:
-                req?.body?.slot_duration ?
-                    editedDocSchedule.slot_duration :
+                schedule ?
+                    schedule.slot_duration :
                     ExistingDocSchedule.doc_slot_dur,
         };
-        const deletedScheduleDays = await deleteSchDays(tranx, scheduleID);
-        const scheduleUpdated = await editDoctorSchedule(tranx, scheduleID, updatedSchMatch);
-        let updatedSchDayMatch = {};
-        let daysCheck = [];
-        for (const day of editedDocSchedule.doc_days) {
-            updatedSchDayMatch = {
-                schedule_ID: scheduleID, //to be decided
-                doc_sch_day_ID: day
-            }
-            daysCheck.push(day);
-            await editDocSchDays(tranx, updatedSchDayMatch);
+         scheduleUpdated = await editDoctorSchedule(tranx, scheduleID, updatedSchMatch);
+        schCounter.push(scheduleUpdated);
         }
+        // return res.json(ExistingDocSchedule);
+       
         (await tranx).commit();
 
-
-
-        if (deletedScheduleDays && scheduleUpdated && editedDocSchedule.doc_days.length === daysCheck.length) {
+        if (scheduleUpdated && editedDocSchedule.length === schCounter.length) {
             res.status(200).json({ message: "schedule updated successfully!" });
         } else {
             res.status(400).json({ message: "DB error, didn't update" });
