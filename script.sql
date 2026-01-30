@@ -160,7 +160,7 @@ values
     "$2a$10$Tcc3/dED25I7aMlU8Z0nlOA4YbJH6l/fKYkkgE5mcViY8L4DZDerK"
   ),
   (
-    "Dr. Azeem",
+    "Dr Azeem",
     1,
     "azeem@doc.com",
     "$2a$10$Tcc3/dED25I7aMlU8Z0nlOA4YbJH6l/fKYkkgE5mcViY8L4DZDerK"
@@ -197,13 +197,6 @@ VALUES
 ("Noor Ul Ain",     "Skin Infection",      "03001112235", NOW()),
 ("Mehmood Abbas",    "High Cholesterol",    "03001112236", NOW()),
 ("Hina Abbas",      "Headache", "03001112237", NOW());
-
-
-
-
-
-
-
 
 
 

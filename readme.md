@@ -1,5 +1,13 @@
 # Backend for HMS so far:
 
+## Modules built:
+- USER AUTHENTICATION (LOGIN, AUTHORIZATION)
+- USER (CRUD)
+- PATIENT (CRUD)
+- DOCTOR SCHEDULING (CRUD)
+- APPOINTMENT SCHEDULING (CRUD WITH TIME & BUSINESS CONSTRAINTS)
+- PATIENT DIAGNOSIS
+
 ## Impmentations:
 
 #### ROUTES
@@ -17,6 +25,19 @@
 - Made show all doctors (GET)
 - Made show all patient (GET)
 - Made login user (POST)
+- Made create doctor Schedule (All days [from to date]) (POST)
+- Made update doctor Schedule (All days [from to date]) (POST)
+- Made update doctor Schedule  (POST)
+- Made show doctor Schedule  (GET)
+- Made create appointment (POST)
+- Made save appointment (POST)
+- Made show appointment (GET)
+- Made delete pending appointment (POST)
+- Made save Patient Assessment (POST) {pending}
+- Made update Patient Assessment (POST) {pending}
+- Made show Patient Assessment (GET) {pending}
+- Made show Allergies (GET)
+- Made show Days (GET)
 
 ##
 

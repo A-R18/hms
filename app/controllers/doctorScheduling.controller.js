@@ -27,51 +27,45 @@ const showDays = async (req, res) => {
 
 const saveDoctorSchedule = async (req, res) => {
     const tranx = await knex.transaction();
+    const shcheduleData = req.body;
+    let recordsSaved = [];
+
     try {
 
-        const shcheduleData = req.body;
-        const today = dayjs().startOf("day");
-        const toDate = dayjs(shcheduleData.to_date);
-        const fromDate = dayjs(shcheduleData.from_date);
-        const toTime = dayjs(shcheduleData.to_time, "HH:mm");
-        const fromTime = dayjs(shcheduleData.from_time, "HH:mm");
-        if (toDate.isBefore(today) || fromDate.isBefore(today)) {
-            return res.status(401).json({ alert: "you can't enter past dates" });
-        }
+        for (const schedule of shcheduleData) {
 
-        if (!toTime.isAfter(fromTime)) {
-            return res.status(401).json({ alert: "end time can't be before start time" })
-        }
-
-        console.log(shcheduleData);
-        const schDataMatch = {
-            doctor_ID: shcheduleData.docID,
-            doctor_from_time: shcheduleData.from_time,
-            doctor_to_time: shcheduleData.to_time,
-            doc_slot_dur: shcheduleData.slot_duration,
-            doc_from_date: shcheduleData.from_date,
-            doc_to_date: shcheduleData.to_date
-        };
-
-
-        const scheduleSaved = await insertDoctorSchedule(tranx, schDataMatch);
-
-        let daysSaved = [] //array declared to counter check the insertions
-
-        for (const day of req.body.doc_days) {
-            const schDayDataMatch = {
-                schedule_ID: scheduleSaved[0], //to be figured how it comes
-                doc_sch_day_ID: day
+            const today = dayjs().startOf("day");
+            const toDate = dayjs(schedule.to_date);
+            const fromDate = dayjs(schedule.from_date);
+            const toTime = dayjs(schedule.to_time, "HH:mm");
+            const fromTime = dayjs(schedule.from_time, "HH:mm");
+            if (toDate.isBefore(today) || fromDate.isBefore(today)) {
+                return res.status(401).json({ alert: "you can't enter past dates" });
             }
 
-            const dayInserted = await insertDocDays(tranx, schDayDataMatch);
-            daysSaved.push(dayInserted);
+            if (!toTime.isAfter(fromTime)) {
+                return res.status(401).json({ alert: "end time can't be before start time" });
+            }
 
-        }
-        // console.log(dayInserted);
-        (await tranx).commit();
+            const schDataMatch = {
 
-        if (scheduleSaved && req.body.doc_days.length === daysSaved.length) {
+                doctor_ID: schedule.docID,
+                doctor_day_ID: schedule.doc_day,
+                doctor_from_time: schedule.from_time,
+                doctor_to_time: schedule.to_time,
+                doc_from_date: schedule.from_date,
+                doc_to_date: schedule.to_date,
+                doc_slot_dur: schedule.slot_duration,
+            };
+
+            scheduleSaved = await insertDoctorSchedule(tranx, schDataMatch);
+
+            recordsSaved.push(scheduleSaved);
+            console.log(recordsSaved);
+        };
+
+        (await tranx.commit());
+        if (scheduleSaved && shcheduleData.length === recordsSaved.length) {
 
             return res.status(200).json("Schedule submitted successfully");
         } else {
@@ -81,17 +75,37 @@ const saveDoctorSchedule = async (req, res) => {
 
     } catch (error) {
         (await tranx).rollback();
-        res.status(400).json({ error: error.message });
+        if(error.code === "ER_DUP_ENTRY"){
+             return res.status(401).json({ alert: "You can't register  same doctor's schdeule for same dates again!" });
+        }else
+        return res.status(400).json({ code: error.code, error: error.message });
 
     }
 };
+
 
 const showDoctorSchedule = async (req, res) => {
     try {
         const doctorId = req.params.id;
         const docSchedule = await fetchDoctorAllSchedules(doctorId);
+        console.log(docSchedule);
+        const formattedSchedule = [];
+        docSchedule.forEach(schedule => {
+            const scheduleformat = {
+                
+                schedule_id: schedule.id,
+                doc_ID: schedule.doctor_ID,
+                doc_day: schedule.day,
+                doc_from_time: dayjs(schedule.doctor_from_time, "HH:mm:ss").format("hh:mm A"),
+                doc_to_time: dayjs(schedule.doctor_to_time, "HH:mm:ss").format("hh:mm A"),
+                doc_from_date: dayjs(schedule.doc_from_date).format("ddd DD MMM YYYY"),
+                doc_to_date: dayjs(schedule.doc_to_date).format("ddd DD MMM YYYY"),
+                doc_slot_dur: schedule.doc_slot_dur + " minutes"
+            }
+            formattedSchedule.push(scheduleformat);
+        });
         if (docSchedule) {
-            res.status(200).json(docSchedule);
+            res.status(200).json(formattedSchedule);
         } else {
             res.status(400).json({ message: "DB error! nothing found" });
         }
@@ -101,14 +115,14 @@ const showDoctorSchedule = async (req, res) => {
 
 };
 
+
 const changeDoctorSchedule = async (req, res) => {
     const tranx = await knex.transaction();
     try {
         const editedDocSchedule = req.body;
         const scheduleID = editedDocSchedule.sch_ID;
         const ExistingDocSchedule = await fetchExistingDocSchedule(scheduleID);
-        const ExistingDocDays = await fetchExistingDocDays(ExistingDocSchedule.schedule_ID);
-        // return res.json({ExistingDocSchedule, ExistingDocDays}); 
+        return res.json(ExistingDocSchedule);
         const updatedSchMatch = {
 
             doctor_from_time:

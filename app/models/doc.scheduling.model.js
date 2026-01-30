@@ -27,11 +27,9 @@ const fetchDoctorSchedule = (doctorID, aptDate) => {
 
 const fetchDoctorAllSchedules = (doctorID) => {
     return knex("doctors_scheduling")
-        .join("doctors_day_schedule", "doctors_scheduling.id", "doctors_day_schedule.schedule_ID")
-        .join("days", "doctors_day_schedule.doc_sch_day_ID", "days.id")
-        .where("doctors_scheduling.doctor_ID", doctorID)
-        .groupBy("doctors_scheduling.id")
-        .select("doctors_scheduling.*", knex.raw("GROUP_CONCAT(days.day) as days"));
+    .join("days", "doctors_scheduling.doctor_day_ID", "days.id")
+        .where("doctor_ID", doctorID)
+        .select("doctors_scheduling.*", "days.day");
 };
 
 
