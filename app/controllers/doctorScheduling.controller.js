@@ -57,7 +57,7 @@ const saveDoctorSchedule = async (req, res) => {
             scheduleSaved = await insertDoctorSchedule(tranx, schDataMatch);
 
             recordsSaved.push(scheduleSaved);
-            console.log(recordsSaved);
+            
         };
 
         (await tranx.commit());

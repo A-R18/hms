@@ -7,6 +7,7 @@ exports.up = function (knex) {
     table.increments("id");
     table.integer("patient_ID").unsigned();
     table.integer("doctor_ID").unsigned();
+    table.integer("schedule_ID").unsigned();
     table.date("appointment_date").notNullable();
     table.time("appointment_time").notNullable();
     table
@@ -17,6 +18,7 @@ exports.up = function (knex) {
 
     table.foreign("patient_ID").references("id").inTable("patients");
     table.foreign("doctor_ID").references("id").inTable("doctors");
+    table.foreign("schedule_ID").references("id").inTable("doctors_scheduling");
   });
 };
 

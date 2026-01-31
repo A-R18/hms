@@ -14,11 +14,12 @@ const insertDocDays = (db, docDaySch) => {
 };
 
 
-const fetchDoctorSchedule = (doctorID, aptDate) => {
+const fetchDoctorSchedule = (doctorID, aptDate, dayID) => {
     return knex("doctors_scheduling")
         .where({ doctor_ID: doctorID })
         .andWhere("doctors_scheduling.doc_from_date", "<=", aptDate)
         .andWhere("doctors_scheduling.doc_to_date", ">=", aptDate)
+        .andWhere({ doctor_day_ID: dayID })
         .first();
 };
 
@@ -65,12 +66,6 @@ const removeDoctorSchedule = (schID) => {
 
 
 
-const checkDayInScheduling = (schID) => {
-    return knex("doctors_day_schedule")
-        .where({ schedule_ID: schID })
-        .pluck("doc_sch_day_ID");
-    //work halted due to an occurring problem in logic
-}
 
 module.exports = {
     fetchDays,
@@ -82,6 +77,5 @@ module.exports = {
     fetchDoctorAllSchedules,
     insertDocDays,
     fetchExistingDocDays,
-    editDocSchDays,
-    checkDayInScheduling
+    editDocSchDays
 };

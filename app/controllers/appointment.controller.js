@@ -5,7 +5,12 @@ dayjs.extend(customParseFormat);
 dayjs.extend(duration);
 const { fetchDoctorSchedule, checkDayInScheduling } = require("../models/doc.scheduling.model");
 const { generateAllSlots, generateFilteredSlots } = require("../services/appointment.services");
-const { fetchTodaysAppointments, insertAppointment, fetchAllAppointments, removeAppointment, fetchExistingAppointmentData, rescheduleAppointment } = require("../models/appointment.model.js");
+const { fetchTodaysAppointments,
+    insertAppointment,
+    fetchAllAppointments,
+    removeAppointment,
+    fetchExistingAppointmentData,
+    rescheduleAppointment } = require("../models/appointment.model.js");
 
 
 
@@ -21,30 +26,19 @@ const createAppointment = async (req, res) => {
         const dayID = dayjs(appointmentDate).day();
         //here the query based comparison will be made so that day is specified correctly! (where appointmentDate <= doc_to_date)
         const docScheduleExists = await fetchDoctorSchedule(docID, appointmentDate, dayID);
-        const scheduleID = docScheduleExists.id;
-        const existingDocDays = await checkDayInScheduling(scheduleID);
-        // return res.json(existingDocDays);
-        console.log("schedule id is: ", scheduleID);
-
-        console.log("days we get ", existingDocDays);
-        if (!existingDocDays.includes(dayID))
-            return res.status(401).json({ constraint: "day is not available in doctor's schedule!" });
-
-
-        //a schedule will be selected which will be valid 
-        // (where appointmentDate <= doc_to_date)
+        // return res.json(docScheduleExists);
 
         if (docScheduleExists) {
             //fetches all slots from db 
             const alreadyBooked = await fetchTodaysAppointments(docID, appointmentDate);//for retreiving that day only
-            console.log("already booked array is: ", alreadyBooked);
+            
             let alreadyBookedSlots = [];
             alreadyBooked.map((slot) => alreadyBookedSlots.push(slot.appointment_time));
-
 
             const start_T = docScheduleExists.doctor_from_time;
             const end_T = docScheduleExists.doctor_to_time;
             const slotDur = docScheduleExists.doc_slot_dur;
+            const scheduleID = docScheduleExists.id;
 
             const rawGeneratedSlots = alreadyBookedSlots.length !== 0
                 ? generateFilteredSlots(alreadyBookedSlots, start_T, end_T, slotDur)
@@ -54,18 +48,16 @@ const createAppointment = async (req, res) => {
             rawGeneratedSlots.forEach(slot => {
                 formattedSlots.push(dayjs(slot, "HH:mm:ss").format("hh:mm A"));
             });
-            return res.status(200).json(formattedSlots);
+            return res.status(200).json({ schedule_id: scheduleID, appointment_date: appointmentDate, formattedSlots });
 
 
         } else {
-            return res.status(404).json({ alert: "Doctor schedule not available for this day!" });
+            return res.status(404).json({ alert: "Doctor schedule isn't available for this day!" });
         }
     } catch (error) {
 
         return res.status(200).json({ error: error.message, stackTrace: error.stack });
-
     }
-
 };
 
 const saveAppointment = async (req, res) => {
@@ -74,6 +66,7 @@ const saveAppointment = async (req, res) => {
         const dataMatch = {
             patient_ID: comingAptData.patient_id,
             doctor_ID: comingAptData.doc_id,
+            schedule_ID: comingAptData.doc_sch_id,
             appointment_date: comingAptData.doc_apt_date,
             appointment_time: comingAptData.apt_time,
             appointment_status: comingAptData.apt_status
@@ -103,7 +96,6 @@ const deleteAppointment = async (req, res) => {
 };
 
 
-
 const changeAppointment = async (req, res) => {
     try {
         const appointment_ID = req.body.apt_Id;
@@ -125,14 +117,10 @@ const changeAppointment = async (req, res) => {
         } else {
             return res.status(401).json({ alert: "Only pending appointments can be rescheduled!" });
         }
-
-
-
     } catch (error) {
         return res.status(400).json({ error: error.message });
     }
 };
-
 
 
 
@@ -142,7 +130,7 @@ const showAppointment = async (req, res) => {
         let formattedAppointments = [];
         if (rawAppointmentsfetched) {
             rawAppointmentsfetched.forEach(appointment => {
-                // console.log(appointment);
+               
                 const dataMatch = {
                     id: appointment.id,
                     patient_ID: appointment.patient_ID,
@@ -163,4 +151,10 @@ const showAppointment = async (req, res) => {
     }
 }
 
-module.exports = { createAppointment, deleteAppointment, showAppointment, changeAppointment, saveAppointment }
+module.exports = {
+    createAppointment,
+    deleteAppointment,
+    showAppointment,
+    changeAppointment,
+    saveAppointment
+}

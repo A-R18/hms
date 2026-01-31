@@ -4,7 +4,7 @@ const validatePatientData = [
     .notEmpty()
     .withMessage("Patient name is required")
     .isAlpha("en-US", { ignore: " " })
-    .withMessage("Patient name must contain only letters"),
+    .withMessage("Patient name must comprise letters only"),
 
   body("p_condition")
     .notEmpty()
@@ -16,9 +16,9 @@ const validatePatientData = [
     .notEmpty()
     .withMessage("Contact is required")
     .isNumeric()
-    .withMessage("Invalid ph no! Contact must be a number")
-    .isLength({ min: 10, max: 10 })
-    .withMessage("Contact must contain 10 digits"),
+    .withMessage("Contact must be a number")
+    .isLength({ min: 11, max: 13 })
+    .withMessage("Contact must be 11 digits, i.e. 03XXXXXXXXX")
 ];
 const validatePatientUpdateData = [
   param("id")
@@ -32,14 +32,17 @@ const validatePatientUpdateData = [
     .isAlpha("en-US", { ignore: " " })
     .withMessage("Patient name must contain only letters"),
 
-  body("p_condition").optional().isString().withMessage("Condition must be a string"),
+  body("p_condition")
+    .optional()
+    .isString()
+    .withMessage("Condition must be a string"),
 
   body("p_contact")
     .optional()
     .isNumeric()
     .withMessage("Contact must be a number")
-    .isLength({ min: 10, max: 10 })
-    .withMessage("Contact must be 10 digits"),
+    .isLength({ min: 11, max: 13 })
+    .withMessage("Contact must be 11 digits, i.e. 03XXXXXXXXX")
 ];
 
 module.exports = { validatePatientData, validatePatientUpdateData };

@@ -56,7 +56,6 @@ const showCurrentUser = (userID) => {
 };
 
 const checkAccess = async (privilege, allowedModule, userRoleID) => {
-  console.log(privilege, allowedModule, userRoleID);
   const permissionMatch = await knex("permissions")
     .where({ role_ID: userRoleID })
     .join("privileges", "permissions.privilege_ID", "privileges.id")
