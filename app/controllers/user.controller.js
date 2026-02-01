@@ -13,6 +13,9 @@ const {
   fetchExistingDoctor,
   fetchDcotorSpecialities,
   fetchDoctors,
+  count,
+  totalUsers,
+  totalDoctors,
 } = require("../models/user.model.js");
 const { validationResult } = require("express-validator");
 const bcrypt = require("bcrypt");
@@ -71,8 +74,9 @@ const updateUser = async (req, res) => {
       }
     } else {
       try {
+        //another try looks suspicious, needs to be debugged/removed!
         const existingDoctor = await fetchExistingDoctor(tranx, id);
-        
+
         const docData = {
           user_name: req?.body?.name ? incomingData.name : oldUserData.user_name,
           user_email: req?.body?.email ? incomingData.email : oldUserData.user_email,
@@ -88,7 +92,7 @@ const updateUser = async (req, res) => {
         //transaction is saving users gen data first then doc data
 
         if (existingDoctor) {
-          
+
           await updateOldDoc(tranx, id, docData);
           await updateSpecDoc(tranx, id, docSpecData);
           tranx.commit();
@@ -97,46 +101,93 @@ const updateUser = async (req, res) => {
             .json({ message: "updated doctor data is :" });
 
         } else {
-         //if doctor particulars are entered for first time:
+          //if doctor particulars are entered for first time:
           await updateOldDoc(tranx, id, docData);
           await regSpecDoc(tranx, docSpecData);
           tranx.commit();
           return res
             .status(200)
-            .json({ message: "updated doctor data is :"});
+            .json({ message: "updated doctor data is :" });
         }
 
       } catch (error) {
         tranx.rollback();
-        return res.status(400).json(error);
+        return res.status(400).json({ error: error.message });
       }
     }
   } catch (error) {
-    return res.status(501).json({ alert: "Didn't update!", error: error });
+    return res.status(501).json({ alert: "Didn't update!", error: error.message });
   }
 };
 
 const showUsers = async (req, res) => {
   try {
-    const allUsers = await fetchAllusers();
+    const [{ count }] = await totalUsers;
+    let page;
+    const limit = 5;
+    const firstPage = 1;
+    const lastPage = Math.ceil(count / limit);
+    console.log(lastPage);
+    if (req.query.firstPage) {
+      page = firstPage;
+    } else
+      if (req.query.lastPage) {
+        page = lastPage;
+      } else
+        if (!req.query.page) {
+          page = 1;
+        } else
+          if (req.query.page < 1 || req.query.page > lastPage) {
+            return res.json("invalid page");
+          } else
+            if (req.query.page) {
+              page = req.query.page;
+            }
+    const offset = (page - 1) * limit;
+    console.log(offset);
+    const allUsers = await fetchAllusers(limit, offset, "user");
 
     if (allUsers) {
-      return res.status(200).json(allUsers);
+      return res.status(200).json({ totalUsers: count, currentPage: page, allUsers });
     }
   } catch (error) {
-    return res.status(400).json({ error });
+    return res.status(400).json({ error: error.message });
   }
 };
 
 const showDoctors = async (req, res) => {
   try {
-    const allDoctors = await fetchDoctors("doctor");
+    let page;
+    const [{ count }] = await totalDoctors;
+    console.log("total doctors are " + count);
+    const limit = 5;
+    const firstPage = 1;
+    const lastPage = Math.ceil(count / limit);
+    if (req.query.firstPage) {
+      page = firstPage
+    } else
+      if (req.query.lastPage) {
+        page = lastPage
+      } else
+        if (!req.query.page) {
+          page = 1
+        } else
+          if (req.query.page < 1 || req.query.page > lastPage) {
+            return res.json("invalid page specified!")
+          } else
+            if (req.query.page) {
+              page = req.query.page;
+            }
+
+    const offset = (page - 1) * limit;
+
+    const allDoctors = await fetchDoctors("doctor", limit, offset);
     if (allDoctors.length === 0) {
       return res.status(400).json({ alert: "No doctors particulars registered yet!" });
     }
-    return res.status(200).json(allDoctors);
+    return res.status(200).json({ totalDoctors: count, currentPage: page, allDoctors });
   } catch (error) {
-    return res.status(400).json({ error: error });
+    return res.status(400).json({ error: error.message });
   }
 };
 
@@ -149,7 +200,7 @@ const showDoctorSpecialities = async (req, res) => {
       return res.status(400).json({ message: "unable to fetch specialities" });
     }
   } catch (error) {
-    return res.status(400).json({ error: error });
+    return res.status(400).json({ error: error.message });
   }
 };
 
@@ -161,7 +212,7 @@ const deleteUser = async (req, res) => {
       return res.status(200).json({ alert: "Deleted successfully!" });
     }
   } catch (error) {
-    return res.status(400).json({ message: "Deletion unsuccessfull!", error: error });
+    return res.status(400).json({ message: "Deletion unsuccessfull!", error: error.message });
   }
 };
 

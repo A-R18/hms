@@ -1,3 +1,5 @@
+const { count, countDoctors } = require("../utils/recordCount.util.js");
+
 const knex = require("knex")(require("../config/dbMod.js"));
 
 const saveUser = (userData) => {
@@ -8,19 +10,24 @@ const fetchUserRole = (userRoleID) => {
   return knex("roles").where({ id: userRoleID }).select("roles.role").first();
 };
 
-const fetchAllusers = () => {
+const fetchAllusers = (givenLimit, givenOffset, role) => {
+
   return knex("users")
     .join("roles", "users.role_ID", "roles.id")
+    .where("roles.role", role)
     .select(
       "users.id as user_Id",
-      "roles.role",
       "users.user_name",
       "users.user_email",
-      "users.user_password"
-    );
+      "roles.role",
+      "users.user_password",
+    )
+    
+    .limit(givenLimit)
+    .offset(givenOffset);
 };
 
-const fetchDoctors = (role) => {
+const fetchDoctors = (role, givenLimit, givenOffset) => {
   return knex("users")
     .leftJoin("doctors", "users.id", "doctors.user_ID")
     .leftJoin("roles", "users.role_ID", "roles.id")
@@ -36,7 +43,7 @@ const fetchDoctors = (role) => {
       "doctors.contact",
       "doctors.spec_ID",
       "doctor_specialities.speciality"
-    );
+    ).limit(givenLimit).offset(givenOffset);
 };
 
 const fetchExistingUser = (userID) => {
@@ -94,6 +101,11 @@ const fetchDcotorSpecialities = () => {
   return knex("doctor_specialities").select("*");
 };
 
+const totalUsers = count("users", "user");
+const totalDoctors = count("users", "doctor");
+const totalPatients = count("patients");
+
+
 module.exports = {
   saveUser,
   fetchAllusers,
@@ -109,4 +121,7 @@ module.exports = {
   fetchDoctors,
   fetchDcotorSpecialities,
   regSpecDoc,
+  totalUsers,
+  totalDoctors,
+  totalPatients
 };

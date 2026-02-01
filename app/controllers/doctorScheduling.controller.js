@@ -74,7 +74,7 @@ const saveDoctorSchedule = async (req, res) => {
         if(error.code === "ER_DUP_ENTRY"){
              return res.status(401).json({ alert: "You can't register  same doctor's schdeule for same dates again!" });
         }else
-        return res.status(400).json({ code: error.code, error: error.message });
+        return res.status(400).json({ error: error.message });
 
     }
 };

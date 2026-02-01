@@ -1,3 +1,5 @@
+
+
 const knex = require("knex")(require("../config/dbMod.js"));
 
 const fetchTodaysAppointments = (doc_id, aptDate) => {
@@ -7,8 +9,14 @@ const fetchTodaysAppointments = (doc_id, aptDate) => {
         .select("appointment_time");
 };
 
-const fetchAllAppointments = () => {
-    return knex("appointments").select("*");
+const fetchAllAppointments = (today, seventhDay, givenLimit, givenOffset) => {
+    return knex("appointments")
+        .where("appointments.appointment_date", ">=", today)
+        .andWhere("appointments.appointment_date", "<=", seventhDay)
+        .orWhere("appointments.appointment_status", "pending")
+        .orWhere("appointments.appointment_status", "confirmed")
+        .limit(givenLimit)
+        .offset(givenOffset);
 };
 
 
@@ -22,7 +30,7 @@ const removeAppointment = (aptID) => {
 
 const fetchExistingAppointmentData = (aptID) => {
     return knex("appointments").where({ id: aptID })
-    .select("appointments.appointment_time as aptTime", "appointments.appointment_date as aptDate", "appointments.appointment_status as aptStatus" ).first();
+        .select("appointments.appointment_time as aptTime", "appointments.appointment_date as aptDate", "appointments.appointment_status as aptStatus").first();
 }
 
 const rescheduleAppointment = (appointmntID, aptData) => {
@@ -30,11 +38,23 @@ const rescheduleAppointment = (appointmntID, aptData) => {
         .update(aptData);
 };
 
+
+const count7DaysAppointments = (today, seventhDay) => {
+    return knex("appointments")
+        .where("appointments.appointment_date", ">=", today)
+        .andWhere("appointments.appointment_date", "<=", seventhDay)
+        .orWhere("appointments.appointment_status", "pending")
+        .orWhere("appointments.appointment_status", "confirmed")
+        .count("* as count");
+};
+
+
 module.exports = {
     insertAppointment,
     fetchTodaysAppointments,
     fetchAllAppointments,
     removeAppointment,
     rescheduleAppointment,
-    fetchExistingAppointmentData
+    fetchExistingAppointmentData,
+    count7DaysAppointments
 };

@@ -10,7 +10,8 @@ const { fetchTodaysAppointments,
     fetchAllAppointments,
     removeAppointment,
     fetchExistingAppointmentData,
-    rescheduleAppointment } = require("../models/appointment.model.js");
+    rescheduleAppointment,
+    count7DaysAppointments } = require("../models/appointment.model.js");
 
 
 
@@ -31,7 +32,7 @@ const createAppointment = async (req, res) => {
         if (docScheduleExists) {
             //fetches all slots from db 
             const alreadyBooked = await fetchTodaysAppointments(docID, appointmentDate);//for retreiving that day only
-            
+
             let alreadyBookedSlots = [];
             alreadyBooked.map((slot) => alreadyBookedSlots.push(slot.appointment_time));
 
@@ -126,11 +127,39 @@ const changeAppointment = async (req, res) => {
 
 const showAppointment = async (req, res) => {
     try {
-        const rawAppointmentsfetched = await fetchAllAppointments();
+        const today = dayjs().startOf("day").format("YYYY-MM-DD");
+        const weekFromToday = dayjs().add(7, "day").endOf("day").format("YYYY-MM-DD");
+        const [{ count }] = await count7DaysAppointments(today, weekFromToday);
+
+        let page;
+        const limit = 4;
+        const firstPage = 1;
+        const lastPage = Math.ceil(count / limit);
+
+        if (req.query.firstPage) {
+            page = firstPage;
+        }else
+            if (req.query.lastPage) {
+                page = lastPage;
+            }else
+                if (!req.query.page) {
+
+                    page = 1;
+                }else
+                    if (req.query.page < firstPage || req.query.page > lastPage) {
+                        return res.json("invalid page entered");
+                    }else
+                        if (req.query.page) {
+                            page = req.query.page;
+                        }
+
+        const offset = (page - 1) * limit;
+        const rawAppointmentsfetched =
+            await fetchAllAppointments(today, weekFromToday, limit, offset);
         let formattedAppointments = [];
         if (rawAppointmentsfetched) {
             rawAppointmentsfetched.forEach(appointment => {
-               
+
                 const dataMatch = {
                     id: appointment.id,
                     patient_ID: appointment.patient_ID,
@@ -142,7 +171,7 @@ const showAppointment = async (req, res) => {
                 formattedAppointments.push(dataMatch);
 
             });
-            return res.status(200).json(formattedAppointments);
+            return res.status(200).json({ totalAppointments: count, currentPage: page, formattedAppointments });
         } else {
             return res.status(404).json({ alert: "DB error, couldn't fetch!" });
         }
