@@ -43,26 +43,22 @@ const displayPatients = async (req, res) => {
 
     if (req.query.firstPage) {
       page = firstPage;
-    } else
-      if (req.query.lastPage) {
-        page = lastPage;
-      } else
-        if (!req.query.page) {
-          page = 1
-        } else
-          if (req.query.page > lastPage || req.query.page < 1) {
-            return res.json({ alert: "invalid page selected!" });
-          } else
-            if (req.query.page) {
-              page = req.query.page;
-            }
-    // req.body.lastPage?page = 
+    } else if (req.query.lastPage) {
+      page = lastPage;
+    } else if (!req.query.page) {
+      page = 1;
+    } else if (req.query.page > lastPage || req.query.page < 1) {
+      return res.json({ alert: "invalid page selected!" });
+    } else if (req.query.page) {
+      page = req.query.page;
+    }
+    // req.body.lastPage?page =
     console.log("Total patients are ", count);
     const offset = (page - 1) * limit;
     console.log(offset);
     const patientsShown = await showPatients(limit, offset);
     if (patientsShown) {
-      return res.status(200).json({totalUsers: count, currentPage: page, patientsShown});
+      return res.status(200).json({ totalUsers: count, currentPage: page, patientsShown });
     } else return res.status(400).json("didn't fetch patients!");
   } catch (error) {
     return res.status(400).json(error.message);

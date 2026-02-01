@@ -19,13 +19,10 @@ const fetchExistingPatient = (patientID) => {
 };
 
 const showPatients = (givenLimit, givenOffset) => {
-  return knex("patients").select(
-    "patients.id",
-    "patients.patient_name",
-    "patients.condition",
-    "patients.contact"
-  ).limit(givenLimit)
-  .offset(givenOffset);
+  return knex("patients")
+    .select("patients.id", "patients.patient_name", "patients.condition", "patients.contact")
+    .limit(givenLimit)
+    .offset(givenOffset);
 };
 
 const updatePt = (patientID, updatedPatient) => {

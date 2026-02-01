@@ -7,7 +7,7 @@ exports.up = function (knex) {
     table.increments("id");
     table.string("patient_name", 80).notNullable();
     table.string("condition", 150).notNullable();
-    table.string("contact",15).notNullable();
+    table.string("contact", 15).notNullable();
     table.timestamp("created_at").notNullable();
   });
 };

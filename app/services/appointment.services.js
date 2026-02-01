@@ -5,26 +5,23 @@ dayjs.extend(customParseFormat);
 dayjs.extend(duration);
 
 const generateAllSlots = (start, end, slot_dur) => {
-    
-    const startTime = dayjs(start, "HH:mm");
-    const endTime = dayjs(end, "HH:mm");
-    const docSlotDuration = dayjs.duration(slot_dur, "minutes");
-    let generatedSlots = [];
-    let i = startTime;
-    while (i.isBefore(endTime)) {
-        generatedSlots.push(i.format("HH:mm:ss"));
-        i = i.add(docSlotDuration);
-    }
-    return generatedSlots;
-}
+  const startTime = dayjs(start, "HH:mm");
+  const endTime = dayjs(end, "HH:mm");
+  const docSlotDuration = dayjs.duration(slot_dur, "minutes");
+  let generatedSlots = [];
+  let i = startTime;
+  while (i.isBefore(endTime)) {
+    generatedSlots.push(i.format("HH:mm:ss"));
+    i = i.add(docSlotDuration);
+  }
+  return generatedSlots;
+};
 const generateFilteredSlots = (existingSlots, start_T, end_T, slotDur) => {
-    const totalSlots = generateAllSlots(start_T, end_T, slotDur);
-    const bookedSlots = existingSlots;
-    const filteredSlots = totalSlots.filter(slot=>!bookedSlots.includes(slot));
-    return filteredSlots;
-    
-
-}
+  const totalSlots = generateAllSlots(start_T, end_T, slotDur);
+  const bookedSlots = existingSlots;
+  const filteredSlots = totalSlots.filter((slot) => !bookedSlots.includes(slot));
+  return filteredSlots;
+};
 
 module.exports = { generateAllSlots, generateFilteredSlots };
 

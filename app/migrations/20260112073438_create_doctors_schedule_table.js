@@ -14,7 +14,7 @@ exports.up = function (knex) {
     table.tinyint("doc_slot_dur").notNullable();
     table.foreign("doctor_ID").references("id").inTable("doctors");
     table.foreign("doctor_day_ID").references("id").inTable("days");
-    table.unique(["doctor_ID", "doc_from_date", "doc_to_date", "doctor_day_ID"],"uniqueConst");
+    table.unique(["doctor_ID", "doc_from_date", "doc_to_date", "doctor_day_ID"], "uniqueConst");
   });
 };
 
@@ -22,4 +22,4 @@ exports.up = function (knex) {
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
-exports.down = function (knex) { };
+exports.down = function (knex) {};

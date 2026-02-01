@@ -18,7 +18,7 @@ const validatePatientData = [
     .isNumeric()
     .withMessage("Contact must be a number")
     .isLength({ min: 11, max: 13 })
-    .withMessage("Contact must be 11 digits, i.e. 03XXXXXXXXX")
+    .withMessage("Contact must be 11 digits, i.e. 03XXXXXXXXX"),
 ];
 const validatePatientUpdateData = [
   param("id")
@@ -32,17 +32,14 @@ const validatePatientUpdateData = [
     .isAlpha("en-US", { ignore: " " })
     .withMessage("Patient name must contain only letters"),
 
-  body("p_condition")
-    .optional()
-    .isString()
-    .withMessage("Condition must be a string"),
+  body("p_condition").optional().isString().withMessage("Condition must be a string"),
 
   body("p_contact")
     .optional()
     .isNumeric()
     .withMessage("Contact must be a number")
     .isLength({ min: 11, max: 13 })
-    .withMessage("Contact must be 11 digits, i.e. 03XXXXXXXXX")
+    .withMessage("Contact must be 11 digits, i.e. 03XXXXXXXXX"),
 ];
 
 module.exports = { validatePatientData, validatePatientUpdateData };

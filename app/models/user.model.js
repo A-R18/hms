@@ -11,7 +11,6 @@ const fetchUserRole = (userRoleID) => {
 };
 
 const fetchAllusers = (givenLimit, givenOffset, role) => {
-
   return knex("users")
     .join("roles", "users.role_ID", "roles.id")
     .where("roles.role", role)
@@ -20,9 +19,9 @@ const fetchAllusers = (givenLimit, givenOffset, role) => {
       "users.user_name",
       "users.user_email",
       "roles.role",
-      "users.user_password",
+      "users.user_password"
     )
-    
+
     .limit(givenLimit)
     .offset(givenOffset);
 };
@@ -43,7 +42,9 @@ const fetchDoctors = (role, givenLimit, givenOffset) => {
       "doctors.contact",
       "doctors.spec_ID",
       "doctor_specialities.speciality"
-    ).limit(givenLimit).offset(givenOffset);
+    )
+    .limit(givenLimit)
+    .offset(givenOffset);
 };
 
 const fetchExistingUser = (userID) => {
@@ -105,7 +106,6 @@ const totalUsers = count("users", "user");
 const totalDoctors = count("users", "doctor");
 const totalPatients = count("patients");
 
-
 module.exports = {
   saveUser,
   fetchAllusers,
@@ -123,5 +123,5 @@ module.exports = {
   regSpecDoc,
   totalUsers,
   totalDoctors,
-  totalPatients
+  totalPatients,
 };

@@ -1,6 +1,7 @@
 # Backend for HMS so far:
 
 ## Modules built:
+
 - USER AUTHENTICATION (LOGIN, AUTHORIZATION)
 - USER (CRUD)
 - PATIENT (CRUD)
@@ -27,8 +28,8 @@
 - Made login user (POST)
 - Made create doctor Schedule (All days [from to date]) (POST)
 - Made update doctor Schedule (All days [from to date]) (POST)
-- Made update doctor Schedule  (POST)
-- Made show doctor Schedule  (GET)
+- Made update doctor Schedule (POST)
+- Made show doctor Schedule (GET)
 - Made create appointment (POST)
 - Made save appointment (POST)
 - Made show appointment (GET)
@@ -38,6 +39,8 @@
 - Made show Patient Assessment (GET) {pending}
 - Made show Allergies (GET)
 - Made show Days (GET)
+- Made pagination for (users, patients, doctors)
+- Made pagination for (appointments based on a week from today & pending or confirmed appointments)
 
 ##
 

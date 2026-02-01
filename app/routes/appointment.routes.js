@@ -1,10 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const { createAppointment,
-        changeAppointment,
-        deleteAppointment,
-        showAppointment,
-        saveAppointment } = require("../controllers/appointment.controller.js");
+const {
+  createAppointment,
+  changeAppointment,
+  deleteAppointment,
+  showAppointment,
+  saveAppointment,
+} = require("../controllers/appointment.controller.js");
 
 router.post("/create-appointment", createAppointment);
 router.post("/save-appointment", saveAppointment);

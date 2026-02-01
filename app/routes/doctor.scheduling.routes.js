@@ -10,11 +10,7 @@ const {
 } = require("../controllers/doctorScheduling.controller.js");
 const { routeAction } = require("../middleware/accessChecker.js");
 
-
-router.get("/show-days",
-  authorize,
-  routeAction("READ", "doctors"),
-  showDays);
+router.get("/show-days", authorize, routeAction("READ", "doctors"), showDays);
 
 router.post(
   "/save-doctor-timetable",

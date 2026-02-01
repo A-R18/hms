@@ -80,36 +80,29 @@ const updateUser = async (req, res) => {
         const docData = {
           user_name: req?.body?.name ? incomingData.name : oldUserData.user_name,
           user_email: req?.body?.email ? incomingData.email : oldUserData.user_email,
-          user_password: req?.body?.password ? hashedPass : oldUserData.password
+          user_password: req?.body?.password ? hashedPass : oldUserData.password,
         };
 
         const docSpecData = {
           user_ID: oldUserData.id,
           spec_ID: req?.body?.spz_ID ? incomingData.spz_ID : null,
-          contact: req?.body?.contact ? incomingData.contact : "not specified"
+          contact: req?.body?.contact ? incomingData.contact : "not specified",
         };
 
         //transaction is saving users gen data first then doc data
 
         if (existingDoctor) {
-
           await updateOldDoc(tranx, id, docData);
           await updateSpecDoc(tranx, id, docSpecData);
           tranx.commit();
-          return res
-            .status(200)
-            .json({ message: "updated doctor data is :" });
-
+          return res.status(200).json({ message: "updated doctor data is :" });
         } else {
           //if doctor particulars are entered for first time:
           await updateOldDoc(tranx, id, docData);
           await regSpecDoc(tranx, docSpecData);
           tranx.commit();
-          return res
-            .status(200)
-            .json({ message: "updated doctor data is :" });
+          return res.status(200).json({ message: "updated doctor data is :" });
         }
-
       } catch (error) {
         tranx.rollback();
         return res.status(400).json({ error: error.message });
@@ -130,19 +123,15 @@ const showUsers = async (req, res) => {
     console.log(lastPage);
     if (req.query.firstPage) {
       page = firstPage;
-    } else
-      if (req.query.lastPage) {
-        page = lastPage;
-      } else
-        if (!req.query.page) {
-          page = 1;
-        } else
-          if (req.query.page < 1 || req.query.page > lastPage) {
-            return res.json("invalid page");
-          } else
-            if (req.query.page) {
-              page = req.query.page;
-            }
+    } else if (req.query.lastPage) {
+      page = lastPage;
+    } else if (!req.query.page) {
+      page = 1;
+    } else if (req.query.page < 1 || req.query.page > lastPage) {
+      return res.json("invalid page");
+    } else if (req.query.page) {
+      page = req.query.page;
+    }
     const offset = (page - 1) * limit;
     console.log(offset);
     const allUsers = await fetchAllusers(limit, offset, "user");
@@ -164,20 +153,16 @@ const showDoctors = async (req, res) => {
     const firstPage = 1;
     const lastPage = Math.ceil(count / limit);
     if (req.query.firstPage) {
-      page = firstPage
-    } else
-      if (req.query.lastPage) {
-        page = lastPage
-      } else
-        if (!req.query.page) {
-          page = 1
-        } else
-          if (req.query.page < 1 || req.query.page > lastPage) {
-            return res.json("invalid page specified!")
-          } else
-            if (req.query.page) {
-              page = req.query.page;
-            }
+      page = firstPage;
+    } else if (req.query.lastPage) {
+      page = lastPage;
+    } else if (!req.query.page) {
+      page = 1;
+    } else if (req.query.page < 1 || req.query.page > lastPage) {
+      return res.json("invalid page specified!");
+    } else if (req.query.page) {
+      page = req.query.page;
+    }
 
     const offset = (page - 1) * limit;
 
