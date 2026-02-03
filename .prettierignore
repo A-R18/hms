@@ -4,3 +4,4 @@ package.json
 .prettierignore
 .gitignore
 desc.md
+node_modules

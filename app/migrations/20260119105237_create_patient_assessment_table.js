@@ -22,10 +22,10 @@ exports.up = function (knex) {
       .notNullable()
       .defaultTo("room_air");
     table.text("other_examinations").nullable();
-    table.text("assessment_diagnosis").notNullable();
-    table.text("treatment_plan").notNullable();
-    table.text("doctor_note").nullable();
-    table.enum("travel_recommendation", ["can_fly", "cannot_fly"]).nullable();
+    table.text("assessment_diagnosis").notNullable();//doc
+    table.text("treatment_plan").notNullable();//doc
+    table.text("doctor_note").nullable();//doc
+    table.enum("travel_recommendation", ["can_fly", "cannot_fly"]).nullable();//doc
     table
       .enum("travel_requirement", [
         "ordinary_seat",
@@ -33,14 +33,14 @@ exports.up = function (knex) {
         "stretcher_Case",
         "business_class_or_space",
       ])
-      .nullable();
+      .nullable();//doc
     table
       .enum("travelling_company_required", ["none", "non_medical_escort", "medical_escort"])
-      .nullable();
-    table.enum("doctor_advice_on_travel", ["required", "not_required"]).nullable();
-    table.string("doc_sign").notNullable();
+      .nullable();//doc
+    table.enum("doctor_advice_on_travel", ["required", "not_required"]).nullable();//doc
+    table.string("doc_sign").notNullable();//doc
     table.date("assessment_date").notNullable();
-    table.date("assessment_time").notNullable();
+    table.date("assessment_time").notNullable();//both
     table.foreign("patient_ID").references("id").inTable("patients");
     table.foreign("appointment_ID").references("id").inTable("appointments");
     table.foreign("treating_doctor_ID").references("id").inTable("doctors");
