@@ -7,6 +7,7 @@ exports.up = function (knex) {
     table.increments("id");
     table.integer("patient_ID").unsigned();
     table.integer("allergy_ID").unsigned();
+    table.unique(["patient_ID", "allergy_ID"]);
     table.foreign("patient_ID").references("id").inTable("patients");
     table.foreign("allergy_ID").references("id").inTable("allergies");
   });
