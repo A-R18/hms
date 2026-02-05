@@ -152,8 +152,7 @@ const showAppointment = async (req, res) => {
           id: appointment.id,
           patient_ID: appointment.patient_ID,
           doctor_ID: appointment.doctor_ID,
-          appointment_date: dayjs(appointment.appointment_date)
-          .format("ddd DD MMM YYYY"),
+          appointment_date: dayjs(appointment.appointment_date).format("ddd DD MMM YYYY"),
           appointment_time: dayjs(appointment.appointment_time, "HH:mm:ss").format("hh:mm:ss A"),
           appointment_status: appointment.appointment_status,
         };

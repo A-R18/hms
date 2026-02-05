@@ -22,7 +22,7 @@ exports.up = function (knex) {
     //   .notNullable()
     //   .defaultTo("room_air");
     table.timestamp("assessment_time").notNullable();
-    table.unique(["patient_ID","treating_doctor_ID","appointment_ID"], "single_assessment");
+    table.unique(["patient_ID", "treating_doctor_ID", "appointment_ID"], "single_assessment");
     table.foreign("patient_ID").references("id").inTable("patients");
     table.foreign("appointment_ID").references("id").inTable("appointments");
     table.foreign("treating_doctor_ID").references("id").inTable("doctors");

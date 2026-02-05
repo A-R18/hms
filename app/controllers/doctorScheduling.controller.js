@@ -83,14 +83,10 @@ const showDoctorSchedule = async (req, res) => {
         schedule_id: schedule.id,
         doc_ID: schedule.doctor_ID,
         doc_day: schedule.day,
-        doc_from_time: dayjs(schedule.doctor_from_time, "HH:mm:ss")
-        .format("hh:mm A"),
-        doc_to_time: dayjs(schedule.doctor_to_time, "HH:mm:ss")
-        .format("hh:mm A"),
-        doc_from_date: dayjs(schedule.doc_from_date)
-        .format("ddd DD MMM YYYY"),
-        doc_to_date: dayjs(schedule.doc_to_date)
-        .format("ddd DD MMM YYYY"),
+        doc_from_time: dayjs(schedule.doctor_from_time, "HH:mm:ss").format("hh:mm A"),
+        doc_to_time: dayjs(schedule.doctor_to_time, "HH:mm:ss").format("hh:mm A"),
+        doc_from_date: dayjs(schedule.doc_from_date).format("ddd DD MMM YYYY"),
+        doc_to_date: dayjs(schedule.doc_to_date).format("ddd DD MMM YYYY"),
         doc_slot_dur: schedule.doc_slot_dur + " minutes",
       };
       formattedSchedule.push(scheduleformat);

@@ -2,8 +2,8 @@
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
-exports.up = function(knex) {
-  return knex.schema.createTable("doctors_prescriptions", function(table){
+exports.up = function (knex) {
+  return knex.schema.createTable("doctors_prescriptions", function (table) {
     table.increments("id");
     table.integer("doctor_ID").unsigned();
     table.integer("patient_ID").unsigned();
@@ -22,6 +22,4 @@ exports.up = function(knex) {
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
-exports.down = function(knex) {
-  
-};
+exports.down = function (knex) {};
