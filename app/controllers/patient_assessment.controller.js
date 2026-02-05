@@ -1,4 +1,10 @@
-const { insertPatientAssesment, insertPatientAllergies, editPtAssessment, fetchExistingAssessment, fetchExistingPtAllergies } = require("../models/patient_assessment.model.js");
+const dayjs = require("dayjs");
+const { insertPatientAssesment,
+     insertPatientAllergies,
+     editPtAssessment,
+     fetchExistingAssessment,
+     fetchExistingPtAllergies,
+     showPtAssessment } = require("../models/patient_assessment.model.js");
 
 const knex = require("knex")(require("../config/dbMod.js"));
 const savePatientAssessment = async (req, res) => {
@@ -105,47 +111,56 @@ const editPatientAssessment = async (req, res) => {
                     ? editedAsmData.b_rate
                     : assessmentFetched.breathing_rate
             };
-
+            console.log("Allergies are: ", req.body.pt_allergies);
             if (req.body.pt_allergies === null) {
                 await editPtAssessment(knex, assessmentID, editedAsmDataMatch);
                 return res.status(400).json({ message: "assessment edited successfully" });
             } else {
-                try {
-                    let allergiesDataMatch;
-                    await editPtAssessment(tranx, assessmentID, editedAsmDataMatch);
-                    for (const allergy of req.body.pt_allergies) {
-                        console.log(allergy);
-                        allergiesDataMatch = {
-                            patient_ID: assessmentFetched.patient_ID,
-                            allergy_ID: allergy
-                        }
-                        await insertPatientAllergies(tranx, allergiesDataMatch);
+
+                let allergiesDataMatch;
+                await editPtAssessment(tranx, assessmentID, editedAsmDataMatch);
+                for (const allergy of req.body.pt_allergies) {
+                    console.log(allergy);
+                    allergiesDataMatch = {
+                        patient_ID: assessmentFetched.patient_ID,
+                        allergy_ID: allergy
                     }
-                    await tranx.commit();
-                } catch (error) {
-                    return res.status(400).json({ error: error.message });
+                    await insertPatientAllergies(tranx, allergiesDataMatch);
                 }
+                await tranx.commit();
             }
-            await tranx.commit();
 
         } else {
             return res.status(401).json({ error: "DB error, can't update" });
         }
     } catch (error) {
         await tranx.rollback();
-        return res.status(400).json({ code: error.code, error: error.message });
+        if (error.code === "ER_DUP_ENTRY") {
+            return res.status(400).json({ alert: "Same allergy entry again for same patient is not allowed!" });
+        }
+        return res.status(400).json({ error: error.message });
     }
     //allergy already exists!
     /* this check is required to be added while editing the patient allergies so that existing allergies are not required to be deleted! */
 }
 
 
-
-const showPatientAssessment = (req, res) => {
-
+const showPatientAssessment = async (req, res) => {
+    try {
+        const assessmentID = req.params.asm_id;
+        const patientAssessmentShown = await showPtAssessment(assessmentID);
+        const formattedTime = dayjs(patientAssessmentShown.assessment_time).format("ddd, MMM DD YYYY,  hh:mm A");
+        delete patientAssessmentShown.assessment_time;
+        patientAssessmentShown.assessment_time = formattedTime;
+        if (patientAssessmentShown) {
+            return res.status(200).json(patientAssessmentShown);
+        } else {
+            return res.status(401).json({ error: "DB error, can't show" });
+        }
+    } catch (error) {
+        return res.status(400).json({ error: error.message });
+    }
 }
-
-
 
 module.exports = {
     savePatientAssessment,

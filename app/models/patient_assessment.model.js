@@ -29,11 +29,15 @@ const fetchExistingAssessment = (db, asmID) => {
             "pt_asm.pulse")
         .first();
 
-}
+};
 
 
 const fetchExistingPtAllergies = (db, pt_id) => {
-return db("patients_allergies").where({patient_ID: pt_id});
+    return db("patients_allergies").where({ patient_ID: pt_id });
+};
+
+const showPtAssessment = (asmID) => {
+    return knex("patients_assessments").where({ id: asmID }).first();
 };
 
 module.exports = {
@@ -41,6 +45,7 @@ module.exports = {
     insertPatientAllergies,
     editPtAssessment,
     fetchExistingPtAllergies,
-    fetchExistingAssessment
+    fetchExistingAssessment,
+    showPtAssessment
 
 }
