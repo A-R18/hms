@@ -13,6 +13,8 @@ const {
   fetchExistingAppointmentData,
   rescheduleAppointment,
   count7DaysAppointments,
+  fetchAllDocSpecificAppointments,
+  count7DysApptsForSpecDoc,
 } = require("../models/appointment.model.js");
 
 const createAppointment = async (req, res) => {
@@ -169,10 +171,64 @@ const showAppointment = async (req, res) => {
   }
 };
 
+
+const showDocSpecificAppointments = async (req, res) => {
+  const docID = req.params.doc_id;
+  try {
+    const today = dayjs().startOf("day").format("YYYY-MM-DD");
+    const weekFromToday = dayjs().add(7, "day").endOf("day").format("YYYY-MM-DD");
+
+    const [{ count }] = await count7DysApptsForSpecDoc(docID, today, weekFromToday);
+    console.log("appointments count is: "+ count);
+    let page;
+    const limit = 4;
+    const firstPage = 1;
+    const lastPage = Math.ceil(count / limit);
+
+    if (req.query.firstPage) {
+      page = firstPage;
+    } else if (req.query.lastPage) {
+      page = lastPage;
+    } else if (!req.query.page) {
+      page = 1;
+    } else if (req.query.page < firstPage || req.query.page > lastPage) {
+      return res.json("invalid page entered");
+    } else if (req.query.page) {
+      page = req.query.page;
+    }
+
+    const offset = (page - 1) * limit;
+    const rawAppointmentsfetched = await fetchAllDocSpecificAppointments(docID, today, weekFromToday, limit, offset);
+    let formattedAppointments = [];
+    if (rawAppointmentsfetched) {
+      rawAppointmentsfetched.forEach((appointment) => {
+        const dataMatch = {
+          id: appointment.id,
+          patient_ID: appointment.patient_ID,
+          doctor_ID: appointment.doctor_ID,
+          appointment_date: dayjs(appointment.appointment_date).format("ddd DD MMM YYYY"),
+          appointment_time: dayjs(appointment.appointment_time, "HH:mm:ss").format("hh:mm:ss A"),
+          appointment_status: appointment.appointment_status,
+        };
+        formattedAppointments.push(dataMatch);
+      });
+      return res
+        .status(200)
+        .json({ totalAppointments: count, currentPage: page, formattedAppointments });
+    } else {
+      return res.status(404).json({ alert: "DB error, couldn't fetch!" });
+    }
+  } catch (error) {
+    return res.status(401).json({ error: error.message });
+  }
+
+}
+
 module.exports = {
   createAppointment,
   deleteAppointment,
   showAppointment,
   changeAppointment,
   saveAppointment,
+  showDocSpecificAppointments
 };

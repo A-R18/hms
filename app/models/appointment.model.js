@@ -7,6 +7,8 @@ const fetchTodaysAppointments = (doc_id, aptDate) => {
     .select("appointment_time");
 };
 
+
+
 const fetchAllAppointments = (today, seventhDay, givenLimit, givenOffset) => {
   return knex("appointments")
     .where("appointments.appointment_date", ">=", today)
@@ -16,6 +18,24 @@ const fetchAllAppointments = (today, seventhDay, givenLimit, givenOffset) => {
     .limit(givenLimit)
     .offset(givenOffset);
 };
+
+
+const fetchAllDocSpecificAppointments = (docID, today, seventhDay, givenLimit, givenOffset) => {
+  return knex("appointments")
+    .join("patients", "appointments.patient_ID", "patients.id")
+    .where({ doctor_ID: docID })
+    .where("appointments.appointment_date", ">=", today)
+    .andWhere("appointments.appointment_date", "<=", seventhDay)
+    .andWhere("appointments.appointment_status", "confirmed")
+    .select("appointments.appointment_date",
+      "appointments.appointment_time",
+      "appointments.appointment_status",
+      "patients.patient_name",
+      "patients.contact")
+    .limit(givenLimit)
+    .offset(givenOffset);
+};
+
 
 const insertAppointment = (appointmentData) => {
   return knex("appointments").insert(appointmentData);
@@ -40,6 +60,8 @@ const rescheduleAppointment = (appointmntID, aptData) => {
   return knex("appointments").where({ id: appointmntID }).update(aptData);
 };
 
+
+
 const count7DaysAppointments = (today, seventhDay) => {
   return knex("appointments")
     .where("appointments.appointment_date", ">=", today)
@@ -49,6 +71,21 @@ const count7DaysAppointments = (today, seventhDay) => {
     .count("* as count");
 };
 
+
+
+
+const count7DysApptsForSpecDoc = (docID, today, seventhDay) => {
+  return knex("appointments")
+    .where({ doctor_ID: docID })
+    .where("appointments.appointment_date", ">=", today)
+    .andWhere("appointments.appointment_date", "<=", seventhDay)
+    .andWhere("appointments.appointment_status", "confirmed")
+    .count("* as count");
+};
+
+
+
+
 module.exports = {
   insertAppointment,
   fetchTodaysAppointments,
@@ -57,4 +94,6 @@ module.exports = {
   rescheduleAppointment,
   fetchExistingAppointmentData,
   count7DaysAppointments,
+  count7DysApptsForSpecDoc,
+  fetchAllDocSpecificAppointments,
 };
