@@ -8,7 +8,6 @@ const fetchTodaysAppointments = (doc_id, aptDate) => {
 };
 
 
-
 const fetchAllAppointments = (today, seventhDay, givenLimit, givenOffset) => {
   return knex("appointments")
     .where("appointments.appointment_date", ">=", today)
@@ -70,8 +69,6 @@ const count7DaysAppointments = (today, seventhDay) => {
     .orWhere("appointments.appointment_status", "confirmed")
     .count("* as count");
 };
-
-
 
 
 const count7DysApptsForSpecDoc = (docID, today, seventhDay) => {

@@ -16,6 +16,9 @@ const {
   count,
   totalUsers,
   totalDoctors,
+  fetchDoctorsBySpec,
+  fetchPatientsByIds,
+  fetchPatientById,
 } = require("../models/user.model.js");
 const { validationResult } = require("express-validator");
 const bcrypt = require("bcrypt");
@@ -189,6 +192,27 @@ const showDoctorSpecialities = async (req, res) => {
   }
 };
 
+const showDoctorsBySpeciality = async (req, res) => {
+  try {
+    const specID = req.query.spec_id;
+    const doctorsFetchedBySpec = await fetchDoctorsBySpec(specID);
+    return res.status(200).json(doctorsFetchedBySpec);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+}
+
+const showPatientById = async (req, res) => {
+  try {
+    const ptID = req.query.pt_id;
+    const patientFetchedById = await fetchPatientById(ptID);
+    return res.status(200).json(patientFetchedById);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+}
+
+
 const deleteUser = async (req, res) => {
   try {
     const id = req.params.id;
@@ -221,4 +245,6 @@ module.exports = {
   showSpecificUser,
   showDoctors,
   showDoctorSpecialities,
+  showDoctorsBySpeciality,
+  showPatientById
 };

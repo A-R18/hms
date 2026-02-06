@@ -8,6 +8,8 @@ const {
   showSpecificUser,
   showDoctors,
   showDoctorSpecialities,
+  showDoctorsBySpeciality,
+  showPatientById,
 } = require("../controllers/user.controller.js");
 const { logUserIn } = require("../controllers/login.controller.js");
 const authorize = require("../middleware/authorizeUser.mid.js");
@@ -48,5 +50,10 @@ router.get("/show-currentUser/:id", authorize, routeAction("READ", "users"), sho
 
 //Route written for user's login:
 router.post("/login-user", logUserIn);
+
+router.get("/fetch-doctors", showDoctorsBySpeciality);
+
+router.get("/fetch-patient", showPatientById);
+
 
 module.exports = router;
