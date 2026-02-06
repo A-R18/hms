@@ -179,9 +179,9 @@ const showDocSpecificAppointments = async (req, res) => {
     const weekFromToday = dayjs().add(7, "day").endOf("day").format("YYYY-MM-DD");
 
     const [{ count }] = await count7DysApptsForSpecDoc(docID, today, weekFromToday);
-    console.log("appointments count is: "+ count);
+    console.log("appointments count is: " + count);
     let page;
-    const limit = 4;
+    const limit = 5;
     const firstPage = 1;
     const lastPage = Math.ceil(count / limit);
 
@@ -201,10 +201,13 @@ const showDocSpecificAppointments = async (req, res) => {
     const rawAppointmentsfetched = await fetchAllDocSpecificAppointments(docID, today, weekFromToday, limit, offset);
     let formattedAppointments = [];
     if (rawAppointmentsfetched) {
+      console.log(rawAppointmentsfetched);
       rawAppointmentsfetched.forEach((appointment) => {
         const dataMatch = {
           id: appointment.id,
           patient_ID: appointment.patient_ID,
+          patient: appointment.patient_name,
+          patient_contact: appointment.contact,
           doctor_ID: appointment.doctor_ID,
           appointment_date: dayjs(appointment.appointment_date).format("ddd DD MMM YYYY"),
           appointment_time: dayjs(appointment.appointment_time, "HH:mm:ss").format("hh:mm:ss A"),
