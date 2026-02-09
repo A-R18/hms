@@ -21,4 +21,21 @@ const appointmentValidations = [
 
 ];
 
-module.exports = { appointmentValidations };
+const changeAptValidations = [
+
+    body("ed_apt_Date")
+        .optional()
+        .notEmpty()
+        .withMessage("Appointment time must be specified")
+        .isTime()
+        .withMessage("Field must be a date"),
+
+    body("ed_apt_Time")
+        .optional()
+        .notEmpty()
+        .withMessage("Appointment time must be specified")
+        .isTime()
+        .withMessage("Field must be time"),
+];
+
+module.exports = { appointmentValidations, changeAptValidations };
