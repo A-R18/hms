@@ -17,6 +17,5 @@ router.get("/show-appointments", showAppointment);
 router.post("/reschedule-appointment", changeAppointment);
 router.get("/show-doctor-specific-appointments/:doc_id", showDocSpecificAppointments);
 
-// router.get("/show-appointment/:doc_id");
 
 module.exports = router;
