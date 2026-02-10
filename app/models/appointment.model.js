@@ -81,7 +81,9 @@ const count7DysApptsForSpecDoc = (docID, today, seventhDay) => {
 };
 
 
-
+const changeAptStatus = (aptID, aptStatus) => {
+  return knex("appointments").where({ id: aptID }).update({ appointment_status: aptStatus });
+};
 
 module.exports = {
   insertAppointment,
@@ -93,4 +95,5 @@ module.exports = {
   count7DaysAppointments,
   count7DysApptsForSpecDoc,
   fetchAllDocSpecificAppointments,
+  changeAptStatus
 };

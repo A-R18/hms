@@ -15,6 +15,7 @@ const {
   count7DaysAppointments,
   fetchAllDocSpecificAppointments,
   count7DysApptsForSpecDoc,
+  changeAptStatus,
 } = require("../models/appointment.model.js");
 
 const createAppointment = async (req, res) => {
@@ -173,11 +174,11 @@ const showAppointment = async (req, res) => {
 
 
 const showDocSpecificAppointments = async (req, res) => {
-  const docID = req.params.doc_id;
   try {
+    const docID = req.params.doc_id;
     const today = dayjs().startOf("day").format("YYYY-MM-DD");
     const weekFromToday = dayjs().add(7, "day").endOf("day").format("YYYY-MM-DD");
-
+   
     const [{ count }] = await count7DysApptsForSpecDoc(docID, today, weekFromToday);
     console.log("appointments count is: " + count);
     let page;
@@ -199,6 +200,7 @@ const showDocSpecificAppointments = async (req, res) => {
 
     const offset = (page - 1) * limit;
     const rawAppointmentsfetched = await fetchAllDocSpecificAppointments(docID, today, weekFromToday, limit, offset);
+    // console.log(rawAppointmentsfetched);
     let formattedAppointments = [];
     if (rawAppointmentsfetched) {
       console.log(rawAppointmentsfetched);
@@ -227,11 +229,37 @@ const showDocSpecificAppointments = async (req, res) => {
 
 }
 
+
+const staffChangesAptStatus = async (req, res) => {
+  try {
+    const apt_Id = req.body.apt_id;
+    await changeAptStatus(apt_Id);
+    return res.status(200).json({ message: "appointment status changed successfully to confirmed!" });
+  } catch (error) {
+    return res.status(401).json({ error: error.message });
+  }
+}
+
+
+
+const docChangesAptStatus = async (req, res) => {
+  try {
+    const apt_Id = req.body.apt_id;
+    await changeAptStatus(apt_Id);
+    return res.status(200).json({ message: "appointment status changed successfully to attended!" });
+  } catch (error) {
+    return res.status(401).json({ error: error.message });
+  }
+}
+
+
 module.exports = {
   createAppointment,
   deleteAppointment,
   showAppointment,
   changeAppointment,
   saveAppointment,
-  showDocSpecificAppointments
+  showDocSpecificAppointments,
+  staffChangesAptStatus,
+  docChangesAptStatus
 };

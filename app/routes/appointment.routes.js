@@ -7,6 +7,8 @@ const {
   showAppointment,
   saveAppointment,
   showDocSpecificAppointments,
+  staffChangesAptStatus,
+  docChangesAptStatus,
 } = require("../controllers/appointment.controller.js");
 
 router.post("/create-appointment", createAppointment);
@@ -16,6 +18,8 @@ router.post("/delete-pending-appointment", deleteAppointment);
 router.get("/show-appointments", showAppointment);
 router.post("/reschedule-appointment", changeAppointment);
 router.get("/show-doctor-specific-appointments/:doc_id", showDocSpecificAppointments);
+router.post("/staff-change-apt-status", staffChangesAptStatus);
+router.post("/doc-change-apt-status", docChangesAptStatus);
 
 
 module.exports = router;
