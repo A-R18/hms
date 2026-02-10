@@ -16,6 +16,7 @@ const {
   fetchAllDocSpecificAppointments,
   count7DysApptsForSpecDoc,
   changeAptStatus,
+  fetchAptStatus,
 } = require("../models/appointment.model.js");
 
 const createAppointment = async (req, res) => {
@@ -178,7 +179,7 @@ const showDocSpecificAppointments = async (req, res) => {
     const docID = req.params.doc_id;
     const today = dayjs().startOf("day").format("YYYY-MM-DD");
     const weekFromToday = dayjs().add(7, "day").endOf("day").format("YYYY-MM-DD");
-   
+
     const [{ count }] = await count7DysApptsForSpecDoc(docID, today, weekFromToday);
     console.log("appointments count is: " + count);
     let page;
@@ -233,8 +234,13 @@ const showDocSpecificAppointments = async (req, res) => {
 const staffChangesAptStatus = async (req, res) => {
   try {
     const apt_Id = req.body.apt_id;
-    await changeAptStatus(apt_Id);
-    return res.status(200).json({ message: "appointment status changed successfully to confirmed!" });
+    const currentAptStatus = await fetchAptStatus(apt_Id);
+    if (currentAptStatus.appointment_status === "pending") {
+      await changeAptStatus(apt_Id, "confirmed");
+      return res.status(200).json({ message: "appointment status successfully changed to confirmed!" });
+    } else {
+      return res.status(400).json({ message: "appointment status is not 'pending', so you can't change!" });
+    }
   } catch (error) {
     return res.status(401).json({ error: error.message });
   }
@@ -245,8 +251,15 @@ const staffChangesAptStatus = async (req, res) => {
 const docChangesAptStatus = async (req, res) => {
   try {
     const apt_Id = req.body.apt_id;
-    await changeAptStatus(apt_Id);
-    return res.status(200).json({ message: "appointment status changed successfully to attended!" });
+    const currentAptStatus = await fetchAptStatus(apt_Id);
+   
+    if (currentAptStatus.appointment_status === "confirmed") {
+      await changeAptStatus(apt_Id, "attended");
+      return res.status(200).json({ message: "appointment status successfully changed to attended!" });
+    } else {
+      return res.status(400).json({ message: "appointment status is not 'confirmed', so you can't change!" });
+    }
+
   } catch (error) {
     return res.status(401).json({ error: error.message });
   }

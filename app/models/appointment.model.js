@@ -80,6 +80,13 @@ const count7DysApptsForSpecDoc = (docID, today, seventhDay) => {
     .count("* as count");
 };
 
+const fetchAptStatus = (aptID) => {
+  return knex("appointments").where({ id: aptID })
+    .select("appointments.appointment_status")
+    .first();
+}
+
+
 
 const changeAptStatus = (aptID, aptStatus) => {
   return knex("appointments").where({ id: aptID }).update({ appointment_status: aptStatus });
@@ -95,5 +102,6 @@ module.exports = {
   count7DaysAppointments,
   count7DysApptsForSpecDoc,
   fetchAllDocSpecificAppointments,
-  changeAptStatus
+  fetchAptStatus,
+  changeAptStatus,
 };
