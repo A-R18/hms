@@ -6,6 +6,7 @@ const {
   displayPatients,
   updatePatient,
   deletePatient,
+  showPatientAllergies,
 } = require("../controllers/patient.controller.js");
 
 const {
@@ -34,4 +35,7 @@ router.post(
   updatePatient
 );
 router.post("/delete-patient/:id", authorize, routeAction("DELETE", "doctors"), deletePatient);
+
+router.get("/show-allergies", showPatientAllergies);
+
 module.exports = router;

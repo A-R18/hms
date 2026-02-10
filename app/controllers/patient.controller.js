@@ -7,6 +7,7 @@ const {
   fetchExistingPatient,
   updatePt,
   deletePt,
+  fetchPatientAllergies,
 } = require("../models/patient.model.js");
 const { totalPatients } = require("../models/user.model.js");
 
@@ -116,10 +117,23 @@ const deletePatient = async (req, res) => {
   }
 };
 
+
+const showPatientAllergies = async (req, res)=>{
+try {
+  const patientAllergiesShown = await fetchPatientAllergies();
+  if(patientAllergiesShown){
+  return res.status(200).json(patientAllergiesShown);
+  }
+} catch (error) {
+    return res.status(400).json(error.message);
+}
+}
+
 module.exports = {
   registerPatient,
   displaySinglePatient,
   displayPatients,
   updatePatient,
   deletePatient,
+  showPatientAllergies
 };

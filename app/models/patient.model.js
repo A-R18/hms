@@ -33,6 +33,11 @@ const deletePt = (patientID) => {
   return knex("patients").where({ id: patientID }).delete();
 };
 
+
+const fetchPatientAllergies = ()=>{
+return knex("allergies").select("allergies.id", "allergies.allergy_name");
+}
+
 module.exports = {
   addPatient,
   showSinglePatient,
@@ -40,4 +45,5 @@ module.exports = {
   fetchExistingPatient,
   updatePt,
   deletePt,
+  fetchPatientAllergies
 };
