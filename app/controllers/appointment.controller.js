@@ -150,11 +150,15 @@ const showAppointment = async (req, res) => {
     const offset = (page - 1) * limit;
     const rawAppointmentsfetched = await fetchAllAppointments(today, weekFromToday, limit, offset);
     let formattedAppointments = [];
+    console.log(rawAppointmentsfetched);
     if (rawAppointmentsfetched) {
       rawAppointmentsfetched.forEach((appointment) => {
         const dataMatch = {
           id: appointment.id,
           patient_ID: appointment.patient_ID,
+          patient_name: appointment.patient_name,
+          condition: appointment.condition,
+          contact: appointment.contact,
           doctor_ID: appointment.doctor_ID,
           appointment_date: dayjs(appointment.appointment_date).format("ddd DD MMM YYYY"),
           appointment_time: dayjs(appointment.appointment_time, "HH:mm:ss").format("hh:mm:ss A"),

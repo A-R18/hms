@@ -10,10 +10,12 @@ const fetchTodaysAppointments = (doc_id, aptDate) => {
 
 const fetchAllAppointments = (today, seventhDay, givenLimit, givenOffset) => {
   return knex("appointments")
+  .join("patients","appointments.patient_ID", "patients.id")
     .where("appointments.appointment_date", ">=", today)
     .andWhere("appointments.appointment_date", "<=", seventhDay)
     .orWhere("appointments.appointment_status", "pending")
     .orWhere("appointments.appointment_status", "confirmed")
+    .select("appointments.*", "patients.patient_name", "patients.condition", "patients.contact")
     .limit(givenLimit)
     .offset(givenOffset);
 };
