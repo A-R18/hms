@@ -10,6 +10,8 @@ values
   ("doctors"),
   ("users"),
   ("patients"),
+  ("scheduling"),
+  ("assessment"),
   ("patients_diagnosis");
 
 INSERT INTO
@@ -136,7 +138,10 @@ values
   ("WEDESDAY"),
   ("THURSDAY"),
   ("FRIDAY"),
-  ("SATURDAY");
+  ("SATURDAY")
+  ("SUNDAY");
+
+  UPDATE days SET id = 0 WHERE day = 'SUNDAY';
 
 INSERT INTO
   users (user_name, role_ID, user_email, user_password)

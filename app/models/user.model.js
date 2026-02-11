@@ -111,7 +111,7 @@ const fetchDoctorsBySpec = (spec_Id) => {
 
 const fetchPatientById = (ptId) => {
   return knex("patients").where({ id: ptId })
-    .select("patients.id", "patients.patient_name").first();
+    .select("patients.id", "patients.patient_name", "patients.contact").first();
 }
 
 const totalUsers = count("users", "user");
