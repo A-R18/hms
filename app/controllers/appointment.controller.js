@@ -237,7 +237,7 @@ const staffChangesAptStatus = async (req, res) => {
     const currentAptStatus = await fetchAptStatus(apt_Id);
     if (currentAptStatus.appointment_status === "pending") {
       await changeAptStatus(apt_Id, "confirmed");
-      return res.status(200).json({ message: "appointment status successfully changed to confirmed!" });
+      return res.status(200).json({ message: "status successfully changed to confirmed!" });
     } else {
       return res.status(400).json({ message: "appointment status is not 'pending', so you can't change!" });
     }
