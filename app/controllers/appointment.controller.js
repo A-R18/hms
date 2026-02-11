@@ -183,7 +183,7 @@ const showDocSpecificAppointments = async (req, res) => {
     const [{ count }] = await count7DysApptsForSpecDoc(docID, today, weekFromToday);
     console.log("appointments count is: " + count);
     let page;
-    const limit = 5;
+    const limit = 3;
     const firstPage = 1;
     const lastPage = Math.ceil(count / limit);
 
