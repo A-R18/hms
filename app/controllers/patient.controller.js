@@ -133,7 +133,6 @@ try {
 
 const showPtSpecificAllergies = async (req, res)=>{
   try {
-    console.log("case runs!!");
     const patientID = req.params.pt_id;
     const allergiesFetched = await readAllPtAllergies(patientID);
     const formattedAllergies = [];
