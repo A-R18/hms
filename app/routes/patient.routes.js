@@ -7,6 +7,7 @@ const {
   updatePatient,
   deletePatient,
   showPatientAllergies,
+  showPtSpecificAllergies,
 } = require("../controllers/patient.controller.js");
 
 const {
@@ -17,6 +18,7 @@ const {
 const authorize = require("../middleware/authorizeUser.mid.js");
 
 const { routeAction } = require("../middleware/accessChecker.js");
+const { showSpecificUser } = require("../controllers/user.controller.js");
 
 router.post(
   "/register-patient",
@@ -37,5 +39,6 @@ router.post(
 router.post("/delete-patient/:id", authorize, routeAction("DELETE", "doctors"), deletePatient);
 
 router.get("/show-allergies", showPatientAllergies);
+router.get("/show-patient-allergies/:pt_id", showPtSpecificAllergies);
 
 module.exports = router;

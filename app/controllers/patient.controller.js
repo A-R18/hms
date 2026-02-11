@@ -8,6 +8,7 @@ const {
   updatePt,
   deletePt,
   fetchPatientAllergies,
+  readAllPtAllergies,
 } = require("../models/patient.model.js");
 const { totalPatients } = require("../models/user.model.js");
 
@@ -129,11 +130,27 @@ try {
 }
 }
 
+
+const showPtSpecificAllergies = async (req, res)=>{
+  try {
+    console.log("case runs!!");
+    const patientID = req.params.pt_id;
+    const allergiesFetched = await readAllPtAllergies(patientID);
+    const formattedAllergies = [];
+    allergiesFetched.map((allergy)=>formattedAllergies
+    .push(allergy.allergy_name));
+    res.status(200).json(formattedAllergies);
+  } catch (error) {
+     return res.status(400).json(error.message);
+  }
+}
+
 module.exports = {
   registerPatient,
   displaySinglePatient,
   displayPatients,
   updatePatient,
   deletePatient,
-  showPatientAllergies
+  showPatientAllergies,
+  showPtSpecificAllergies
 };
