@@ -205,17 +205,17 @@ const showDocSpecificAppointments = async (req, res) => {
 
     const offset = (page - 1) * limit;
     const rawAppointmentsfetched = await fetchAllDocSpecificAppointments(docID, today, weekFromToday, limit, offset);
-    // console.log(rawAppointmentsfetched);
+    console.log("raw output is: ",rawAppointmentsfetched);
     let formattedAppointments = [];
     if (rawAppointmentsfetched) {
       console.log(rawAppointmentsfetched);
       rawAppointmentsfetched.forEach((appointment) => {
         const dataMatch = {
-          id: appointment.id,
-          patient_ID: appointment.patient_ID,
+          patient_ID: appointment.pt_id,
           patient: appointment.patient_name,
           patient_contact: appointment.contact,
-          doctor_ID: appointment.doctor_ID,
+          doctor_ID: appointment.doctor_ID, 
+          appointment_ID: appointment.apt_id,
           appointment_date: dayjs(appointment.appointment_date).format("ddd DD MMM YYYY"),
           appointment_time: dayjs(appointment.appointment_time, "HH:mm:ss").format("hh:mm:ss A"),
           appointment_status: appointment.appointment_status,

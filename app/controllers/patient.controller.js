@@ -119,28 +119,33 @@ const deletePatient = async (req, res) => {
 };
 
 
-const showPatientAllergies = async (req, res)=>{
-try {
-  const patientAllergiesShown = await fetchPatientAllergies();
-  if(patientAllergiesShown){
-  return res.status(200).json(patientAllergiesShown);
-  }
-} catch (error) {
+const showPatientAllergies = async (req, res) => {
+  try {
+    const patientAllergiesShown = await fetchPatientAllergies();
+    if (patientAllergiesShown) {
+      return res.status(200).json(patientAllergiesShown);
+    }
+  } catch (error) {
     return res.status(400).json(error.message);
-}
+  }
 }
 
 
-const showPtSpecificAllergies = async (req, res)=>{
+const showPtSpecificAllergies = async (req, res) => {
   try {
     const patientID = req.params.pt_id;
     const allergiesFetched = await readAllPtAllergies(patientID);
-    const formattedAllergies = [];
-    allergiesFetched.map((allergy)=>formattedAllergies
-    .push(allergy.allergy_name));
-    res.status(200).json(formattedAllergies);
+    if (allergiesFetched.length !== 0) {
+      const formattedAllergies = [];
+      allergiesFetched.map((allergy) => formattedAllergies
+        .push(allergy.allergy_name));
+      res.status(200).json(formattedAllergies);
+    } else {
+      res.status(404)
+        .json({ message: "patient has no allergies! (registered yet)" });
+    }
   } catch (error) {
-     return res.status(400).json(error.message);
+    return res.status(400).json(error.message);
   }
 }
 

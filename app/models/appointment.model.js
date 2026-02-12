@@ -28,11 +28,15 @@ const fetchAllDocSpecificAppointments = (docID, today, seventhDay, givenLimit, g
     .where("appointments.appointment_date", ">=", today)
     .andWhere("appointments.appointment_date", "<=", seventhDay)
     .andWhere("appointments.appointment_status", "confirmed")
-    .select("appointments.appointment_date",
+    .select(
+      "appointments.id as apt_id",
+      "appointments.appointment_date",
       "appointments.appointment_time",
       "appointments.appointment_status",
+      "patients.id as pt_id",
       "patients.patient_name",
-      "patients.contact")
+      "patients.contact",
+    )
     .limit(givenLimit)
     .offset(givenOffset);
 };
