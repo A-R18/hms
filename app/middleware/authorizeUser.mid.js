@@ -9,6 +9,7 @@ const authorize = (req, res, next) => {
       const secret = process.env.SECRET_KEY_JWT;
       const decodedData = jwt.verify(token, secret);
       req.user = decodedData;
+      console.log(req.user);
       next();
     } catch (error) {
       if (error.name === "TokenExpiredError") {
