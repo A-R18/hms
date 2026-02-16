@@ -46,7 +46,8 @@ VALUES
   (2, 3, 5),
   (1, 1, 6),
   (1, 2, 6),
-  (1, 3, 6);
+  (1, 3, 6),
+  (1, 2, 4);
 
 INSERT INTO
   doctor_specialities (speciality)
@@ -215,13 +216,13 @@ VALUES
   INSERT INTO appointments
 (patient_ID, doctor_ID, appointment_date, appointment_time, appointment_status, created_at)
 VALUES
-(1, 1,  "2026-02-01", "09:00:00", "pending", NOW()),
-(2, 2,  "2026-02-01", "09:30:00", "pending", NOW()),
-(3, 1,  "2026-02-01", "10:00:00", "pending", NOW()),
-(4, 1,  "2026-02-02", "10:30:00", "pending", NOW()),
-(5, 1,  "2026-02-02", "11:00:00", "pending", NOW()),
-(6, 2,  "2026-02-02", "11:30:00", "pending", NOW()),
-(7, 2, "2026-02-03", "12:00:00", "pending", NOW()),
-(8, 1, "2026-02-03", "12:30:00", "pending", NOW()),
-(9, 1, "2026-02-03", "13:00:00", "pending", NOW()),
-(10,2,  "2026-02-04", "13:30:00", "pending", NOW());
+(1, 1,  CURDATE(), "09:00:00", "pending", NOW()),
+(2, 2,  CURDATE(), "09:30:00", "pending", NOW()),
+(3, 1,  CURDATE(), "10:00:00", "pending", NOW()),
+(4, 1,  CURDATE(), "10:30:00", "pending", NOW()),
+(5, 1,  CURDATE(), "11:00:00", "pending", NOW()),
+(6, 2,  CURDATE(), "11:30:00", "pending", NOW()),
+(7, 2, CURDATE(), "12:00:00", "pending", NOW()),
+(8, 1, CURDATE(), "12:30:00", "pending", NOW()),
+(9, 1, CURDATE(), "13:00:00", "pending", NOW()),
+(10,2,  CURDATE(), "13:30:00", "pending", NOW());

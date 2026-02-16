@@ -15,12 +15,12 @@ const logUserIn = async (req, res) => {
     if (!authResponse) {
       return res.status(404).json({ message: "User doesn't exist!" });
     } else {
-      console.log("auth Response is: ",authResponse);
+      // console.log("auth Response is: ",authResponse);
    
       const userRole = await fetchUserRole(authResponse.role_ID);
       if (userRole.role === "doctor") {
         doctorParticulars = await FetchDocEssentials(authResponse.id);
-        console.log("doctor particulars are: "+doctorParticulars);
+        // console.log("doctor particulars are: ",doctorParticulars);
       }
       const permissions = await fetchUserPermissions(authResponse.role_ID);
       const formattedPermz = [];
