@@ -16,7 +16,7 @@ const logUserIn = async (req, res) => {
       return res.status(404).json({ message: "User doesn't exist!" });
     } else {
       // console.log("auth Response is: ",authResponse);
-   
+
       const userRole = await fetchUserRole(authResponse.role_ID);
       if (userRole.role === "doctor") {
         doctorParticulars = await FetchDocEssentials(authResponse.id);

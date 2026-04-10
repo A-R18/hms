@@ -177,7 +177,6 @@ const showAppointment = async (req, res) => {
   }
 };
 
-
 const showDocSpecificAppointments = async (req, res) => {
   try {
     const docID = req.params.doc_id;
@@ -204,8 +203,14 @@ const showDocSpecificAppointments = async (req, res) => {
     }
 
     const offset = (page - 1) * limit;
-    const rawAppointmentsfetched = await fetchAllDocSpecificAppointments(docID, today, weekFromToday, limit, offset);
-    console.log("raw output is: ",rawAppointmentsfetched);
+    const rawAppointmentsfetched = await fetchAllDocSpecificAppointments(
+      docID,
+      today,
+      weekFromToday,
+      limit,
+      offset
+    );
+    console.log("raw output is: ", rawAppointmentsfetched);
     let formattedAppointments = [];
     if (rawAppointmentsfetched) {
       console.log(rawAppointmentsfetched);
@@ -214,7 +219,7 @@ const showDocSpecificAppointments = async (req, res) => {
           patient_ID: appointment.pt_id,
           patient: appointment.patient_name,
           patient_contact: appointment.contact,
-          doctor_ID: appointment.doctor_ID, 
+          doctor_ID: appointment.doctor_ID,
           appointment_ID: appointment.apt_id,
           appointment_date: dayjs(appointment.appointment_date).format("ddd DD MMM YYYY"),
           appointment_time: dayjs(appointment.appointment_time, "HH:mm:ss").format("hh:mm:ss A"),
@@ -231,9 +236,7 @@ const showDocSpecificAppointments = async (req, res) => {
   } catch (error) {
     return res.status(401).json({ error: error.message });
   }
-
-}
-
+};
 
 const staffChangesAptStatus = async (req, res) => {
   try {
@@ -243,32 +246,34 @@ const staffChangesAptStatus = async (req, res) => {
       await changeAptStatus(apt_Id, "confirmed");
       return res.status(200).json({ message: "status successfully changed to confirmed!" });
     } else {
-      return res.status(400).json({ message: "appointment status is not 'pending', so you can't change!" });
+      return res
+        .status(400)
+        .json({ message: "appointment status is not 'pending', so you can't change!" });
     }
   } catch (error) {
     return res.status(401).json({ error: error.message });
   }
-}
-
-
+};
 
 const docChangesAptStatus = async (req, res) => {
   try {
     const apt_Id = req.body.apt_id;
     const currentAptStatus = await fetchAptStatus(apt_Id);
-   
+
     if (currentAptStatus.appointment_status === "confirmed") {
       await changeAptStatus(apt_Id, "attended");
-      return res.status(200).json({ message: "appointment status successfully changed to attended!" });
+      return res
+        .status(200)
+        .json({ message: "appointment status successfully changed to attended!" });
     } else {
-      return res.status(400).json({ message: "appointment status is not 'confirmed', so you can't change!" });
+      return res
+        .status(400)
+        .json({ message: "appointment status is not 'confirmed', so you can't change!" });
     }
-
   } catch (error) {
     return res.status(401).json({ error: error.message });
   }
-}
-
+};
 
 module.exports = {
   createAppointment,
@@ -278,5 +283,5 @@ module.exports = {
   saveAppointment,
   showDocSpecificAppointments,
   staffChangesAptStatus,
-  docChangesAptStatus
+  docChangesAptStatus,
 };

@@ -55,5 +55,4 @@ router.get("/fetch-doctors", showDoctorsBySpeciality);
 
 router.get("/fetch-patient", showPatientById);
 
-
 module.exports = router;

@@ -118,7 +118,6 @@ const deletePatient = async (req, res) => {
   }
 };
 
-
 const showPatientAllergies = async (req, res) => {
   try {
     const patientAllergiesShown = await fetchPatientAllergies();
@@ -128,8 +127,7 @@ const showPatientAllergies = async (req, res) => {
   } catch (error) {
     return res.status(400).json(error.message);
   }
-}
-
+};
 
 const showPtSpecificAllergies = async (req, res) => {
   try {
@@ -137,17 +135,15 @@ const showPtSpecificAllergies = async (req, res) => {
     const allergiesFetched = await readAllPtAllergies(patientID);
     if (allergiesFetched.length !== 0) {
       const formattedAllergies = [];
-      allergiesFetched.map((allergy) => formattedAllergies
-        .push(allergy.allergy_name));
+      allergiesFetched.map((allergy) => formattedAllergies.push(allergy.allergy_name));
       res.status(200).json(formattedAllergies);
     } else {
-      res.status(404)
-        .json({ message: "patient has no allergies! (registered yet)" });
+      res.status(404).json({ message: "patient has no allergies! (registered yet)" });
     }
   } catch (error) {
     return res.status(400).json(error.message);
   }
-}
+};
 
 module.exports = {
   registerPatient,
@@ -156,5 +152,5 @@ module.exports = {
   updatePatient,
   deletePatient,
   showPatientAllergies,
-  showPtSpecificAllergies
+  showPtSpecificAllergies,
 };

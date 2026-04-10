@@ -7,10 +7,9 @@ const fetchTodaysAppointments = (doc_id, aptDate) => {
     .select("appointment_time");
 };
 
-
 const fetchAllAppointments = (today, seventhDay, givenLimit, givenOffset) => {
   return knex("appointments")
-  .join("patients","appointments.patient_ID", "patients.id")
+    .join("patients", "appointments.patient_ID", "patients.id")
     .where("appointments.appointment_date", ">=", today)
     .andWhere("appointments.appointment_date", "<=", seventhDay)
     .orWhere("appointments.appointment_status", "pending")
@@ -19,7 +18,6 @@ const fetchAllAppointments = (today, seventhDay, givenLimit, givenOffset) => {
     .limit(givenLimit)
     .offset(givenOffset);
 };
-
 
 const fetchAllDocSpecificAppointments = (docID, today, seventhDay, givenLimit, givenOffset) => {
   return knex("appointments")
@@ -35,12 +33,11 @@ const fetchAllDocSpecificAppointments = (docID, today, seventhDay, givenLimit, g
       "appointments.appointment_status",
       "patients.id as pt_id",
       "patients.patient_name",
-      "patients.contact",
+      "patients.contact"
     )
     .limit(givenLimit)
     .offset(givenOffset);
 };
-
 
 const insertAppointment = (appointmentData) => {
   return knex("appointments").insert(appointmentData);
@@ -65,8 +62,6 @@ const rescheduleAppointment = (appointmntID, aptData) => {
   return knex("appointments").where({ id: appointmntID }).update(aptData);
 };
 
-
-
 const count7DaysAppointments = (today, seventhDay) => {
   return knex("appointments")
     .where("appointments.appointment_date", ">=", today)
@@ -75,7 +70,6 @@ const count7DaysAppointments = (today, seventhDay) => {
     .orWhere("appointments.appointment_status", "confirmed")
     .count("* as count");
 };
-
 
 const count7DysApptsForSpecDoc = (docID, today, seventhDay) => {
   return knex("appointments")
@@ -87,12 +81,11 @@ const count7DysApptsForSpecDoc = (docID, today, seventhDay) => {
 };
 
 const fetchAptStatus = (aptID) => {
-  return knex("appointments").where({ id: aptID })
+  return knex("appointments")
+    .where({ id: aptID })
     .select("appointments.appointment_status")
     .first();
-}
-
-
+};
 
 const changeAptStatus = (aptID, aptStatus) => {
   return knex("appointments").where({ id: aptID }).update({ appointment_status: aptStatus });

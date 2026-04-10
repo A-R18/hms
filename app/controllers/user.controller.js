@@ -45,7 +45,7 @@ const registerUser = async (req, res) => {
   } catch (error) {
     return res.status(400).json({ message: "Didn't register", error: error });
   }
-  return res.status(400).json({ error: "Unsuccessfull attempt" });
+  // return res.status(400).json({ error: "Unsuccessfull attempt" });
 };
 
 const updateUser = async (req, res) => {
@@ -196,31 +196,29 @@ const showDoctorsBySpeciality = async (req, res) => {
   try {
     const specID = req.query.spec_id;
     const doctorsFetchedBySpec = await fetchDoctorsBySpec(specID);
-    if(doctorsFetchedBySpec.length!==0){
+    if (doctorsFetchedBySpec.length !== 0) {
       return res.status(200).json(doctorsFetchedBySpec);
-    }else{
-      return res.status(404).json({alert:"no doctor found with this speciality"});
+    } else {
+      return res.status(404).json({ alert: "no doctor found with this speciality" });
     }
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
-}
+};
 
 const showPatientById = async (req, res) => {
   try {
     const ptID = req.query.pt_id;
     const patientFetchedById = await fetchPatientById(ptID);
-    if(!patientFetchedById){
-       return res.status(404).json({alert:"no patient found with this id"});
-    }else{
-     
+    if (!patientFetchedById) {
+      return res.status(404).json({ alert: "no patient found with this id" });
+    } else {
       return res.status(200).json(patientFetchedById);
     }
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
-}
-
+};
 
 const deleteUser = async (req, res) => {
   try {
@@ -255,5 +253,5 @@ module.exports = {
   showDoctors,
   showDoctorSpecialities,
   showDoctorsBySpeciality,
-  showPatientById
+  showPatientById,
 };

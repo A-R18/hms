@@ -102,17 +102,19 @@ const fetchDcotorSpecialities = () => {
   return knex("doctor_specialities").select("*");
 };
 
-
 const fetchDoctorsBySpec = (spec_Id) => {
-  return knex("doctors").join("users", "doctors.user_ID", "users.id")
+  return knex("doctors")
+    .join("users", "doctors.user_ID", "users.id")
     .where({ spec_ID: spec_Id })
     .select("doctors.id", "users.user_name");
 };
 
 const fetchPatientById = (ptId) => {
-  return knex("patients").where({ id: ptId })
-    .select("patients.id", "patients.patient_name", "patients.contact").first();
-}
+  return knex("patients")
+    .where({ id: ptId })
+    .select("patients.id", "patients.patient_name", "patients.contact")
+    .first();
+};
 
 const totalUsers = count("users", "user");
 const totalDoctors = count("users", "doctor");
@@ -137,5 +139,5 @@ module.exports = {
   totalDoctors,
   totalPatients,
   fetchDoctorsBySpec,
-  fetchPatientById
+  fetchPatientById,
 };

@@ -33,14 +33,16 @@ const deletePt = (patientID) => {
   return knex("patients").where({ id: patientID }).delete();
 };
 
+const fetchPatientAllergies = () => {
+  return knex("allergies").select("allergies.id", "allergies.allergy_name");
+};
 
-const fetchPatientAllergies = ()=>{
-return knex("allergies").select("allergies.id", "allergies.allergy_name");
-}
-
-const readAllPtAllergies = (ptID)=>{
-  return knex("patients_allergies").join("allergies","patients_allergies.allergy_ID", "allergies.id").where("patients_allergies.patient_ID", ptID).select("allergies.allergy_name");
-}
+const readAllPtAllergies = (ptID) => {
+  return knex("patients_allergies")
+    .join("allergies", "patients_allergies.allergy_ID", "allergies.id")
+    .where("patients_allergies.patient_ID", ptID)
+    .select("allergies.allergy_name");
+};
 
 module.exports = {
   addPatient,
@@ -50,5 +52,5 @@ module.exports = {
   updatePt,
   deletePt,
   fetchPatientAllergies,
-  readAllPtAllergies
+  readAllPtAllergies,
 };
