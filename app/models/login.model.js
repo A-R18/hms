@@ -22,8 +22,8 @@ const fetchUserRole = (userRoleID) => {
 const fetchUserPermissions = (userRoleID) => {
   return knex("permissions")
     .where({ role_ID: userRoleID })
-    .join("modules", "permissions.module_id", "modules.id")
-    .join("privileges", "permissions.privilege_id", "privileges.id")
+    .join("modules", "permissions.module_ID", "modules.id")
+    .join("privileges", "permissions.privilege_ID", "privileges.id")
     .select("modules.module", "privileges.privilege");
 };
 

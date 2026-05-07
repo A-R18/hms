@@ -4,7 +4,7 @@
  */
 exports.up = function (knex) {
   return knex.schema.createTable("privileges", function (table) {
-    table.increments("id");
+    table.specificType("id", "INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY");
     table.string("privilege").notNullable();
   });
 };

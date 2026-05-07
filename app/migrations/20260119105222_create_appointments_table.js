@@ -4,17 +4,18 @@
  */
 exports.up = function (knex) {
   return knex.schema.createTable("appointments", function (table) {
-    table.increments("id");
-    table.integer("patient_ID").unsigned();
-    table.integer("doctor_ID").unsigned();
-    table.integer("schedule_ID").unsigned();
+    table.specificType("id", "INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY");
+    table.integer("patient_ID");
+    table.integer("doctor_ID");
+    table.integer("schedule_ID");
     table.date("appointment_date").notNullable();
     table.time("appointment_time").notNullable();
     table
-      .enum("appointment_status", ["pending", "confirmed", "attended"])
+      .text("appointment_status")
+      .notNullable()
       .defaultTo("pending")
-      .notNullable();
-    table.timestamp("created_at").defaultTo(knex.fn.now());
+      .checkIn(["pending", "confirmed", "attended"]);
+    table.timestamp("created_at", { useTz: true }).defaultTo(knex.fn.now());
 
     table.foreign("patient_ID").references("id").inTable("patients");
     table.foreign("doctor_ID").references("id").inTable("doctors");

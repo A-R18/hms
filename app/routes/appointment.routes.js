@@ -39,6 +39,8 @@ router.post(
 
 router.get("/show-appointments", authorize, routeAction("READ", "scheduling"), showAppointment);
 
+router.get("/show-appointment/:doc_id", authorize, routeAction("READ", "scheduling"), showDocSpecificAppointments);
+
 router.post(
   "/reschedule-appointment",
   authorize,

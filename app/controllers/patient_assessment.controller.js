@@ -98,7 +98,7 @@ const editPatientAssessment = async (req, res) => {
       console.log("Allergies are: ", req.body.pt_allergies);
       if (req.body.pt_allergies === null) {
         await editPtAssessment(knex, assessmentID, editedAsmDataMatch);
-        return res.status(400).json({ message: "assessment edited successfully" });
+        return res.status(200).json({ message: "assessment edited successfully" });
       } else {
         let allergiesDataMatch;
         await editPtAssessment(tranx, assessmentID, editedAsmDataMatch);

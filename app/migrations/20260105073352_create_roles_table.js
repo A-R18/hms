@@ -4,7 +4,7 @@
  */
 exports.up = function (knex) {
   return knex.schema.createTable("roles", function (table) {
-    table.increments("id");
+    table.specificType("id", "INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY");
     table.string("role").notNullable();
   });
 };

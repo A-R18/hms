@@ -1,10 +1,10 @@
 module.exports = {
-  client: "mysql2",
+  client: "pg",
   connection: {
     host: "127.0.0.1",
-    user: "root",
-    password: "",
-    port: 3306,
+    user: "postgres",
+    password: "postgresdb18",
+    port: 5432,
     database: "hmsdb",
   },
   migrations: {
