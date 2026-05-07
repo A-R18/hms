@@ -22,10 +22,16 @@ const fetchptDiagnosis = (diagID) => {
   return knex("doctors_prescriptions").where({ id: diagID }).select("*");
 };
 
+
+const fetchExistingTravData = (travAdvId) => {
+  return knex("doctors_travel_advisory_to_patients").where({ id: travAdvId }).select("*");
+};
+
 module.exports = {
   insertDocDiagnosis,
   insertTravelAdvData,
   editDocDiagnosis,
   editTravelAdvData,
   fetchptDiagnosis,
+  fetchExistingTravData
 };

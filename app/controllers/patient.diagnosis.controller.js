@@ -5,6 +5,7 @@ const {
   editDocDiagnosis,
   editTravelAdvData,
   fetchptDiagnosis,
+  fetchExistingTravData,
 } = require("../models/patient.diagnosis.model");
 const { insertPatientAllergies } = require("../models/patient_assessment.model.js");
 
@@ -88,15 +89,36 @@ const savePatientDiagnosis = async (req, res) => {
 
 const editPatientDiagnosis = async (req, res) => {
   try {
+    console.log("Allergies data: \n");
     const diagnosisID = req.body.diag_id;
-    const travAdvID = req.body.travAdv_id;
+    const travAdvID = req?.body?.travAdv_id;
+    if (!diagnosisID) {
+      return res.status(404).json({ alert: "No diagnosis refrence provided!" });
+    }
+    let travelAdvExistingData = undefined;
+
+    if (req.body.travel_advData) {
+      travelAdvExistingData = await fetchExistingTravData(travAdvID);
+    }
+
+    let ExistingDiagnosisData = await fetchptDiagnosis(diagnosisID);
     const tranx = await knex.transaction();
     const editedDiagnosis = req.body;
+    console.log(editedDiagnosis);
     let travelAdvDataMatch = {};
     const diagnosisDataMatch = {
-      doctor_note: editedDiagnosis.doc_note,
-      treatment_plan: editedDiagnosis.treat_plan,
-      other_examinations: editedDiagnosis.other_exm,
+      doctor_note: req?.body?.doc_note ?
+        editedDiagnosis.doc_note :
+        ExistingDiagnosisData.doctor_note,
+
+      treatment_plan: req?.body?.treat_plan ?
+        editedDiagnosis.treat_plan :
+        ExistingDiagnosisData.treatment_plan,
+
+      other_examinations: req?.body?.other_exm ?
+        editedDiagnosis.other_exm :
+        ExistingDiagnosisData.other_examinations,
+
     };
     if (editDocDiagnosis.travel_advData !== null) {
       travelAdvDataMatch = {
@@ -107,16 +129,18 @@ const editPatientDiagnosis = async (req, res) => {
     }
 
     const ptAllergiesDataMatch = {};
-    if (editedDiagnosis.travel_advData !== null && editedDiagnosis.patient_Allergies === null) {
+    if (editedDiagnosis.travel_advData  && !editedDiagnosis.patient_Allergies) {
+      // console.log("Travel present & allergies not present");
       await editDocDiagnosis(tranx, diagnosisID, diagnosisDataMatch);
       await editTravelAdvData(tranx, travAdvID, travelAdvDataMatch);
 
       (await tranx).commit();
       return res.status(200).json({ message: "Diagnosis & Travel advisory saved!" });
     } else if (
-      editedDiagnosis.travel_advData === null &&
-      editedDiagnosis.patient_Allergies !== null
+      !editedDiagnosis.travel_advData  &&
+      editedDiagnosis.patient_Allergies 
     ) {
+      // console.log("Travel empty & allergies present");
       let allergiesDataMatch = {};
       await editDocDiagnosis(tranx, diagnosisID, diagnosisDataMatch);
       for (const allergy of editedDiagnosis.patient_Allergies) {
@@ -129,9 +153,11 @@ const editPatientDiagnosis = async (req, res) => {
       (await tranx).commit();
       return res.status(200).json({ message: "Diagnosis & Patient allergies edited!" });
     } else if (
-      editedDiagnosis.travel_advData !== null &&
-      editedDiagnosis.patient_Allergies !== null
+
+      editedDiagnosis.travel_advData  &&
+      editedDiagnosis.patient_Allergies
     ) {
+      // console.log("Both present case hit!");
       let allergiesDataMatch = {};
       await editDocDiagnosis(tranx, diagnosisID, diagnosisDataMatch);
       await editTravelAdvData(tranx, travAdvID, travelAdvDataMatch);
@@ -148,9 +174,10 @@ const editPatientDiagnosis = async (req, res) => {
         .status(200)
         .json({ message: "Diagnosis, Travel advisory & Patient allergies edited!" });
     } else if (
-      editedDiagnosis.travel_advData === null &&
-      editedDiagnosis.patient_Allergies === null
+      !editedDiagnosis.travel_advData  &&
+      !editedDiagnosis.patient_Allergies
     ) {
+      // console.log("Both null case hit!");
       await editDocDiagnosis(knex, diagnosisID, diagnosisDataMatch);
       return res.status(200).json({ message: "Diagnosis edited!" });
     }
