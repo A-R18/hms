@@ -1,4 +1,5 @@
 # Backend for HMS so far:
+---
 
 ## Modules built:
 
@@ -7,7 +8,7 @@
 - PATIENT (CRUD)
 - DOCTOR SCHEDULING (CRUD)
 - APPOINTMENT SCHEDULING (CRUD WITH TIME & BUSINESS CONSTRAINTS)
-- PATIENT DIAGNOSIS
+- PATIENT DIAGNOSIS (CRU)
 
 ## Impmentations:
 
@@ -49,11 +50,12 @@
 - Made Authorization with JWT token
 - Current user access feature has be added
 - Added role based access control (RBAC)
+---
 
-# Tech used in backend:
+# Tech stack used in backend:
 
 - Node.js
 - Table plus (for DB mainly & data viewing)
 - Xampp for SQL server
 - Postman for API Testing
-- mysql 2 (mentioning version for info)
+- postgresql (transitioned from mysql)
