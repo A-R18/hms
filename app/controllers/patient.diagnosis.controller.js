@@ -8,7 +8,9 @@ const {
   fetchExistingTravData,
 } = require("../models/patient.diagnosis.model");
 const { insertPatientAllergies } = require("../models/patient_assessment.model.js");
-
+const { generatePresPDF } = require("../utils/pdfGenerator.js");
+const fs = require("fs/promises");
+const path = require("path");
 const savePatientDiagnosis = async (req, res) => {
   try {
     const tranx = await knex.transaction();
@@ -129,7 +131,7 @@ const editPatientDiagnosis = async (req, res) => {
     }
 
     const ptAllergiesDataMatch = {};
-    if (editedDiagnosis.travel_advData  && !editedDiagnosis.patient_Allergies) {
+    if (editedDiagnosis.travel_advData && !editedDiagnosis.patient_Allergies) {
       // console.log("Travel present & allergies not present");
       await editDocDiagnosis(tranx, diagnosisID, diagnosisDataMatch);
       await editTravelAdvData(tranx, travAdvID, travelAdvDataMatch);
@@ -137,8 +139,8 @@ const editPatientDiagnosis = async (req, res) => {
       (await tranx).commit();
       return res.status(200).json({ message: "Diagnosis & Travel advisory saved!" });
     } else if (
-      !editedDiagnosis.travel_advData  &&
-      editedDiagnosis.patient_Allergies 
+      !editedDiagnosis.travel_advData &&
+      editedDiagnosis.patient_Allergies
     ) {
       // console.log("Travel empty & allergies present");
       let allergiesDataMatch = {};
@@ -154,7 +156,7 @@ const editPatientDiagnosis = async (req, res) => {
       return res.status(200).json({ message: "Diagnosis & Patient allergies edited!" });
     } else if (
 
-      editedDiagnosis.travel_advData  &&
+      editedDiagnosis.travel_advData &&
       editedDiagnosis.patient_Allergies
     ) {
       // console.log("Both present case hit!");
@@ -174,7 +176,7 @@ const editPatientDiagnosis = async (req, res) => {
         .status(200)
         .json({ message: "Diagnosis, Travel advisory & Patient allergies edited!" });
     } else if (
-      !editedDiagnosis.travel_advData  &&
+      !editedDiagnosis.travel_advData &&
       !editedDiagnosis.patient_Allergies
     ) {
       // console.log("Both null case hit!");
@@ -186,19 +188,27 @@ const editPatientDiagnosis = async (req, res) => {
   }
 };
 
-const showPatientDiagnosis = async (req, res) => {
+const showDetailedPatientDiagnosis = async (req, res) => {
   try {
     const diagnosisID = req.params.diagnosis_id;
     console.log(diagnosisID);
     const ptDiagnosisShown = await fetchptDiagnosis(diagnosisID);
-    return res.status(200).json(ptDiagnosisShown);
+    // console.log("The diagnosis is \n",ptDiagnosisShown);
+    const pdfBuffer = await generatePresPDF(ptDiagnosisShown[0]);
+    // console.log(pdfBuffer);
+    const dirPath = path.join(__dirname, "../../pdf");
+    const fileName = `prescription-${Date.now() * 20 + Math.random() + Math.random()}.pdf`;
+    const filePath = path.join(dirPath, fileName);
+    await fs.writeFile(filePath, pdfBuffer);
+    return res.status(200).send(pdfBuffer);
+
   } catch (error) {
-    return res.status(400).json({ error: error.message });
+    return res.status(400).json({ error: error.message, stackTrace: error.stack });
   }
 };
 
 module.exports = {
   savePatientDiagnosis,
   editPatientDiagnosis,
-  showPatientDiagnosis,
+  showDetailedPatientDiagnosis,
 };
