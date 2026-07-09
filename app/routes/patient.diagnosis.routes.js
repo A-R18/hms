@@ -2,7 +2,7 @@ const express = require("express");
 const {
   savePatientDiagnosis,
   editPatientDiagnosis,
-  showPatientDiagnosis,
+  showDetailedPatientDiagnosis,
 } = require("../controllers/patient.diagnosis.controller");
 const router = express.Router();
 const { routeAction } = require("../middleware/accessChecker.js");
@@ -26,7 +26,7 @@ router.get(
   "/show-diagnosis/:diagnosis_id",
   authorize,
   routeAction("READ", "patients_diagnosis"),
-  showPatientDiagnosis
+  showDetailedPatientDiagnosis
 );
 
 module.exports = router;

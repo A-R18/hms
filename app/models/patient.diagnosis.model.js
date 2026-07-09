@@ -19,7 +19,11 @@ const editTravelAdvData = (db, travelAdvID, editedtravelAdvData) => {
 };
 
 const fetchptDiagnosis = (diagID) => {
-  return knex("doctors_prescriptions").where({ id: diagID }).select("*");
+  return knex("doctors_prescriptions")
+    .join("patients as p", "doctors_prescriptions.patient_ID", "p.id")
+    .join("patients_assessments as pa", "doctors_prescriptions.appointment_ID", "pa.appointment_ID")
+    .where("doctors_prescriptions.id", diagID)
+    .select("doctors_prescriptions.*", "p.*", "pa.*");
 };
 
 

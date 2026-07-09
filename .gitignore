@@ -2,4 +2,9 @@ node_modules
 .env
 .vscode
 datesCheck.js
+<<<<<<< HEAD
 new.html
+=======
+new.html
+pdf
+>>>>>>> pdfMod
