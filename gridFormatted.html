@@ -1,12 +1,219 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <link rel="stylesheet" href="styles/output.css">
-</head>
-<body>
-    <div class="prescription w-[210mm] h-[297mm] bg-pink-400/40 grid grid-cols-2 grid-rows-10"></div>
-</body>
+    <link rel="stylesheet" href="styles/output.css" />
+  </head>
+  <body>
+    <div class="prescription w-[210mm] h-[297mm] grid grid-cols-2 grid-rows-10 p-1 text-sm">
+      <!-- Credentials section -->
+      <div class="header bg-pink-800 col-span-2 flex items-center justify-center gap-x-4 text-white">
+        <img src="assets/resized.png" alt="logo" class="w-15 h-15 rounded-full " />
+        <span class="text-5xl font-bold">NAME OF HOSPITAL</span>
+        <div class="flex flex-col gap-x-1">
+          <div><span>Contact</span> <span>+38493829</span></div>
+          <div><span>Whatsapp</span> <span>+38493829</span></div>
+          <div>
+            <span>Address</span>
+            <span>Lorem ipsum dolor, sit amet consectetur adipisicing elit.</span>
+          </div>
+        </div>
+      </div>
+      <div class="introduction p-2 row-span-2">
+        <table class="w-full bg-amber-400 rounded-sm ">
+          <tbody class="*:*:px-1.6 *:*:py-3 text-left">
+            <tr>
+              <td>Patient Name:</td>
+              <td>namedkfljs dfldjjljlk</td>
+              <td>Contact:</td>
+              <td>+4839184829</td>
+            </tr>
+            <tr>
+              <td>MR #:</td>
+              <td>complaint</td>
+              <td>Physician:</td>
+              <td>nedkfljsdfldjjljlk</td>
+            </tr>
+          </tbody>
+        </table>
+        <!-- Doctor's note -->
+        <div class="d-note w-full bg-orange-600/60 mt-2 rounded-sm">
+          <table class="w-full">
+            <tbody class="*:*:px-2 *:*:py-1.5 text-left">
+              <tr>
+                <td colspan="2">Doctor's note:</td>
+              </tr>
+              <tr>
+                <td rowspan="3" colspan="2" class="text-justify">
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Explicabo consectetur
+                  quas eum similique optio repellat voluptas aspernatur quis iste, commodi ut
+                  nostrum rem enim eius cumque voluptates
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- Assesment Data -->
+      <div class="assessment row-span-3 mb-2">
+        <div class="title text-center text-balance text-md">
+          <strong>Assessment Details</strong>
+        </div>
+        <table class="w-full bg-amber-400 rounded-sm">
+          <tbody class="*:*:px-2 *:*:py-1.5 text-left">
+            <tr>
+              <td>Systolic BP:</td>
+              <td>namedkfljs dfldjjljlk</td>
+              <td>Di systolic BP:</td>
+              <td>+4839184829</td>
+            </tr>
+            <tr>
+              <td>Pulse:</td>
+              <td>complaint</td>
+              <td>Temperature:</td>
+              <td>nedkfljsdfldjjljlk</td>
+            </tr>
+            <tr>
+              <td>Breath rate:</td>
+              <td>complaint</td>
+              <td>Consciousness:</td>
+              <td>nedkfljsdfldjjljlk</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="d-note  bg-orange-600/60 mt-2 rounded-sm">
+          <table class="w-full">
+            <tbody class="*:*:px-2 *:*:py-1.5 text-left">
+              <tr>
+                <td colspan="2">Systolic:</td>
+              </tr>
+              <tr>
+                <td rowspan="3" colspan="2" class="text-justify">
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Explicabo consectetur
+                  quas eum similique optio repellat voluptas aspernatur quis iste, commodi ut
+                  nostrum rem enim eius cumque voluptates labore quo, veritatis quia voluptate
+                  recusandae placeat id magnam. Voluptatem porro necessitatibus iste!
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- Medicines -->
+      <div class="medicines w-full row-span-5 px-4">
+        <div class="w-full py-1.2 flex flex-col border-b-2 mt-2">
+          <span class="w-full text-md px-2">Med1</span>
+          <div class="text-xs px-2 mb-1">
+            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nostrum, quisquam!
+          </div>
+        </div>
+        <div class="w-full py-1.2 flex flex-col border-b-2 mt-2">
+          <span class="w-full text-md px-2">Med1</span>
+          <div class="text-xs px-2 mb-1">
+            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nostrum, quisquam!
+          </div>
+        </div>
+        <div class="w-full py-1.2 flex flex-col border-b-2 mt-2">
+          <span class="w-full text-md px-2">Med1</span>
+          <div class="text-xs px-2 mb-1">
+            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nostrum, quisquam!
+          </div>
+        </div>
+        <div class="w-full py-1.2 flex flex-col border-b-2 mt-2">
+          <span class="w-full text-md px-2">Med1</span>
+          <div class="text-xs px-2 mb-1">
+            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nostrum, quisquam!
+          </div>
+        </div>
+        <div class="w-full py-1.2 flex flex-col border-b-2 mt-2">
+          <span class="w-full text-md px-2">Med1</span>
+          <div class="text-xs px-2 mb-1">
+            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nostrum, quisquam!
+          </div>
+        </div>
+        <div class="w-full py-1.2 flex flex-col border-b-2 mt-2">
+          <span class="w-full text-md px-2">Med1</span>
+          <div class="text-xs px-2 mb-1">
+            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nostrum, quisquam!
+          </div>
+        </div>
+        <div class="w-full py-1.2 flex flex-col border-b-2 mt-2">
+          <span class="w-full text-md px-2">Med1</span>
+          <div class="text-xs px-2 mb-1">
+            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nostrum, quisquam!
+          </div>
+        </div>
+        <div class="w-full py-1.2 flex flex-col border-b-2 mt-2">
+          <span class="w-full text-md px-2">Med1</span>
+          <div class="text-xs px-2 mb-1">
+            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nostrum, quisquam!
+          </div>
+        </div>
+      </div>
+      <!-- Lab Routines -->
+      <div class="lab-routines w-full row-span-5 px-4">
+        <div class="w-full py-1.2 flex flex-col border-b-2 mt-2">
+          <span class="w-full text-md px-2">Lab T1</span>
+        </div>
+        <div class="w-full py-1.2 flex flex-col border-b-2 mt-2">
+          <span class="w-full text-md px-2">Lab T1</span>
+          <div class="text-xs px-2 mb-1">
+            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nostrum, quisquam!
+          </div>
+        </div>
+        <div class="w-full py-1.2 flex flex-col border-b-2 mt-2">
+          <span class="w-full text-md px-2">Lab T1</span>
+        </div>
+        <div class="w-full py-1.2 flex flex-col border-b-2 mt-2">
+          <span class="w-full text-md px-2">Lab T1</span>
+          <div class="text-xs px-2 mb-1">
+            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nostrum, quisquam!
+          </div>
+        </div>
+        <div class="w-full py-1.2 flex flex-col border-b-2 mt-2">
+          <span class="w-full text-md px-2">Lab T1</span>
+          <div class="text-xs px-2 mb-1">
+            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nostrum, quisquam!
+          </div>
+        </div>
+        <div class="w-full py-1.2 flex flex-col border-b-2 mt-2">
+          <span class="w-full text-md px-2">Lab T1</span>
+          <div class="text-xs px-2 mb-1">
+            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nostrum, quisquam!
+          </div>
+        </div>
+        <div class="w-full py-1.2 flex flex-col border-b-2 mt-2">
+          <span class="w-full text-md px-2">Lab T1</span>
+        </div>
+        <div class="w-full py-1.2 flex flex-col border-b-2 mt-2">
+          <span class="w-full text-md px-2">Lab T1</span>
+          <div class="text-xs px-2 mb-1">
+            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nostrum, quisquam!
+          </div>
+        </div>
+        <div class="w-full py-1.2 flex flex-col border-b-2 mt-2">
+          <span class="w-full text-md px-2">Lab T1</span>
+          <div class="text-xs px-2 mb-1">
+            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nostrum, quisquam!
+          </div>
+        </div>
+        <div class="w-full py-1.2 flex flex-col border-b-2 mt-2">
+          <span class="w-full text-md px-2">Lab T1</span>
+          <div class="text-xs px-2 mb-1">
+            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nostrum, quisquam!
+          </div>
+        </div>
+      </div>
+      <div class="footer bg-pink-800 col-span-2 flex justify-center">
+        <span
+          ><strong class="text-xs"
+            >Electronically generated, doesn't require any signature.</strong
+          ></span
+        >
+      </div>
+    </div>
+  </body>
 </html>
