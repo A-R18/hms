@@ -14,12 +14,23 @@ const fetchAllAppointments = (today, seventhDay, givenLimit, givenOffset) => {
     .andWhere("appointments.appointment_date", "<=", seventhDay)
     .orWhere("appointments.appointment_status", "pending")
     .orWhere("appointments.appointment_status", "confirmed")
-    .select("appointments.*", "patients.patient_name", "patients.condition", "patients.contact")
+    .select(
+      "appointments.*",
+      "patients.patient_name",
+      "patients.condition",
+      "patients.contact",
+    )
     .limit(givenLimit)
     .offset(givenOffset);
 };
 
-const fetchAllDocSpecificAppointments = (docID, today, seventhDay, givenLimit, givenOffset) => {
+const fetchAllDocSpecificAppointments = (
+  docID,
+  today,
+  seventhDay,
+  givenLimit,
+  givenOffset,
+) => {
   return knex("appointments")
     .join("patients", "appointments.patient_ID", "patients.id")
     .where({ doctor_ID: docID })
@@ -33,7 +44,7 @@ const fetchAllDocSpecificAppointments = (docID, today, seventhDay, givenLimit, g
       "appointments.appointment_status",
       "patients.id as pt_id",
       "patients.patient_name",
-      "patients.contact"
+      "patients.contact",
     )
     .limit(givenLimit)
     .offset(givenOffset);
@@ -53,7 +64,7 @@ const fetchExistingAppointmentData = (aptID) => {
     .select(
       "appointments.appointment_time as aptTime",
       "appointments.appointment_date as aptDate",
-      "appointments.appointment_status as aptStatus"
+      "appointments.appointment_status as aptStatus",
     )
     .first();
 };
@@ -88,7 +99,9 @@ const fetchAptStatus = (aptID) => {
 };
 
 const changeAptStatus = (aptID, aptStatus) => {
-  return knex("appointments").where({ id: aptID }).update({ appointment_status: aptStatus });
+  return knex("appointments")
+    .where({ id: aptID })
+    .update({ appointment_status: aptStatus });
 };
 
 module.exports = {

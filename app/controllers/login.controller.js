@@ -35,7 +35,10 @@ const logUserIn = async (req, res) => {
         email: authResponse.user_email,
         password: authResponse.user_password,
       };
-      const matchedPassword = await bcrypt.compare(pass, authResponse.user_password);
+      const matchedPassword = await bcrypt.compare(
+        pass,
+        authResponse.user_password,
+      );
       if (!matchedPassword) {
         return res.status(401).json({ message: "Invalid credentials" });
       } else {

@@ -66,14 +66,18 @@ const updateUser = async (req, res) => {
 
     const dataMatch = {
       user_name: req?.body?.name ? incomingData.name : oldUserData.user_name,
-      user_email: req?.body?.email ? incomingData.email : oldUserData.user_email,
+      user_email: req?.body?.email
+        ? incomingData.email
+        : oldUserData.user_email,
       user_password: req?.body?.password ? hashedPass : oldUserData.password,
     };
 
     if (role !== "doctor") {
       const updatedUser = await updateOldUser(knex, id, dataMatch);
       if (updatedUser) {
-        return res.status(200).json({ message: "Updated successfully!", data: dataMatch });
+        return res
+          .status(200)
+          .json({ message: "Updated successfully!", data: dataMatch });
       }
     } else {
       try {
@@ -81,9 +85,15 @@ const updateUser = async (req, res) => {
         const existingDoctor = await fetchExistingDoctor(tranx, id);
 
         const docData = {
-          user_name: req?.body?.name ? incomingData.name : oldUserData.user_name,
-          user_email: req?.body?.email ? incomingData.email : oldUserData.user_email,
-          user_password: req?.body?.password ? hashedPass : oldUserData.password,
+          user_name: req?.body?.name
+            ? incomingData.name
+            : oldUserData.user_name,
+          user_email: req?.body?.email
+            ? incomingData.email
+            : oldUserData.user_email,
+          user_password: req?.body?.password
+            ? hashedPass
+            : oldUserData.password,
         };
 
         const docSpecData = {
@@ -112,7 +122,9 @@ const updateUser = async (req, res) => {
       }
     }
   } catch (error) {
-    return res.status(501).json({ alert: "Didn't update!", error: error.message });
+    return res
+      .status(501)
+      .json({ alert: "Didn't update!", error: error.message });
   }
 };
 
@@ -140,7 +152,9 @@ const showUsers = async (req, res) => {
     const allUsers = await fetchAllusers(limit, offset, "user");
 
     if (allUsers) {
-      return res.status(200).json({ totalUsers: count, currentPage: page, allUsers });
+      return res
+        .status(200)
+        .json({ totalUsers: count, currentPage: page, allUsers });
     }
   } catch (error) {
     return res.status(400).json({ error: error.message });
@@ -171,9 +185,13 @@ const showDoctors = async (req, res) => {
 
     const allDoctors = await fetchDoctors("doctor", limit, offset);
     if (allDoctors.length === 0) {
-      return res.status(400).json({ alert: "No doctors particulars registered yet!" });
+      return res
+        .status(400)
+        .json({ alert: "No doctors particulars registered yet!" });
     }
-    return res.status(200).json({ totalDoctors: count, currentPage: page, allDoctors });
+    return res
+      .status(200)
+      .json({ totalDoctors: count, currentPage: page, allDoctors });
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
@@ -199,7 +217,9 @@ const showDoctorsBySpeciality = async (req, res) => {
     if (doctorsFetchedBySpec.length !== 0) {
       return res.status(200).json(doctorsFetchedBySpec);
     } else {
-      return res.status(404).json({ alert: "no doctor found with this speciality" });
+      return res
+        .status(404)
+        .json({ alert: "no doctor found with this speciality" });
     }
   } catch (error) {
     return res.status(400).json({ error: error.message });
@@ -228,7 +248,9 @@ const deleteUser = async (req, res) => {
       return res.status(200).json({ alert: "Deleted successfully!" });
     }
   } catch (error) {
-    return res.status(400).json({ message: "Deletion unsuccessfull!", error: error.message });
+    return res
+      .status(400)
+      .json({ message: "Deletion unsuccessfull!", error: error.message });
   }
 };
 

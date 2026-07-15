@@ -27,9 +27,14 @@ const savePatientAssessment = async (req, res) => {
       breathing_rate: incomingData.b_rate,
     };
     if (incomingData.pt_allergies === null) {
-      const ptAssesmentSaved = await insertPatientAssesment(knex, assessDataMatch);
+      const ptAssesmentSaved = await insertPatientAssesment(
+        knex,
+        assessDataMatch,
+      );
       if (ptAssesmentSaved) {
-        return res.status(200).json({ message: "assessment saved successfully!" });
+        return res
+          .status(200)
+          .json({ message: "assessment saved successfully!" });
       } else {
         return res.status(400).json({ message: "DB error, can't save!" });
       }
@@ -42,13 +47,18 @@ const savePatientAssessment = async (req, res) => {
           patient_ID: incomingData.pt_id,
           allergy_ID: allergy,
         };
-        const allergySubmitted = await insertPatientAllergies(tranx, allergiesDataMatch);
+        const allergySubmitted = await insertPatientAllergies(
+          tranx,
+          allergiesDataMatch,
+        );
         checkArray.push(allergySubmitted);
       }
       await tranx.commit();
 
       if (incomingData.pt_allergies.length === checkArray.length) {
-        return res.status(200).json({ message: "assessment saved successfully!" });
+        return res
+          .status(200)
+          .json({ message: "assessment saved successfully!" });
       } else {
         return res.status(400).json({ message: "DB error, can't save!" });
       }
@@ -56,7 +66,9 @@ const savePatientAssessment = async (req, res) => {
   } catch (error) {
     await tranx.rollback();
     if (error.code === "ER_DUP_ENTRY") {
-      return res.status(400).json({ alert: "you can't enter assessment twice!" });
+      return res
+        .status(400)
+        .json({ alert: "you can't enter assessment twice!" });
     }
     return res.status(400).json({ error: error.message });
   }
@@ -71,7 +83,10 @@ const editPatientAssessment = async (req, res) => {
     const assessmentFetched = await fetchExistingAssessment(knex, assessmentID);
     let ptAllergiesFetched;
     if (editedAsmData.pt_allergies !== null) {
-      ptAllergiesFetched = await fetchExistingPtAllergies(knex, assessmentFetched.patient_ID);
+      ptAllergiesFetched = await fetchExistingPtAllergies(
+        knex,
+        assessmentFetched.patient_ID,
+      );
     }
     if (assessmentFetched) {
       const editedAsmDataMatch = {
@@ -83,22 +98,36 @@ const editPatientAssessment = async (req, res) => {
           ? editedAsmData.past_md_history
           : assessmentFetched.past_medical_history,
 
-        consciousness: req?.body?.coscs ? editedAsmData.coscs : assessmentFetched.consciousness,
+        consciousness: req?.body?.coscs
+          ? editedAsmData.coscs
+          : assessmentFetched.consciousness,
 
-        temperature: req?.body?.temp ? editedAsmData.temp : assessmentFetched.temperature,
+        temperature: req?.body?.temp
+          ? editedAsmData.temp
+          : assessmentFetched.temperature,
 
-        systolic_bp: req?.body?.s_bp ? editedAsmData.s_bp : assessmentFetched.systolic_bp,
+        systolic_bp: req?.body?.s_bp
+          ? editedAsmData.s_bp
+          : assessmentFetched.systolic_bp,
 
-        diastolic_bp: req?.body?.d_bp ? editedAsmData.d_bp : assessmentFetched.diastolic_bp,
+        diastolic_bp: req?.body?.d_bp
+          ? editedAsmData.d_bp
+          : assessmentFetched.diastolic_bp,
 
-        pulse: req?.body?.h_pulse ? editedAsmData.h_pulse : assessmentFetched.pulse,
+        pulse: req?.body?.h_pulse
+          ? editedAsmData.h_pulse
+          : assessmentFetched.pulse,
 
-        breathing_rate: req?.body?.b_rate ? editedAsmData.b_rate : assessmentFetched.breathing_rate,
+        breathing_rate: req?.body?.b_rate
+          ? editedAsmData.b_rate
+          : assessmentFetched.breathing_rate,
       };
       console.log("Allergies are: ", req.body.pt_allergies);
       if (req.body.pt_allergies === null) {
         await editPtAssessment(knex, assessmentID, editedAsmDataMatch);
-        return res.status(200).json({ message: "assessment edited successfully" });
+        return res
+          .status(200)
+          .json({ message: "assessment edited successfully" });
       } else {
         let allergiesDataMatch;
         await editPtAssessment(tranx, assessmentID, editedAsmDataMatch);
@@ -120,7 +149,9 @@ const editPatientAssessment = async (req, res) => {
     if (error.code === "ER_DUP_ENTRY") {
       return res
         .status(400)
-        .json({ alert: "Same allergy entry again for same patient is not allowed!" });
+        .json({
+          alert: "Same allergy entry again for same patient is not allowed!",
+        });
     }
     return res.status(400).json({ error: error.message });
   }
@@ -133,7 +164,7 @@ const showPatientAssessment = async (req, res) => {
     const assessmentID = req.params.asm_id;
     const patientAssessmentShown = await showPtAssessment(assessmentID);
     const formattedTime = dayjs(patientAssessmentShown.assessment_time).format(
-      "ddd, MMM DD YYYY,  hh:mm A"
+      "ddd, MMM DD YYYY,  hh:mm A",
     );
     delete patientAssessmentShown.assessment_time;
     patientAssessmentShown.assessment_time = formattedTime;

@@ -7,7 +7,12 @@ const addPatient = (patientData) => {
 const showSinglePatient = (patientID) => {
   return knex("patients")
     .where({ id: patientID })
-    .select("patients.id", "patients.patient_name", "patients.condition", "patients.contact")
+    .select(
+      "patients.id",
+      "patients.patient_name",
+      "patients.condition",
+      "patients.contact",
+    )
     .first();
 };
 
@@ -20,7 +25,12 @@ const fetchExistingPatient = (patientID) => {
 
 const showPatients = (givenLimit, givenOffset) => {
   return knex("patients")
-    .select("patients.id", "patients.patient_name", "patients.condition", "patients.contact")
+    .select(
+      "patients.id",
+      "patients.patient_name",
+      "patients.condition",
+      "patients.contact",
+    )
     .limit(givenLimit)
     .offset(givenOffset);
 };

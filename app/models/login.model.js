@@ -8,7 +8,7 @@ const authenticateUser = async (userEmail) => {
       "users.user_name",
       "users.role_ID",
       "users.user_email",
-      "users.user_password"
+      "users.user_password",
     )
     .first();
 
@@ -35,4 +35,9 @@ const FetchDocEssentials = (docUID) => {
     .first();
 };
 
-module.exports = { authenticateUser, fetchUserRole, fetchUserPermissions, FetchDocEssentials };
+module.exports = {
+  authenticateUser,
+  fetchUserRole,
+  fetchUserPermissions,
+  FetchDocEssentials,
+};

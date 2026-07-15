@@ -25,18 +25,33 @@ router.post(
   authorize,
   routeAction("CREATE", "doctors"),
   validatePatientData,
-  registerPatient
+  registerPatient,
 );
-router.get("/show-patients", authorize, routeAction("READ", "doctors"), displayPatients);
-router.get("/show-patient/:id", authorize, routeAction("READ", "doctors"), displaySinglePatient);
+router.get(
+  "/show-patients",
+  authorize,
+  routeAction("READ", "doctors"),
+  displayPatients,
+);
+router.get(
+  "/show-patient/:id",
+  authorize,
+  routeAction("READ", "doctors"),
+  displaySinglePatient,
+);
 router.post(
   "/update-patient/:id",
   authorize,
   routeAction("UPDATE", "doctors"),
   validatePatientUpdateData,
-  updatePatient
+  updatePatient,
 );
-router.post("/delete-patient/:id", authorize, routeAction("DELETE", "doctors"), deletePatient);
+router.post(
+  "/delete-patient/:id",
+  authorize,
+  routeAction("DELETE", "doctors"),
+  deletePatient,
+);
 
 router.get("/show-allergies", showPatientAllergies);
 router.get("/show-patient-allergies/:pt_id", showPtSpecificAllergies);

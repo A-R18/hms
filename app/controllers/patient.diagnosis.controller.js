@@ -7,7 +7,9 @@ const {
   fetchptDiagnosis,
   fetchExistingTravData,
 } = require("../models/patient.diagnosis.model");
-const { insertPatientAllergies } = require("../models/patient_assessment.model.js");
+const {
+  insertPatientAllergies,
+} = require("../models/patient_assessment.model.js");
 const { generatePresPDF } = require("../utils/pdfGenerator.js");
 const fs = require("fs/promises");
 const path = require("path");
@@ -33,12 +35,17 @@ const savePatientDiagnosis = async (req, res) => {
     }
 
     const ptAllergiesDataMatch = {};
-    if (incomingDiagnosis.travel_advData !== null && incomingDiagnosis.patient_Allergies === null) {
+    if (
+      incomingDiagnosis.travel_advData !== null &&
+      incomingDiagnosis.patient_Allergies === null
+    ) {
       await insertDocDiagnosis(tranx, diagnosisDataMatch);
       await insertTravelAdvData(tranx, travelAdvDataMatch);
 
       (await tranx).commit();
-      return res.status(200).json({ message: "Diagnosis & Travel advisory saved!" });
+      return res
+        .status(200)
+        .json({ message: "Diagnosis & Travel advisory saved!" });
     } else if (
       incomingDiagnosis.travel_advData === null &&
       incomingDiagnosis.patient_Allergies !== null
@@ -53,7 +60,9 @@ const savePatientDiagnosis = async (req, res) => {
         await insertPatientAllergies(tranx, allergiesDataMatch);
       }
       (await tranx).commit();
-      return res.status(200).json({ message: "Diagnosis & Patient allergies saved!" });
+      return res
+        .status(200)
+        .json({ message: "Diagnosis & Patient allergies saved!" });
     } else if (
       incomingDiagnosis.travel_advData !== null &&
       incomingDiagnosis.patient_Allergies !== null
@@ -72,7 +81,9 @@ const savePatientDiagnosis = async (req, res) => {
       (await tranx).commit();
       return res
         .status(200)
-        .json({ message: "Diagnosis, Travel advisory & Patient allergies saved!" });
+        .json({
+          message: "Diagnosis, Travel advisory & Patient allergies saved!",
+        });
     } else if (
       incomingDiagnosis.travel_advData === null &&
       incomingDiagnosis.patient_Allergies === null
@@ -84,7 +95,9 @@ const savePatientDiagnosis = async (req, res) => {
     if (error.code === "ER_DUP_ENTRY") {
       return res
         .status(400)
-        .json({ alert: "Same allergy entry again for same patient is not allowed!" });
+        .json({
+          alert: "Same allergy entry again for same patient is not allowed!",
+        });
     } else return res.status(400).json({ error: error.message });
   }
 };
@@ -109,18 +122,17 @@ const editPatientDiagnosis = async (req, res) => {
     console.log(editedDiagnosis);
     let travelAdvDataMatch = {};
     const diagnosisDataMatch = {
-      doctor_note: req?.body?.doc_note ?
-        editedDiagnosis.doc_note :
-        ExistingDiagnosisData.doctor_note,
+      doctor_note: req?.body?.doc_note
+        ? editedDiagnosis.doc_note
+        : ExistingDiagnosisData.doctor_note,
 
-      treatment_plan: req?.body?.treat_plan ?
-        editedDiagnosis.treat_plan :
-        ExistingDiagnosisData.treatment_plan,
+      treatment_plan: req?.body?.treat_plan
+        ? editedDiagnosis.treat_plan
+        : ExistingDiagnosisData.treatment_plan,
 
-      other_examinations: req?.body?.other_exm ?
-        editedDiagnosis.other_exm :
-        ExistingDiagnosisData.other_examinations,
-
+      other_examinations: req?.body?.other_exm
+        ? editedDiagnosis.other_exm
+        : ExistingDiagnosisData.other_examinations,
     };
     if (editDocDiagnosis.travel_advData !== null) {
       travelAdvDataMatch = {
@@ -137,7 +149,9 @@ const editPatientDiagnosis = async (req, res) => {
       await editTravelAdvData(tranx, travAdvID, travelAdvDataMatch);
 
       (await tranx).commit();
-      return res.status(200).json({ message: "Diagnosis & Travel advisory saved!" });
+      return res
+        .status(200)
+        .json({ message: "Diagnosis & Travel advisory saved!" });
     } else if (
       !editedDiagnosis.travel_advData &&
       editedDiagnosis.patient_Allergies
@@ -153,9 +167,10 @@ const editPatientDiagnosis = async (req, res) => {
         await insertPatientAllergies(tranx, allergiesDataMatch);
       }
       (await tranx).commit();
-      return res.status(200).json({ message: "Diagnosis & Patient allergies edited!" });
+      return res
+        .status(200)
+        .json({ message: "Diagnosis & Patient allergies edited!" });
     } else if (
-
       editedDiagnosis.travel_advData &&
       editedDiagnosis.patient_Allergies
     ) {
@@ -174,7 +189,9 @@ const editPatientDiagnosis = async (req, res) => {
       (await tranx).commit();
       return res
         .status(200)
-        .json({ message: "Diagnosis, Travel advisory & Patient allergies edited!" });
+        .json({
+          message: "Diagnosis, Travel advisory & Patient allergies edited!",
+        });
     } else if (
       !editedDiagnosis.travel_advData &&
       !editedDiagnosis.patient_Allergies
@@ -184,7 +201,9 @@ const editPatientDiagnosis = async (req, res) => {
       return res.status(200).json({ message: "Diagnosis edited!" });
     }
   } catch (error) {
-    return res.status(400).json({ error: error.message, stackTrace: error.stack });
+    return res
+      .status(400)
+      .json({ error: error.message, stackTrace: error.stack });
   }
 };
 
@@ -201,9 +220,10 @@ const showDetailedPatientDiagnosis = async (req, res) => {
     const filePath = path.join(dirPath, fileName);
     await fs.writeFile(filePath, pdfBuffer);
     return res.status(200).send(pdfBuffer);
-
   } catch (error) {
-    return res.status(400).json({ error: error.message, stackTrace: error.stack });
+    return res
+      .status(400)
+      .json({ error: error.message, stackTrace: error.stack });
   }
 };
 

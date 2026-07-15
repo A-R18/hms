@@ -39,7 +39,11 @@ const validateUpdatedUser = [
     .withMessage("Invalid email")
     .normalizeEmail(),
 
-  body("password").optional().notEmpty().withMessage("Password can't be empty").trim(),
+  body("password")
+    .optional()
+    .notEmpty()
+    .withMessage("Password can't be empty")
+    .trim(),
 
   body("contact")
     .optional()

@@ -18,7 +18,10 @@ const registerPatient = async (req, res) => {
     if (!validatedResult.isEmpty()) {
       return res
         .status(400)
-        .json({ message: "validations errors", errors: validatedResult.array() });
+        .json({
+          message: "validations errors",
+          errors: validatedResult.array(),
+        });
     }
     const enteredPatient = req.body;
     const patientDataMatch = {
@@ -60,7 +63,9 @@ const displayPatients = async (req, res) => {
     console.log(offset);
     const patientsShown = await showPatients(limit, offset);
     if (patientsShown) {
-      return res.status(200).json({ totalUsers: count, currentPage: page, patientsShown });
+      return res
+        .status(200)
+        .json({ totalUsers: count, currentPage: page, patientsShown });
     } else return res.status(400).json("didn't fetch patients!");
   } catch (error) {
     return res.status(400).json(error.message);
@@ -85,17 +90,26 @@ const updatePatient = async (req, res) => {
     if (!validatedResult.isEmpty()) {
       return res
         .status(400)
-        .json({ message: "validations errors", errors: validatedResult.array() });
+        .json({
+          message: "validations errors",
+          errors: validatedResult.array(),
+        });
     }
     const incomingData = req.body;
     const id = req.params.id;
     const existingPatientData = await fetchExistingPatient(id);
     const updatedPtData = {
-      patient_name: req?.body?.p_name ? incomingData.p_name : existingPatientData.patient_name,
+      patient_name: req?.body?.p_name
+        ? incomingData.p_name
+        : existingPatientData.patient_name,
 
-      condition: req?.body?.p_condition ? incomingData.p_condition : existingPatientData.user_email,
+      condition: req?.body?.p_condition
+        ? incomingData.p_condition
+        : existingPatientData.user_email,
 
-      contact: req?.body?.p_contact ? incomingData.p_contact : existingPatientData.contact,
+      contact: req?.body?.p_contact
+        ? incomingData.p_contact
+        : existingPatientData.contact,
     };
     const updatedPatient = await updatePt(id, updatedPtData);
     if (updatedPatient) {
@@ -135,10 +149,14 @@ const showPtSpecificAllergies = async (req, res) => {
     const allergiesFetched = await readAllPtAllergies(patientID);
     if (allergiesFetched.length !== 0) {
       const formattedAllergies = [];
-      allergiesFetched.map((allergy) => formattedAllergies.push(allergy.allergy_name));
+      allergiesFetched.map((allergy) =>
+        formattedAllergies.push(allergy.allergy_name),
+      );
       res.status(200).json(formattedAllergies);
     } else {
-      res.status(404).json({ message: "patient has no allergies! (registered yet)" });
+      res
+        .status(404)
+        .json({ message: "patient has no allergies! (registered yet)" });
     }
   } catch (error) {
     return res.status(400).json(error.message);

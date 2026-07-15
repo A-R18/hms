@@ -32,7 +32,10 @@ const validatePatientUpdateData = [
     .isAlpha("en-US", { ignore: " " })
     .withMessage("Patient name must contain only letters"),
 
-  body("p_condition").optional().isString().withMessage("Condition must be a string"),
+  body("p_condition")
+    .optional()
+    .isString()
+    .withMessage("Condition must be a string"),
 
   body("p_contact")
     .optional()

@@ -5,7 +5,10 @@
 exports.up = function (knex) {
   return knex.schema.createTable("users", function (table) {
     // table.increments("id");
-    table.specificType("id", "INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY");
+    table.specificType(
+      "id",
+      "INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY",
+    );
     table.integer("role_ID");
     table.string("user_name").notNullable();
     table.string("user_email").unique().notNullable();

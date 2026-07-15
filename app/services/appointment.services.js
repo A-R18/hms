@@ -19,7 +19,9 @@ const generateAllSlots = (start, end, slot_dur) => {
 const generateFilteredSlots = (existingSlots, start_T, end_T, slotDur) => {
   const totalSlots = generateAllSlots(start_T, end_T, slotDur);
   const bookedSlots = existingSlots;
-  const filteredSlots = totalSlots.filter((slot) => !bookedSlots.includes(slot));
+  const filteredSlots = totalSlots.filter(
+    (slot) => !bookedSlots.includes(slot),
+  );
   return filteredSlots;
 };
 

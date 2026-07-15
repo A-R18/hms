@@ -19,7 +19,7 @@ const fetchAllusers = (givenLimit, givenOffset, role) => {
       "users.user_name",
       "users.user_email",
       "roles.role",
-      "users.user_password"
+      "users.user_password",
     )
 
     .limit(givenLimit)
@@ -30,7 +30,11 @@ const fetchDoctors = (role, givenLimit, givenOffset) => {
   return knex("users")
     .leftJoin("doctors", "users.id", "doctors.user_ID")
     .leftJoin("roles", "users.role_ID", "roles.id")
-    .leftJoin("doctor_specialities", "doctors.spec_ID", "doctor_specialities.id")
+    .leftJoin(
+      "doctor_specialities",
+      "doctors.spec_ID",
+      "doctor_specialities.id",
+    )
     .where("roles.role", role)
     .select(
       "users.id as user_Id",
@@ -41,7 +45,7 @@ const fetchDoctors = (role, givenLimit, givenOffset) => {
       "doctors.id",
       "doctors.contact",
       "doctors.spec_ID",
-      "doctor_specialities.speciality"
+      "doctor_specialities.speciality",
     )
     .limit(givenLimit)
     .offset(givenOffset);

@@ -23,7 +23,7 @@ const fetchExistingAssessment = (db, asmID) => {
       "pt_asm.breathing_rate",
       "pt_asm.systolic_bp",
       "pt_asm.diastolic_bp",
-      "pt_asm.pulse"
+      "pt_asm.pulse",
     )
     .first();
 };

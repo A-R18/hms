@@ -16,25 +16,25 @@ router.post(
   "/save-doctor-timetable",
   authorize,
   routeAction("CREATE", "doctors"),
-  saveDoctorSchedule
+  saveDoctorSchedule,
 );
 router.get(
   "/show-doctor-timetable/:id",
   authorize,
   routeAction("READ", "doctors"),
-  showDoctorSchedule
+  showDoctorSchedule,
 );
 router.post(
   "/delete-doctor-timetable/:id",
   authorize,
   routeAction("DELETE", "doctors"),
-  deleteDoctorSchedule
+  deleteDoctorSchedule,
 );
 router.post(
   "/edit-doctor-timetable",
   authorize,
   routeAction("UPDATE", "doctors"),
-  changeDoctorSchedule
+  changeDoctorSchedule,
 );
 
 module.exports = router;

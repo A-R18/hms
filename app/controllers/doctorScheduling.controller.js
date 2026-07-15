@@ -39,7 +39,9 @@ const saveDoctorSchedule = async (req, res) => {
       }
 
       if (!toTime.isAfter(fromTime)) {
-        return res.status(401).json({ alert: "end time can't be before start time" });
+        return res
+          .status(401)
+          .json({ alert: "end time can't be before start time" });
       }
 
       const schDataMatch = {
@@ -68,8 +70,12 @@ const saveDoctorSchedule = async (req, res) => {
     if (error.code === "ER_DUP_ENTRY") {
       return res
         .status(401)
-        .json({ alert: "You can't register  same doctor's schdeule for same dates again!" });
-    } else return res.status(400).json({ code: error.code, error: error.message });
+        .json({
+          alert:
+            "You can't register  same doctor's schdeule for same dates again!",
+        });
+    } else
+      return res.status(400).json({ code: error.code, error: error.message });
   }
 };
 
@@ -83,8 +89,12 @@ const showDoctorSchedule = async (req, res) => {
         schedule_id: schedule.id,
         doc_ID: schedule.doctor_ID,
         doc_day: schedule.day,
-        doc_from_time: dayjs(schedule.doctor_from_time, "HH:mm:ss").format("hh:mm A"),
-        doc_to_time: dayjs(schedule.doctor_to_time, "HH:mm:ss").format("hh:mm A"),
+        doc_from_time: dayjs(schedule.doctor_from_time, "HH:mm:ss").format(
+          "hh:mm A",
+        ),
+        doc_to_time: dayjs(schedule.doctor_to_time, "HH:mm:ss").format(
+          "hh:mm A",
+        ),
         doc_from_date: dayjs(schedule.doc_from_date).format("ddd DD MMM YYYY"),
         doc_to_date: dayjs(schedule.doc_to_date).format("ddd DD MMM YYYY"),
         doc_slot_dur: schedule.doc_slot_dur + " minutes",
@@ -111,13 +121,23 @@ const changeDoctorSchedule = async (req, res) => {
       const scheduleID = schedule.sch_ID;
       const ExistingDocSchedule = await fetchExistingDocSchedule(scheduleID);
       const updatedSchMatch = {
-        doctor_from_time: schedule ? schedule.from_time : ExistingDocSchedule.doctor_from_time,
+        doctor_from_time: schedule
+          ? schedule.from_time
+          : ExistingDocSchedule.doctor_from_time,
 
-        doctor_to_time: schedule ? schedule.to_time : ExistingDocSchedule.doctor_to_time,
+        doctor_to_time: schedule
+          ? schedule.to_time
+          : ExistingDocSchedule.doctor_to_time,
 
-        doc_slot_dur: schedule ? schedule.slot_duration : ExistingDocSchedule.doc_slot_dur,
+        doc_slot_dur: schedule
+          ? schedule.slot_duration
+          : ExistingDocSchedule.doc_slot_dur,
       };
-      scheduleUpdated = await editDoctorSchedule(tranx, scheduleID, updatedSchMatch);
+      scheduleUpdated = await editDoctorSchedule(
+        tranx,
+        scheduleID,
+        updatedSchMatch,
+      );
       schCounter.push(scheduleUpdated);
     }
     // return res.json(ExistingDocSchedule);

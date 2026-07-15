@@ -4,7 +4,10 @@
  */
 exports.up = function (knex) {
   return knex.schema.createTable("permissions", function (table) {
-    table.specificType("id", "INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY");
+    table.specificType(
+      "id",
+      "INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY",
+    );
     table.integer("role_ID").notNullable();
     table.integer("privilege_ID").notNullable();
     table.integer("module_ID").notNullable();
