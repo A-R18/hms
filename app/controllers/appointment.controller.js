@@ -3,8 +3,14 @@ const customParseFormat = require("../../node_modules/dayjs/plugin/customParseFo
 const duration = require("../../node_modules/dayjs/plugin/duration.js");
 dayjs.extend(customParseFormat);
 dayjs.extend(duration);
-const { fetchDoctorSchedule, checkDayInScheduling } = require("../models/doc.scheduling.model");
-const { generateAllSlots, generateFilteredSlots } = require("../services/appointment.services");
+const {
+  fetchDoctorSchedule,
+  checkDayInScheduling,
+} = require("../models/doc.scheduling.model");
+const {
+  generateAllSlots,
+  generateFilteredSlots,
+} = require("../services/appointment.services");
 const {
   fetchTodaysAppointments,
   insertAppointment,
@@ -30,15 +36,24 @@ const createAppointment = async (req, res) => {
     }
     const dayID = dayjs(appointmentDate).day();
     //here the query based comparison will be made so that day is specified correctly! (where appointmentDate <= doc_to_date)
-    const docScheduleExists = await fetchDoctorSchedule(docID, appointmentDate, dayID);
+    const docScheduleExists = await fetchDoctorSchedule(
+      docID,
+      appointmentDate,
+      dayID,
+    );
     // return res.json(docScheduleExists);
 
     if (docScheduleExists) {
       //fetches all slots from db
-      const alreadyBooked = await fetchTodaysAppointments(docID, appointmentDate); //for retreiving that day only
+      const alreadyBooked = await fetchTodaysAppointments(
+        docID,
+        appointmentDate,
+      ); //for retreiving that day only
 
       let alreadyBookedSlots = [];
-      alreadyBooked.map((slot) => alreadyBookedSlots.push(slot.appointment_time));
+      alreadyBooked.map((slot) =>
+        alreadyBookedSlots.push(slot.appointment_time),
+      );
 
       const start_T = docScheduleExists.doctor_from_time;
       const end_T = docScheduleExists.doctor_to_time;
@@ -56,12 +71,20 @@ const createAppointment = async (req, res) => {
       });
       return res
         .status(200)
-        .json({ schedule_id: scheduleID, appointment_date: appointmentDate, formattedSlots });
+        .json({
+          schedule_id: scheduleID,
+          appointment_date: appointmentDate,
+          formattedSlots,
+        });
     } else {
-      return res.status(404).json({ alert: "Doctor schedule isn't available for this day!" });
+      return res
+        .status(404)
+        .json({ alert: "Doctor schedule isn't available for this day!" });
     }
   } catch (error) {
-    return res.status(200).json({ error: error.message, stackTrace: error.stack });
+    return res
+      .status(200)
+      .json({ error: error.message, stackTrace: error.stack });
   }
 };
 
@@ -78,7 +101,8 @@ const saveAppointment = async (req, res) => {
     };
 
     const appointmentSaved = await insertAppointment(dataMatch);
-    if (appointmentSaved) return res.status(200).json({ success: "slot reserved successfully" });
+    if (appointmentSaved)
+      return res.status(200).json({ success: "slot reserved successfully" });
     return res.status(400).json({ alert: "DB error, didn't save appointment" });
   } catch (error) {
     return res.status(400).json({ error: error.message });
@@ -90,7 +114,9 @@ const deleteAppointment = async (req, res) => {
     const appointmentID = req.body.apt_Id;
     const appointmentDeleted = await removeAppointment(appointmentID);
     if (appointmentDeleted) {
-      return res.status(200).json({ alert: "appointment deleted successfully!" });
+      return res
+        .status(200)
+        .json({ alert: "appointment deleted successfully!" });
     } else {
       return res.status(404).json({ error: "DB error, didn't delete" });
     }
@@ -104,20 +130,28 @@ const changeAppointment = async (req, res) => {
     const appointment_ID = req.body.apt_Id;
     const editedAppointmentDate = req.body.ed_apt_Date;
     const editedAppointmentTime = req.body.ed_apt_Time;
-    const { aptDate, aptTime, aptStatus } = await fetchExistingAppointmentData(appointment_ID);
+    const { aptDate, aptTime, aptStatus } =
+      await fetchExistingAppointmentData(appointment_ID);
     if (aptStatus === "pending") {
       const editedAptData = {
         appointment_date: editedAppointmentDate,
         appointment_time: editedAppointmentTime,
       };
-      const appointmentRescheduled = await rescheduleAppointment(appointment_ID, editedAptData);
+      const appointmentRescheduled = await rescheduleAppointment(
+        appointment_ID,
+        editedAptData,
+      );
       if (appointmentRescheduled) {
-        return res.status(200).json({ success: "Appointment rescheduled successfully!" });
+        return res
+          .status(200)
+          .json({ success: "Appointment rescheduled successfully!" });
       } else {
         return res.status(400).json({ error: "DB error, didn't update" });
       }
     } else {
-      return res.status(401).json({ alert: "Only pending appointments can be rescheduled!" });
+      return res
+        .status(401)
+        .json({ alert: "Only pending appointments can be rescheduled!" });
     }
   } catch (error) {
     return res.status(400).json({ error: error.message });
@@ -127,7 +161,10 @@ const changeAppointment = async (req, res) => {
 const showAppointment = async (req, res) => {
   try {
     const today = dayjs().startOf("day").format("YYYY-MM-DD");
-    const weekFromToday = dayjs().add(7, "day").endOf("day").format("YYYY-MM-DD");
+    const weekFromToday = dayjs()
+      .add(7, "day")
+      .endOf("day")
+      .format("YYYY-MM-DD");
     const [{ count }] = await count7DaysAppointments(today, weekFromToday);
 
     let page;
@@ -148,7 +185,12 @@ const showAppointment = async (req, res) => {
     }
 
     const offset = (page - 1) * limit;
-    const rawAppointmentsfetched = await fetchAllAppointments(today, weekFromToday, limit, offset);
+    const rawAppointmentsfetched = await fetchAllAppointments(
+      today,
+      weekFromToday,
+      limit,
+      offset,
+    );
     let formattedAppointments = [];
     console.log(rawAppointmentsfetched);
     if (rawAppointmentsfetched) {
@@ -160,15 +202,24 @@ const showAppointment = async (req, res) => {
           condition: appointment.condition,
           contact: appointment.contact,
           doctor_ID: appointment.doctor_ID,
-          appointment_date: dayjs(appointment.appointment_date).format("ddd DD MMM YYYY"),
-          appointment_time: dayjs(appointment.appointment_time, "HH:mm:ss").format("hh:mm:ss A"),
+          appointment_date: dayjs(appointment.appointment_date).format(
+            "ddd DD MMM YYYY",
+          ),
+          appointment_time: dayjs(
+            appointment.appointment_time,
+            "HH:mm:ss",
+          ).format("hh:mm:ss A"),
           appointment_status: appointment.appointment_status,
         };
         formattedAppointments.push(dataMatch);
       });
       return res
         .status(200)
-        .json({ totalAppointments: count, currentPage: page, formattedAppointments });
+        .json({
+          totalAppointments: count,
+          currentPage: page,
+          formattedAppointments,
+        });
     } else {
       return res.status(404).json({ alert: "DB error, couldn't fetch!" });
     }
@@ -181,9 +232,16 @@ const showDocSpecificAppointments = async (req, res) => {
   try {
     const docID = req.params.doc_id;
     const today = dayjs().startOf("day").format("YYYY-MM-DD");
-    const weekFromToday = dayjs().add(7, "day").endOf("day").format("YYYY-MM-DD");
+    const weekFromToday = dayjs()
+      .add(7, "day")
+      .endOf("day")
+      .format("YYYY-MM-DD");
 
-    const [{ count }] = await count7DysApptsForSpecDoc(docID, today, weekFromToday);
+    const [{ count }] = await count7DysApptsForSpecDoc(
+      docID,
+      today,
+      weekFromToday,
+    );
     console.log("appointments count is: " + count);
     let page;
     const limit = 3;
@@ -208,7 +266,7 @@ const showDocSpecificAppointments = async (req, res) => {
       today,
       weekFromToday,
       limit,
-      offset
+      offset,
     );
     console.log("raw output is: ", rawAppointmentsfetched);
     let formattedAppointments = [];
@@ -221,15 +279,24 @@ const showDocSpecificAppointments = async (req, res) => {
           patient_contact: appointment.contact,
           doctor_ID: appointment.doctor_ID,
           appointment_ID: appointment.apt_id,
-          appointment_date: dayjs(appointment.appointment_date).format("ddd DD MMM YYYY"),
-          appointment_time: dayjs(appointment.appointment_time, "HH:mm:ss").format("hh:mm:ss A"),
+          appointment_date: dayjs(appointment.appointment_date).format(
+            "ddd DD MMM YYYY",
+          ),
+          appointment_time: dayjs(
+            appointment.appointment_time,
+            "HH:mm:ss",
+          ).format("hh:mm:ss A"),
           appointment_status: appointment.appointment_status,
         };
         formattedAppointments.push(dataMatch);
       });
       return res
         .status(200)
-        .json({ totalAppointments: count, currentPage: page, formattedAppointments });
+        .json({
+          totalAppointments: count,
+          currentPage: page,
+          formattedAppointments,
+        });
     } else {
       return res.status(404).json({ alert: "DB error, couldn't fetch!" });
     }
@@ -244,11 +311,15 @@ const staffChangesAptStatus = async (req, res) => {
     const currentAptStatus = await fetchAptStatus(apt_Id);
     if (currentAptStatus.appointment_status === "pending") {
       await changeAptStatus(apt_Id, "confirmed");
-      return res.status(200).json({ message: "status successfully changed to confirmed!" });
+      return res
+        .status(200)
+        .json({ message: "status successfully changed to confirmed!" });
     } else {
       return res
         .status(400)
-        .json({ message: "appointment status is not 'pending', so you can't change!" });
+        .json({
+          message: "appointment status is not 'pending', so you can't change!",
+        });
     }
   } catch (error) {
     return res.status(401).json({ error: error.message });
@@ -264,11 +335,16 @@ const docChangesAptStatus = async (req, res) => {
       await changeAptStatus(apt_Id, "attended");
       return res
         .status(200)
-        .json({ message: "appointment status successfully changed to attended!" });
+        .json({
+          message: "appointment status successfully changed to attended!",
+        });
     } else {
       return res
         .status(400)
-        .json({ message: "appointment status is not 'confirmed', so you can't change!" });
+        .json({
+          message:
+            "appointment status is not 'confirmed', so you can't change!",
+        });
     }
   } catch (error) {
     return res.status(401).json({ error: error.message });

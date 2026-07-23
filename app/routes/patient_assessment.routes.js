@@ -12,19 +12,19 @@ router.post(
   "/save-assessment",
   authorize,
   routeAction("CREATE", "assessment"),
-  savePatientAssessment
+  savePatientAssessment,
 );
 router.get(
   "/show-assessment/:asm_id",
   authorize,
   routeAction("READ", "assessment"),
-  showPatientAssessment
+  showPatientAssessment,
 );
 router.post(
   "/edit-assessment",
   authorize,
   routeAction("UPDATE", "assessment"),
-  editPatientAssessment
+  editPatientAssessment,
 );
 
 module.exports = router;

@@ -12,21 +12,21 @@ router.post(
   "/write-diagnosis",
   authorize,
   routeAction("CREATE", "patients_diagnosis"),
-  savePatientDiagnosis
+  savePatientDiagnosis,
 );
 
 router.post(
   "/edit-diagnosis",
   authorize,
   routeAction("UPDATE", "patients_diagnosis"),
-  editPatientDiagnosis
+  editPatientDiagnosis,
 );
 
 router.get(
   "/show-diagnosis/:diagnosis_id",
   authorize,
   routeAction("READ", "patients_diagnosis"),
-  showDetailedPatientDiagnosis
+  showDetailedPatientDiagnosis,
 );
 
 module.exports = router;

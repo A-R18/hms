@@ -4,7 +4,10 @@
  */
 exports.up = function (knex) {
   return knex.schema.createTable("appointments", function (table) {
-    table.specificType("id", "INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY");
+    table.specificType(
+      "id",
+      "INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY",
+    );
     table.integer("patient_ID");
     table.integer("doctor_ID");
     table.integer("schedule_ID");

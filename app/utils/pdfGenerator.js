@@ -2,39 +2,13 @@ const puppeteer = require("puppeteer");
 const fs = require("fs/promises");
 const path = require("path");
 async function generatePresPDF(data) {
-    console.log(`Here is the data being shown:\n`);
-    console.log(data);
-    /* 
-        {
-            "id": 3,
-            
-            "doctor_note": "doctor's note is not good enough",
-            "treatment_plan": "treatment plan was given",
-            "other_examinations": "other examinations are also necessary",
-            "prescription_time": "13:23:47.734535",
-            "patient_name": "Ahmed Raza",
-            "condition": "Diabetes",
-            "contact": "03001112224",
-            "created_at": "2026-05-07T04:51:16.438Z",
-            "treating_doctor_ID": 1,
-            "patient_complaint": "problems...",
-            "past_medical_history": "past problems...",
-            "consciousness": "alert",
-            "temperature": "33.0",
-            "breathing_rate": "92.6",
-            "systolic_bp": "18.0",
-            "diastolic_bp": "12.0",
-            "pulse": "88.30",
-            "assessment_time": "2026-07-09T07:26:14.760Z"
-        }
-    */
-    const cssPath = path.join(__dirname, "../../styles/output.css");
-    const imagePath = path.join(__dirname, "../../assets/resized.png");
-    console.log(imagePath);
-    const cssContent = await fs.readFile(cssPath, "utf-8");
 
+  const cssPath = path.join(__dirname, "../../styles/output.css");
+  const imagePath = path.join(__dirname, "../../assets/resized.png");
+  console.log(imagePath);
+  const cssContent = await fs.readFile(cssPath, "utf-8");
 
-const rawHtml = `<!doctype html>
+  const rawHtml = `<!doctype html>
 <html lang="en">
   <head>
    <style>
@@ -218,30 +192,30 @@ const rawHtml = `<!doctype html>
     </div>
   </body>
 </html>
-`
-    let browser;
-    try {
-        browser = await puppeteer.launch({
-            headless: true,
-            dumpio: true,
-            executablePath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
-            args: ['--no-sandbox'],
+`;
+  let browser;
+  try {
+    browser = await puppeteer.launch({
+      headless: true,
+      dumpio: true,
+      executablePath:
+        "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+      args: ["--no-sandbox"],
+    });
+    const page = await browser.newPage();
+    await page.setContent(rawHtml, { waitUntil: "networkidle0" });
 
-        });
-        const page = await browser.newPage();
-        await page.setContent(rawHtml, { waitUntil: "networkidle0" });
-
-        const pdfBuffer = await page.pdf({
-            format: 'A4',
-            printBackground: true,
-            margin: { top: '0px', bottom: '0px', left: '0px', right: '0px' },
-        });
-        return pdfBuffer;
-    } catch (error) {
-        return error;
-    } finally {
-        if (browser) await browser.close();
-    }
+    const pdfBuffer = await page.pdf({
+      format: "A4",
+      printBackground: true,
+      margin: { top: "0px", bottom: "0px", left: "0px", right: "0px" },
+    });
+    return pdfBuffer;
+  } catch (error) {
+    return error;
+  } finally {
+    if (browser) await browser.close();
+  }
 }
 
 module.exports = { generatePresPDF };

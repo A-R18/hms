@@ -18,55 +18,70 @@ router.post(
   "/create-appointment",
   authorize,
   routeAction("CREATE", "scheduling"),
-  createAppointment
+  createAppointment,
 );
 
-router.post("/save-appointment", authorize, routeAction("CREATE", "scheduling"), saveAppointment);
+router.post(
+  "/save-appointment",
+  authorize,
+  routeAction("CREATE", "scheduling"),
+  saveAppointment,
+);
 
 router.post(
   "/edit-appointment/:id",
   authorize,
   routeAction("UPDATE", "scheduling"),
-  changeAppointment
+  changeAppointment,
 );
 
 router.post(
   "/delete-pending-appointment",
   authorize,
   routeAction("DELETE", "scheduling"),
-  deleteAppointment
+  deleteAppointment,
 );
 
-router.get("/show-appointments", authorize, routeAction("READ", "scheduling"), showAppointment);
+router.get(
+  "/show-appointments",
+  authorize,
+  routeAction("READ", "scheduling"),
+  showAppointment,
+);
 
-router.get("/show-appointment/:doc_id", authorize, routeAction("READ", "scheduling"), showDocSpecificAppointments);
+router.get(
+  "/show-appointment/:doc_id",
+  authorize,
+  routeAction("READ", "scheduling"),
+  showDocSpecificAppointments,
+);
 
 router.post(
   "/reschedule-appointment",
   authorize,
   routeAction("UPDATE", "scheduling"),
-  changeAppointment
+  changeAppointment,
 );
 
 router.get(
   "/show-doctor-specific-appointments/:doc_id",
   authorize,
   routeAction("READ", "scheduling"),
-  showDocSpecificAppointments
+  showDocSpecificAppointments,
 );
 
 router.post(
   "/staff-change-apt-status",
   authorize,
   routeAction("UPDATE", "scheduling"),
-  staffChangesAptStatus
+  staffChangesAptStatus,
 );
 
 router.post(
   "/doc-change-apt-status",
   authorize,
   routeAction("UPDATE", "patients_diagnosis"),
-  docChangesAptStatus
+  docChangesAptStatus,
 );
 
 module.exports = router;

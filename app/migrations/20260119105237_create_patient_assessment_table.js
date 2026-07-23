@@ -4,7 +4,10 @@
  */
 exports.up = function (knex) {
   return knex.schema.createTable("patients_assessments", function (table) {
-    table.specificType("id", "INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY");
+    table.specificType(
+      "id",
+      "INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY",
+    );
     table.integer("patient_ID");
     table.integer("treating_doctor_ID");
     table.integer("appointment_ID");
@@ -30,8 +33,14 @@ exports.up = function (knex) {
     //   .enum("saturation_on", ["room_air", "o2_support", "ventilator"])
     //   .notNullable()
     //   .defaultTo("room_air");
-    table.timestamp("assessment_time", { useTz: true }).notNullable().defaultTo(knex.fn.now());
-    table.unique(["patient_ID", "treating_doctor_ID", "appointment_ID"], "single_assessment");
+    table
+      .timestamp("assessment_time", { useTz: true })
+      .notNullable()
+      .defaultTo(knex.fn.now());
+    table.unique(
+      ["patient_ID", "treating_doctor_ID", "appointment_ID"],
+      "single_assessment",
+    );
     table.foreign("patient_ID").references("id").inTable("patients");
     table.foreign("appointment_ID").references("id").inTable("appointments");
     table.foreign("treating_doctor_ID").references("id").inTable("doctors");
